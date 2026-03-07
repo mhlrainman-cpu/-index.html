@@ -1,1 +1,950 @@
-<h1>hello</h1>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Diet — Smarter AI. Lighter Bill.</title>
+<meta name="description" content="Stop wasting money on redundant AI subscriptions. AI Diet finds overlaps and recommends your perfect stack.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED VARS ── */
+:root{
+  --g:#1B6B44;--g2:#145235;
+  --gl:#EDF7F2;--gm:#C4E4D4;
+  --ink:#0D0D0B;--ink2:#2A2A27;--muted:#7A7A72;
+  --border:#E4E4DC;--bg:#F9F9F6;--white:#FFFFFF;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);overflow-x:hidden}
+
+/* ══════════════════════════════
+   LANDING PAGE STYLES
+══════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(249,249,246,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:box-shadow .3s}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1rem;color:var(--ink);text-decoration:none}
+.nav-mark{width:28px;height:28px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:white}
+.nav-right{display:flex;align-items:center;gap:6px}
+.nav-link{padding:6px 12px;font-size:.82rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--ink)}
+.lang-toggle{display:flex;align-items:center;background:#F0F0E8;border-radius:8px;padding:3px;gap:2px;margin-right:6px}
+.lang-btn{padding:5px 11px;border-radius:6px;font-size:.72rem;font-weight:600;border:none;cursor:pointer;font-family:var(--sans);transition:all .2s;background:transparent;color:var(--muted)}
+.lang-btn.active{background:var(--white);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.nav-cta{padding:7px 18px;border-radius:7px;background:var(--g);color:white;font-size:.82rem;font-weight:600;border:none;cursor:pointer;font-family:var(--sans);transition:background .2s}
+.nav-cta:hover{background:var(--g2)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 48px 80px;position:relative;overflow:hidden;text-align:center}
+.blob{position:absolute;border-radius:50%;pointer-events:none}
+.blob1{width:600px;height:600px;background:radial-gradient(circle,rgba(27,107,68,.07) 0%,transparent 70%);top:-80px;right:-180px;animation:drift 12s ease-in-out infinite alternate}
+.blob2{width:450px;height:450px;background:radial-gradient(circle,rgba(196,228,212,.14) 0%,transparent 70%);bottom:-40px;left:-80px;animation:drift 16s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(30px,25px) scale(1.07)}}
+.hero-inner{max-width:860px;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gl);border:1px solid var(--gm);color:var(--g);font-size:.72rem;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:32px;animation:up .6s ease both}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.4;transform:scale(.8)}}
+h1{font-family:var(--serif);font-size:clamp(3rem,8vw,6rem);line-height:1.04;letter-spacing:-1.5px;color:var(--ink);margin-bottom:10px;animation:up .6s .1s ease both}
+h1 .g{color:var(--g)}
+h1 em{font-style:italic;color:var(--muted)}
+.hero-sub{font-family:var(--serif);font-size:clamp(1.3rem,3vw,1.9rem);color:var(--muted);font-style:italic;margin-bottom:28px;animation:up .6s .2s ease both}
+.hero-desc{font-size:1.05rem;font-weight:300;color:var(--ink2);line-height:1.75;max-width:540px;margin:0 auto 44px;animation:up .6s .3s ease both}
+.hero-desc strong{font-weight:600;color:var(--ink)}
+
+/* ✅ 핵심: 히어로 CTA 버튼 (진단 앱 열기) */
+.hero-cta-wrap{animation:up .6s .4s ease both;margin-bottom:14px}
+.hero-diag-btn{padding:16px 36px;background:var(--g);color:white;border:none;border-radius:12px;font-family:var(--sans);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 8px 28px rgba(27,107,68,.25)}
+.hero-diag-btn:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(27,107,68,.32)}
+.hero-diag-sub{font-size:.78rem;color:var(--muted);margin-top:10px}
+
+.stats{display:flex;align-items:center;justify-content:center;gap:36px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border);animation:up .6s .6s ease both;flex-wrap:wrap}
+.stat-n{font-family:var(--serif);font-size:2.2rem;color:var(--g);line-height:1;margin-bottom:3px}
+.stat-l{font-size:.72rem;color:var(--muted)}
+.sdiv{width:1px;height:36px;background:var(--border)}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.sec{padding:96px 48px}
+.si{max-width:1080px;margin:0 auto}
+.ey{display:inline-flex;align-items:center;gap:10px;font-size:.68rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);margin-bottom:20px}
+.ey::before,.ey::after{content:'';width:18px;height:1px;background:var(--gm)}
+h2{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.3rem);line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:14px}
+h2 .g{color:var(--g)}
+h2 em{font-style:italic;color:var(--muted)}
+.sub{font-size:1rem;font-weight:300;color:var(--muted);line-height:1.7;max-width:500px}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
+.pc{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:32px 28px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.pc:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.06)}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--g)}
+.pn{font-family:var(--serif);font-size:3.2rem;color:var(--gl);line-height:1;margin-bottom:14px;font-style:italic}
+.pt{font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:9px}
+.pd{font-size:.86rem;font-weight:300;color:var(--muted);line-height:1.65}
+.ph{display:inline-block;margin-top:14px;padding:4px 11px;border-radius:6px;background:var(--gl);color:var(--g);font-size:.75rem;font-weight:600}
+
+.dark{background:var(--ink)}
+.dark h2{color:white}
+.dark .ey{color:var(--gm)}
+.dark .ey::before,.dark .ey::after{background:rgba(196,228,212,.3)}
+.dark .sub{color:rgba(255,255,255,.45)}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden}
+.sc{background:rgba(255,255,255,.03);padding:38px 30px;transition:background .25s}
+.sc:hover{background:rgba(255,255,255,.06)}
+.sc+.sc{border-left:1px solid rgba(255,255,255,.06)}
+.sn{font-family:var(--serif);font-size:.78rem;color:var(--g);letter-spacing:1px;margin-bottom:18px;display:block}
+.si2{font-size:1.9rem;margin-bottom:16px;display:block}
+.st{font-size:1.1rem;font-weight:600;color:white;margin-bottom:11px}
+.sd{font-size:.86rem;font-weight:300;color:rgba(255,255,255,.45);line-height:1.7}
+.sr{margin-top:18px;padding:9px 13px;border-radius:8px;background:rgba(27,107,68,.2);border:1px solid rgba(27,107,68,.3);font-size:.77rem;font-weight:600;color:var(--gm)}
+
+/* 작동방식 섹션 CTA 버튼 */
+.sol-cta{text-align:center;margin-top:44px}
+.sol-cta-btn{padding:15px 40px;background:white;color:var(--g);border:none;border-radius:10px;font-family:var(--sans);font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.sol-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+
+.strip{background:var(--gl);border-top:1px solid var(--gm);border-bottom:1px solid var(--gm);padding:26px 48px;display:flex;align-items:center;justify-content:center;gap:52px;flex-wrap:wrap}
+.pi{display:flex;align-items:center;gap:10px;font-size:.82rem;font-weight:500;color:var(--ink2)}
+.pi strong{color:var(--g)}
+.pdv{width:1px;height:26px;background:var(--gm)}
+
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
+.tc{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:26px 22px;transition:transform .25s}
+.tc:hover{transform:translateY(-3px)}
+.ts{color:#F5A623;font-size:.78rem;margin-bottom:12px;letter-spacing:2px}
+.tq{font-family:var(--serif);font-size:1rem;color:var(--ink);line-height:1.55;font-style:italic;margin-bottom:18px}
+.ta{display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--gl);border:1.5px solid var(--gm);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.an{font-size:.81rem;font-weight:600;color:var(--ink)}
+.ar{font-size:.71rem;font-weight:300;color:var(--muted)}
+.tsav{margin-top:14px;padding:7px 11px;border-radius:7px;background:var(--gl);font-size:.75rem;font-weight:600;color:var(--g)}
+
+.cream{background:#FAFAF6}
+.plgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:52px;max-width:760px}
+.plc{background:var(--white);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative}
+.plc:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.08)}
+.plc.feat{border-color:var(--g);box-shadow:0 0 0 4px rgba(27,107,68,.07)}
+.plbadge{position:absolute;top:18px;right:18px;background:var(--g);color:white;font-size:.58rem;font-weight:700;letter-spacing:.5px;padding:3px 8px;border-radius:4px}
+.plbar{height:3px;background:var(--border)}
+.plc.feat .plbar{background:var(--g)}
+.plbody{padding:28px 26px}
+.pltype{font-size:.63rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.plc.feat .pltype{color:var(--g)}
+.plprice{font-family:var(--serif);font-size:2.9rem;color:var(--ink);line-height:1;margin-bottom:3px}
+.plperiod{font-size:.77rem;font-weight:300;color:var(--muted);margin-bottom:22px}
+.pldiv{border:none;border-top:1px solid var(--border);margin:14px 0}
+.plf{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;font-size:.84rem;color:var(--ink2)}
+.ck{color:var(--g);font-weight:700;flex-shrink:0}
+.na{color:#C8C8C0}
+.plbtn{width:100%;padding:12px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-family:var(--sans);font-size:.87rem;font-weight:600;cursor:pointer;margin-top:20px;transition:all .2s}
+.plbtn:hover{border-color:var(--g);color:var(--g)}
+.plc.feat .plbtn{background:var(--g);color:white;border-color:var(--g)}
+.plc.feat .plbtn:hover{background:var(--g2)}
+
+.wl{background:var(--g);padding:96px 48px;text-align:center;position:relative;overflow:hidden}
+.wl::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,255,255,.05) 0%,transparent 60%)}
+.wli{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.wl h2{color:white;margin-bottom:14px}
+.wl h2 em{opacity:.65}
+.wlsub{font-size:1rem;font-weight:300;color:rgba(255,255,255,.65);margin-bottom:38px}
+.wlform{display:flex;gap:10px;max-width:440px;margin:0 auto 14px}
+.wli2{flex:1;padding:13px 17px;border:1.5px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(255,255,255,.1);font-family:var(--sans);font-size:.9rem;color:white;outline:none}
+.wli2::placeholder{color:rgba(255,255,255,.38)}
+.wli2:focus{border-color:rgba(255,255,255,.55)}
+.wb{padding:13px 22px;background:white;color:var(--g);border:none;border-radius:10px;font-family:var(--sans);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.wb:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.wlnote{font-size:.74rem;color:rgba(255,255,255,.45)}
+.form-ok{display:none;align-items:center;justify-content:center;padding:14px 24px;border-radius:10px;background:var(--gl);border:1.5px solid var(--gm);color:var(--g);font-weight:600;font-size:.9rem;max-width:480px;margin:0 auto}
+.wl .form-ok{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:white}
+
+.faq{margin-top:44px;max-width:660px}
+.fi{border-bottom:1px solid var(--border);padding:18px 0;cursor:pointer}
+.fq{display:flex;justify-content:space-between;align-items:center;font-size:.94rem;font-weight:500;color:var(--ink)}
+.ficon{width:24px;height:24px;border-radius:50%;background:var(--gl);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:transform .25s}
+.fi.open .ficon{transform:rotate(45deg)}
+.fa{font-size:.86rem;font-weight:300;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .35s,padding-top .35s}
+.fi.open .fa{max-height:200px;padding-top:10px}
+
+footer{background:var(--ink);color:rgba(255,255,255,.45);padding:60px 48px 36px}
+.fi2{max-width:1080px;margin:0 auto}
+.ft{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.07)}
+.fb .logo{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fb .mk{width:26px;height:26px;border-radius:6px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:white}
+.fb .nm{font-weight:600;color:white;font-size:.93rem}
+.fb .tg{font-size:.77rem;color:rgba(255,255,255,.3);font-style:italic}
+.fls{display:flex;gap:44px}
+.fc h4{font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:14px}
+.fc a{display:block;font-size:.83rem;color:rgba(255,255,255,.45);text-decoration:none;margin-bottom:9px;transition:color .2s}
+.fc a:hover{color:rgba(255,255,255,.9)}
+.fb2{display:flex;justify-content:space-between;align-items:center;font-size:.75rem}
+.copy{color:rgba(255,255,255,.22)}
+.sns{display:flex;gap:12px}
+.sb{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);font-size:.8rem;text-decoration:none;transition:all .2s}
+.sb:hover{background:rgba(255,255,255,.1);color:white}
+.r{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.r.v{opacity:1;transform:none}
+.r.d1{transition-delay:.1s}
+.r.d2{transition-delay:.2s}
+
+/* ══════════════════════════════
+   MODAL OVERLAY (진단 앱)
+══════════════════════════════ */
+#diag-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  z-index:1000;
+  background:rgba(13,13,11,.6);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  animation:fadeIn .25s ease;
+}
+#diag-modal.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+#diag-sheet{
+  background:var(--bg);
+  width:100%;
+  max-width:680px;
+  max-height:92vh;
+  border-radius:24px 24px 0 0;
+  overflow-y:auto;
+  animation:slideUp .35s cubic-bezier(.32,.72,0,1);
+  position:relative;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.diag-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:var(--border);
+  margin:14px auto 0;
+}
+.diag-nav{
+  position:sticky;top:0;
+  background:rgba(249,249,246,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:10;
+}
+.diag-nav-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:var(--ink)}
+.diag-nav-mark{width:24px;height:24px;border-radius:5px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff}
+#diag-nav-step{font-size:.72rem;color:var(--muted)}
+.diag-close{width:30px;height:30px;border-radius:50%;background:var(--border);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+
+.diag-body{padding:28px 20px 60px}
+
+/* ── MVP 내부 스타일 (modal 안에서만) ── */
+.progress-wrap{margin-bottom:32px}
+.progress-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:7px}
+.progress-bar{height:3px;background:var(--border);border-radius:2px}
+.progress-fill{height:100%;background:var(--g);border-radius:2px;transition:width .4s ease}
+.step-dots{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s;display:inline-block}
+.sdot.done{background:var(--gm)}
+.sdot.active{background:var(--g);width:16px;border-radius:3px}
+.eyebrow{font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:10px}
+.step-title{font-family:var(--serif);font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.1;letter-spacing:-.5px;margin-bottom:8px}
+.step-title .g{color:var(--g)}
+.step-sub{font-size:.86rem;color:var(--muted);line-height:1.6;margin-bottom:24px;font-weight:300}
+.job-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:24px}
+.job-card{padding:13px 8px;border:1.5px solid var(--border);border-radius:12px;background:var(--white);cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.job-card.sel{border-color:var(--g);background:var(--gl)}
+.job-icon{font-size:1.4rem;margin-bottom:4px}
+.job-name{font-size:.68rem;font-weight:500;color:var(--ink)}
+.job-card.sel .job-name{color:var(--g);font-weight:600}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.mode-card{padding:20px 16px;border:1.5px solid var(--border);border-radius:16px;background:var(--white);cursor:pointer;text-align:center;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;position:relative;overflow:hidden}
+.mode-card.sel{border-color:var(--g);background:var(--gl)}
+.mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border);transition:background .2s}
+.mode-card.sel::before{background:var(--g)}
+.mode-icon{font-size:1.8rem;margin-bottom:8px}
+.mode-title{font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.mode-desc{font-size:.72rem;color:var(--muted);line-height:1.5;font-weight:300}
+.mode-badge{display:inline-block;margin-top:7px;padding:2px 8px;border-radius:5px;font-size:.62rem;font-weight:600}
+.badge-diag{background:#FFF7ED;color:#C2410C}
+.badge-new{background:var(--gl);color:var(--g)}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.tool-card{padding:11px 12px;border:1.5px solid var(--border);border-radius:11px;background:var(--white);cursor:pointer;display:flex;align-items:center;gap:9px;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.tool-card.sel{border-color:var(--g);background:var(--gl)}
+.tool-logo{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:var(--bg)}
+.tool-name{font-size:.76rem;font-weight:600;color:var(--ink)}
+.tool-price{font-size:.64rem;color:var(--muted)}
+.tool-chk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;margin-left:auto;transition:all .15s}
+.tool-card.sel .tool-chk{background:var(--g);border-color:var(--g);color:#fff}
+.sel-summary{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}
+.sel-tag{padding:3px 8px;border-radius:5px;background:var(--gl);border:1px solid var(--gm);color:var(--g);font-size:.65rem;font-weight:500}
+.budget-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:24px}
+.budget-btn{padding:13px 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--white);cursor:pointer;text-align:center;font-family:var(--sans);transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none;width:100%}
+.budget-btn.sel{border-color:var(--g);background:var(--gl)}
+.budget-amount{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--ink);margin-bottom:2px}
+.budget-btn.sel .budget-amount{color:var(--g)}
+.budget-sub{font-size:.65rem;color:var(--muted)}
+.btn-primary{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:.9rem;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-back{padding:10px 16px;border:1.5px solid var(--border);background:transparent;border-radius:8px;font-family:var(--sans);font-size:.78rem;color:var(--muted);cursor:pointer}
+.btn-row{display:flex;gap:9px;align-items:center}
+.btn-row .btn-primary{flex:1}
+.loading-wrap{text-align:center;padding:50px 0}
+.loading-orb{width:56px;height:56px;border-radius:50%;background:var(--gl);border:3px solid var(--gm);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;animation:breathe 2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.loading-title{font-family:var(--serif);font-size:1.2rem;margin-bottom:5px}
+.loading-sub{font-size:.8rem;color:var(--muted);margin-bottom:18px}
+.loading-steps{max-width:240px;margin:0 auto;display:flex;flex-direction:column;gap:5px}
+.lstep{padding:6px 11px;border-radius:6px;font-size:.72rem;color:var(--muted);background:var(--white);border:1px solid var(--border);text-align:left;display:flex;align-items:center;gap:6px;transition:all .3s}
+.lstep.active{border-color:var(--gm);background:var(--gl);color:var(--g);font-weight:500}
+.result-hero{background:var(--ink);border-radius:14px;padding:22px;margin-bottom:14px}
+.result-tag{display:inline-block;background:rgba(27,107,68,.2);border:1px solid rgba(27,107,68,.4);color:var(--gm);font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:5px;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+.saving-num{font-family:var(--serif);font-size:clamp(2rem,6vw,3rem);color:#fff;line-height:1;margin-bottom:3px}
+.saving-num span{color:var(--gm)}
+.saving-label{font-size:.76rem;color:rgba(255,255,255,.45);margin-bottom:16px;font-weight:300}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.rstat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:9px 10px;text-align:center}
+.rstat-n{font-family:var(--serif);font-size:1.3rem;color:#fff;line-height:1;margin-bottom:2px}
+.rstat-l{font-size:.58rem;color:rgba(255,255,255,.35)}
+.section-title{font-size:.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:20px 0 8px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.ai-box{background:var(--gl);border:1.5px solid var(--gm);border-radius:12px;padding:16px;margin-bottom:12px}
+.ai-box-head{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.ai-badge{font-size:.58rem;font-weight:700;background:var(--g);color:#fff;padding:2px 6px;border-radius:4px;letter-spacing:.5px}
+.ai-text{font-size:.8rem;color:var(--ink2);line-height:1.7;font-weight:300}
+.overlap-card{background:var(--white);border:1.5px solid #FFE4E4;border-radius:11px;padding:13px 14px;margin-bottom:7px;display:flex;gap:10px}
+.overlap-icon{width:30px;height:30px;border-radius:6px;background:#FFF0F0;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.overlap-title{font-size:.78rem;font-weight:600;margin-bottom:2px}
+.overlap-desc{font-size:.7rem;color:var(--muted);line-height:1.5;font-weight:300}
+.overlap-badge{display:inline-block;margin-top:4px;padding:2px 6px;border-radius:4px;background:#FFF0F0;color:#C0392B;font-size:.62rem;font-weight:600}
+.rec-card{background:var(--white);border:1.5px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start}
+.rec-card.keep{border-color:var(--gm)}
+.rec-ico{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.rec-ico.keep{background:var(--gl)}
+.rec-ico.cancel{background:#FFF0F0}
+.rec-ico.new{background:#EEF2FF}
+.rec-body{flex:1;min-width:0}
+.rec-title-row{font-size:.78rem;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.rec-desc{font-size:.7rem;color:var(--muted);line-height:1.5;font-weight:300}
+.rec-price{font-family:var(--serif);font-size:.9rem;color:var(--g);white-space:nowrap;flex-shrink:0;padding-top:1px}
+.badge{padding:2px 6px;border-radius:4px;font-size:.6rem;font-weight:700}
+.badge-keep{background:var(--gl);color:var(--g)}
+.badge-cancel{background:#FFF0F0;color:#C0392B}
+.badge-new{background:#EEF2FF;color:#4F46E5}
+.stack-hero{background:var(--ink);border-radius:14px;padding:22px;margin-bottom:14px}
+.stack-hero-tag{display:inline-block;background:rgba(27,107,68,.2);border:1px solid rgba(27,107,68,.4);color:var(--gm);font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:5px;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+.stack-hero-title{font-family:var(--serif);font-size:clamp(1.5rem,5vw,2.2rem);color:#fff;line-height:1.15;margin-bottom:5px}
+.stack-hero-title span{color:var(--gm)}
+.stack-hero-sub{font-size:.76rem;color:rgba(255,255,255,.45);font-weight:300;margin-bottom:16px}
+.stack-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sstat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:9px 10px;text-align:center}
+.sstat-n{font-family:var(--serif);font-size:1.3rem;color:#fff;line-height:1;margin-bottom:2px}
+.sstat-l{font-size:.58rem;color:rgba(255,255,255,.35)}
+.tool-rec-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start}
+.tool-rec-card.core{border-color:var(--gm);border-width:2px}
+.tool-rec-num{width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.tool-rec-card.optional .tool-rec-num{background:var(--border);color:var(--muted)}
+.tool-rec-body{flex:1}
+.tool-rec-name{font-size:.86rem;font-weight:700;color:var(--ink);margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tool-rec-why{font-size:.74rem;color:var(--muted);line-height:1.5;font-weight:300;margin-bottom:5px}
+.tool-rec-tip{font-size:.68rem;color:var(--g);font-weight:500;background:var(--gl);padding:3px 8px;border-radius:5px;display:inline-block}
+.tool-rec-price{font-family:var(--serif);font-size:.95rem;color:var(--g);white-space:nowrap;flex-shrink:0;padding-top:2px}
+.core-badge{background:var(--g);color:#fff;padding:2px 6px;border-radius:4px;font-size:.58rem;font-weight:700}
+.opt-badge{background:var(--border);color:var(--muted);padding:2px 6px;border-radius:4px;font-size:.58rem;font-weight:700}
+.tip-box{background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:11px;padding:14px 16px;margin-bottom:9px}
+.tip-box-head{font-size:.7rem;font-weight:700;color:#92400E;margin-bottom:7px}
+.tip-item{font-size:.74rem;color:#78350F;line-height:1.6;margin-bottom:3px;font-weight:300;padding-left:12px;position:relative}
+.tip-item::before{content:'→';position:absolute;left:0;color:#D97706;font-weight:600}
+.cta-box{background:var(--g);border-radius:12px;padding:20px;text-align:center;margin-top:18px}
+.cta-title{font-family:var(--serif);font-size:1.2rem;color:#fff;margin-bottom:4px}
+.cta-sub{font-size:.74rem;color:rgba(255,255,255,.6);margin-bottom:14px}
+.cta-form{display:flex;gap:6px;max-width:360px;margin:0 auto}
+.cta-input{flex:1;padding:10px 12px;border:1.5px solid rgba(255,255,255,.22);border-radius:7px;background:rgba(255,255,255,.1);font-family:var(--sans);font-size:.8rem;color:#fff;outline:none;min-width:0}
+.cta-input::placeholder{color:rgba(255,255,255,.35)}
+.cta-btn{padding:10px 14px;background:#fff;color:var(--g);border:none;border-radius:7px;font-family:var(--sans);font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.cta-ok{color:rgba(255,255,255,.8);font-size:.76rem;padding:7px 0}
+.restart-btn{display:block;margin:12px auto 0;background:none;border:none;color:var(--muted);font-size:.74rem;cursor:pointer;text-decoration:underline;font-family:var(--sans)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .nav-link{display:none}
+  .sec{padding:68px 20px}
+  .hero{padding:96px 20px 60px}
+  .pgrid,.sgrid,.tgrid{grid-template-columns:1fr}
+  .sc+.sc{border-left:none;border-top:1px solid rgba(255,255,255,.05)}
+  .plgrid{grid-template-columns:1fr;max-width:400px}
+  .stats{gap:18px}
+  .wlform{flex-direction:column}
+  .ft{flex-direction:column;gap:36px}
+  .fls{gap:24px;flex-wrap:wrap}
+  .strip{gap:18px;padding:18px 20px}
+  .sdiv,.pdv{display:none}
+  .tool-grid{grid-template-columns:1fr}
+  .job-grid{grid-template-columns:repeat(2,1fr)}
+  .mode-grid{grid-template-columns:1fr}
+  .cta-form{flex-direction:column}
+}
+</style>
+
+<!-- ── 다국어 데이터 ── -->
+<script>
+const T={
+  ko:{
+    nav_how:"작동 방식",nav_pricing:"요금제",nav_cta:"무료 진단 시작 →",
+    badge:"얼리버드 모집 중 · 무료로 시작하세요",
+    h1:"AI 구독,<br><span class='g'>얼마나</span> 낭비하고<br><em>있나요?</em>",
+    hero_sub:"Smarter AI. Lighter Bill.",
+    hero_desc:"평균 직장인은 매달 <strong>$89</strong>를 AI 툴에 씁니다.<br>하지만 실제 필요한 건 <strong>$57</strong>면 충분합니다.<br>AI Diet가 중복을 찾고, 최적 조합을 추천합니다.",
+    diag_btn:"🔍 지금 무료 진단하기",
+    diag_sub:"직업 선택 → 구독 입력 → 결과 · 평균 3분 소요",
+    stat1_l:"평균 비용 절감",stat2_l:"AI 툴 분석",stat3_l:"연간 평균 절약액",stat4_l:"직업군별 맞춤 추천",
+    prob_ey:"문제 인식",prob_h2:"AI 구독, 왜<br><span class='g'>이렇게 복잡</span>해졌을까요",prob_sub:"좋다는 AI는 다 써보고 싶은데, 청구서를 보면 한숨이 나옵니다.",
+    p1t:"중복 구독의 함정",p1d:"ChatGPT로 카피를 쓰는데 Jasper도 구독 중. 기능이 70% 겹치는 줄 몰랐습니다. 매달 $39 낭비 중입니다.",p1h:"평균 2.3개 중복 발견",
+    p2t:"과다 플랜의 낭비",p2d:"월 200장 이상 쓸 것 같아서 Midjourney Pro로 올렸는데, 실제 사용은 50장도 안 됩니다. 차이는 $40.",p2h:"43%가 상위 플랜 불필요",
+    p3t:"더 나은 대안 모름",p3d:"AI 시장은 매달 바뀝니다. 6개월 전 선택한 조합이 지금은 최적이 아닐 수 있어요.",p3h:"월평균 12개 신규 AI 출시",
+    sol_ey:"작동 방식",sol_h2:"3단계로 <span style='color:var(--gm)'>완성</span>되는<br>AI 최적화",sol_sub:"복잡한 설정 없이, 5분이면 충분합니다.",
+    s1t:"현재 상황 진단",s1d:"직업을 선택하고 현재 쓰는 AI 툴을 알려주세요. 중복 기능과 낭비 항목을 정확하게 찾아냅니다.",s1r:"📊 평균 2.3개 중복 발견",
+    s2t:"최적 조합 추천",s2d:"직업과 예산에 딱 맞는 조합을 제안합니다. AI 처음이라면 입문 스택도 추천해드려요.",s2r:"💡 직업별 12가지 맞춤 추천",
+    s3t:"절약 시작",s3d:"추천 조합으로 전환하면 즉시 절약이 시작됩니다. Pro에서는 가격 변동도 자동으로 알려드립니다.",s3r:"💰 평균 $32/월 절약",
+    sol_cta:"지금 바로 진단해보기 →",
+    pr1:"<strong>200+</strong> AI 툴 실시간 가격 추적",pr2:"<strong>개인정보 안전</strong> · 카드 정보 저장 안 함",pr3:"어필리에이트 공개 원칙 · <strong>투명한 추천</strong>",pr4:"<strong>한국어</strong> 완전 지원",
+    testi_ey:"베타 유저 후기",testi_h2:"직접 써본 <span class='g'>사람들의 말</span>",testi_sub:"얼리 베타 테스터 50인의 실제 경험입니다.",
+    t1q:"\"Jasper AI를 쓰고 있었는데, ChatGPT랑 70% 기능이 겹친다는 걸 AI Diet로 처음 알았어요. 바로 해지했습니다.\"",t1n:"이지현",t1r:"마케터 · 스타트업 재직",t1s:"💚 월 $39 절약 중",
+    t2q:"\"AI 처음 쓰는데 막막했어요. 직업 입력하니까 딱 맞는 조합이 바로 나왔어요. 진짜 신기했어요.\"",t2n:"박준혁",t2r:"유튜버 · 구독자 5만",t2s:"💚 월 $35로 시작",
+    t3q:"\"강의안 만들 때 쓰는 AI가 4개였는데 2개로 줄였어요. 오히려 더 효율적이고 월 $44 아끼고 있습니다.\"",t3n:"김수진",t3r:"대학 강사 · 온라인 교육",t3s:"💚 월 $44 절약 중",
+    price_ey:"요금제",price_h2:"부담 없이 <span class='g'>시작하세요</span>",price_sub:"무료로 시작하고, 필요할 때 업그레이드. 어필리에이트 수익으로 운영되어 무료 플랜도 광고 없이 유지됩니다.",
+    free_period:"평생 무료 · 신용카드 불필요",pro_period:"/ 월 · 언제든 취소 가능",
+    f1:"AI 구독 진단 1회",f2:"직업별 맞춤 조합 추천",f3:"중복 구독 감지",f4:"절감액 시각화",f5:"가격 모니터링 알림",f6:"무제한 재진단",f7:"월간 절약 리포트",
+    pf1:"Free의 모든 기능",pf2:"<strong>무제한 재진단</strong>",pf3:"AI 가격 변동 실시간 알림",pf4:"신규 AI 툴 주간 추천",pf5:"월간 절약 리포트",pf6:"프로모션 · 할인코드 알림",pf7:"우선 고객 지원",
+    free_btn:"무료로 시작하기",pro_btn:"얼리버드 등록하기 →",
+    price_note:"* AI Diet는 추천 서비스를 통해 어필리에이트 커미션을 받을 수 있습니다. 커미션 여부가 추천 순위에 영향을 미치지 않으며, 항상 사용자에게 최적인 조합을 우선합니다.",
+    faq_ey:"자주 묻는 질문",faq_h2:"궁금한 점이 있으신가요",
+    faq:[["AI Diet는 어떻게 수익을 내나요?","추천 서비스를 통해 어필리에이트 커미션을 받습니다. 커미션 여부가 추천 순위에 영향을 미치지 않습니다. Pro 구독($4.99/월)도 수익의 일부입니다."],["현재 AI 구독을 어떻게 감지하나요?","현재는 사용자가 직접 입력하는 방식입니다. 드롭다운에서 사용 중인 AI 툴을 선택하면 됩니다. 향후 이메일 연동으로 자동 감지 기능을 추가할 예정입니다."],["추천 조합이 제 직업에 실제로 맞나요?","12개 직업군별로 최적화된 추천 엔진을 사용합니다. 마케터, 개발자, 교육자, 크리에이터 등 직업별 실제 사용 패턴 데이터 기반으로 제공합니다."],["Free 플랜에서도 진단을 받을 수 있나요?","네, Free 플랜에서도 AI 구독 진단 1회, 직업별 맞춤 조합 추천, 중복 감지, 절감액 시각화까지 모두 무료로 이용 가능합니다. 광고도 없습니다."],["언제 정식 출시되나요?","2026년 내 정식 출시를 목표로 하고 있습니다. 얼리버드로 등록하시면 오픈 시 가장 먼저 알림을 받고, Pro 플랜 첫 달 무료 혜택도 드릴 예정입니다."]],
+    wl_h2:"AI 낭비를 멈출<br><em>준비가 됐나요?</em>",wl_sub:"얼리버드 등록 시 Pro 플랜 첫 달 무료 · 오픈 시 즉시 알림",wl_placeholder:"이메일 주소 입력",wl_btn:"등록하기 →",wl_note:"이미 <strong style='color:rgba(255,255,255,.75)'>127명</strong>이 대기 중입니다",
+    ft_service:"서비스",ft_company:"회사",ft_follow:"Follow",ft_s1:"AI 진단",ft_s2:"조합 추천",ft_s3:"요금제",ft_s4:"블로그",ft_c1:"소개",ft_c2:"이용약관",ft_c3:"개인정보처리방침",ft_c4:"문의",ft_f1:"Instagram",ft_f2:"LinkedIn",ft_f3:"X (Twitter)",ft_f4:"뉴스레터",
+    copy:"© 2025 AI Diet. All rights reserved."
+  },
+  en:{
+    nav_how:"How it works",nav_pricing:"Pricing",nav_cta:"Free Diagnosis →",
+    badge:"Early Access — Start for free",
+    h1:"Are you <em>wasting</em><br>money on<br><span class='g'>AI subscriptions?</span>",
+    hero_sub:"Smarter AI. Lighter Bill.",
+    hero_desc:"The average professional spends <strong>$89/month</strong> on AI tools.<br>But <strong>$57</strong> is all you actually need.<br>AI Diet finds the overlaps and recommends your perfect stack.",
+    diag_btn:"🔍 Start Free Diagnosis",
+    diag_sub:"4 steps · Takes ~3 min · No credit card",
+    stat1_l:"average cost reduction",stat2_l:"AI tools analyzed",stat3_l:"avg. annual savings",stat4_l:"job-specific stacks",
+    prob_ey:"The Problem",prob_h2:"Why has AI<br>become so <span class='g'>expensive?</span>",prob_sub:"You want to try every promising AI tool — then the bill arrives.",
+    p1t:"The duplicate trap",p1d:"You use ChatGPT for copywriting and also subscribe to Jasper. 70% feature overlap you never noticed. That's $39 wasted every month.",p1h:"Avg. 2.3 duplicates found",
+    p2t:"Overpaying for plans",p2d:"You upgraded to Midjourney Pro expecting heavy use — but you're generating fewer than 50 images a month. The difference? $40.",p2h:"43% don't need their plan tier",
+    p3t:"Missing better options",p3d:"The AI market changes every month. The stack you picked 6 months ago may no longer be optimal.",p3h:"Avg. 12 new AI tools launch/month",
+    sol_ey:"How It Works",sol_h2:"AI optimization<br><span style='color:var(--gm)'>in 3 steps</span>",sol_sub:"No complex setup. Just 5 minutes.",
+    s1t:"Diagnose your stack",s1d:"Select your job role and list your current AI tools. We'll pinpoint exactly where your money is being wasted.",s1r:"📊 Avg. 2.3 duplicates detected",
+    s2t:"Get your perfect stack",s2d:"We match your job and budget to the optimal combination. New to AI? We'll recommend a starter stack.",s2r:"💡 12 job-specific recommendations",
+    s3t:"Start saving",s3d:"Switch to your recommended stack and savings start immediately. Pro users get automatic alerts when prices change.",s3r:"💰 Avg. $32/month saved",
+    sol_cta:"Try it now →",
+    pr1:"<strong>200+</strong> AI tools tracked in real-time",pr2:"<strong>Privacy first</strong> · No card info stored",pr3:"Affiliate disclosure · <strong>Always transparent</strong>",pr4:"<strong>Global</strong> · English & Korean",
+    testi_ey:"Beta User Reviews",testi_h2:"What real users <span class='g'>are saying</span>",testi_sub:"Feedback from our 50 early beta testers.",
+    t1q:"\"I had Jasper and ChatGPT running simultaneously. AI Diet showed me 70% feature overlap. Canceled Jasper the same day.\"",t1n:"Ji-hyun Lee",t1r:"Marketing Manager · Startup",t1s:"💚 Saving $39/month",
+    t2q:"\"I was totally lost on where to start with AI. I picked my job role and instantly got a stack that made sense. Mind blown.\"",t2n:"Jun-hyuk Park",t2r:"YouTuber · 50K subscribers",t2s:"💚 Started at $35/month",
+    t3q:"\"I was using 4 AI tools to build lesson plans. Cut it to 2. It's actually more efficient — and I'm saving $44 a month.\"",t3n:"Su-jin Kim",t3r:"University Instructor · EdTech",t3s:"💚 Saving $44/month",
+    price_ey:"Pricing",price_h2:"Start without <span class='g'>the risk</span>",price_sub:"Start free and upgrade when you're ready. Funded by affiliate revenue — so even the free plan stays ad-free.",
+    free_period:"Free forever · No credit card",pro_period:"/ month · Cancel anytime",
+    f1:"1 AI subscription audit",f2:"Job-specific stack recommendations",f3:"Duplicate detection",f4:"Savings visualization",f5:"Price monitoring alerts",f6:"Unlimited re-audits",f7:"Monthly savings reports",
+    pf1:"Everything in Free",pf2:"<strong>Unlimited re-audits</strong>",pf3:"Real-time AI price change alerts",pf4:"Weekly new tool recommendations",pf5:"Monthly savings report",pf6:"Promo & discount code alerts",pf7:"Priority support",
+    free_btn:"Get started free",pro_btn:"Join early access →",
+    price_note:"* AI Diet may earn affiliate commissions when you sign up through our recommendations. Commission status never affects ranking — we always recommend what's best for you.",
+    faq_ey:"FAQ",faq_h2:"Got questions?",
+    faq:[["How does AI Diet make money?","We earn affiliate commissions when users sign up for tools through our recommendations. Whether a commission exists never influences our rankings. Pro subscriptions ($4.99/month) are also part of our revenue."],["How do you detect my current subscriptions?","Currently you enter them manually by selecting from a dropdown. We're building email integration for automatic detection in a future update."],["Are the recommendations actually tailored to my job?","Yes — we use a recommendation engine optimized for 12 job categories. Marketers, developers, educators, and creators each get stacks based on real usage patterns."],["Can I get a full audit on the Free plan?","Absolutely. The free plan includes one full AI subscription audit, job-specific stack recommendations, duplicate detection, and savings visualization — all ad-free."],["When does AI Diet officially launch?","We're targeting launch in 2026. Early access members will be notified first and will receive one free month of Pro at launch."]],
+    wl_h2:"Ready to stop<br><em>overpaying for AI?</em>",wl_sub:"Early access members get Pro free for the first month",wl_placeholder:"Enter your email",wl_btn:"Join the waitlist →",wl_note:"<strong style='color:rgba(255,255,255,.75)'>127 people</strong> already waiting",
+    ft_service:"Product",ft_company:"Company",ft_follow:"Follow",ft_s1:"AI Audit",ft_s2:"Stack Builder",ft_s3:"Pricing",ft_s4:"Blog",ft_c1:"About",ft_c2:"Terms of Service",ft_c3:"Privacy Policy",ft_c4:"Contact",ft_f1:"Instagram",ft_f2:"LinkedIn",ft_f3:"X (Twitter)",ft_f4:"Newsletter",
+    copy:"© 2025 AI Diet. All rights reserved."
+  }
+};
+let lang='ko';
+function setLang(l){
+  lang=l;const t=T[l];
+  document.documentElement.lang=l;
+  document.getElementById('nav-how').textContent=t.nav_how;
+  document.getElementById('nav-pricing').textContent=t.nav_pricing;
+  document.getElementById('nav-cta-btn').textContent=t.nav_cta;
+  document.getElementById('badge-text').textContent=t.badge;
+  document.getElementById('hero-h1').innerHTML=t.h1;
+  document.getElementById('hero-sub').textContent=t.hero_sub;
+  document.getElementById('hero-desc').innerHTML=t.hero_desc;
+  document.getElementById('hero-diag-btn').textContent=t.diag_btn;
+  document.getElementById('hero-diag-sub').textContent=t.diag_sub;
+  ['1','2','3','4'].forEach(i=>document.getElementById('stat'+i+'-l').textContent=t['stat'+i+'_l']);
+  document.getElementById('prob-ey').textContent=t.prob_ey;
+  document.getElementById('prob-h2').innerHTML=t.prob_h2;
+  document.getElementById('prob-sub').textContent=t.prob_sub;
+  ['1','2','3'].forEach(i=>{document.getElementById('p'+i+'t').textContent=t['p'+i+'t'];document.getElementById('p'+i+'d').textContent=t['p'+i+'d'];document.getElementById('p'+i+'h').textContent=t['p'+i+'h'];});
+  document.getElementById('sol-ey').textContent=t.sol_ey;
+  document.getElementById('sol-h2').innerHTML=t.sol_h2;
+  document.getElementById('sol-sub').textContent=t.sol_sub;
+  ['1','2','3'].forEach(i=>{document.getElementById('s'+i+'t').textContent=t['s'+i+'t'];document.getElementById('s'+i+'d').textContent=t['s'+i+'d'];document.getElementById('s'+i+'r').textContent=t['s'+i+'r'];});
+  document.getElementById('sol-cta-btn').textContent=t.sol_cta;
+  ['1','2','3','4'].forEach(i=>document.getElementById('pr'+i).innerHTML=t['pr'+i]);
+  document.getElementById('testi-ey').textContent=t.testi_ey;
+  document.getElementById('testi-h2').innerHTML=t.testi_h2;
+  document.getElementById('testi-sub').textContent=t.testi_sub;
+  ['1','2','3'].forEach(i=>{document.getElementById('t'+i+'q').textContent=t['t'+i+'q'];document.getElementById('t'+i+'n').textContent=t['t'+i+'n'];document.getElementById('t'+i+'r').textContent=t['t'+i+'r'];document.getElementById('t'+i+'s').textContent=t['t'+i+'s'];});
+  document.getElementById('price-ey').textContent=t.price_ey;
+  document.getElementById('price-h2').innerHTML=t.price_h2;
+  document.getElementById('price-sub').textContent=t.price_sub;
+  document.getElementById('free-period').textContent=t.free_period;
+  document.getElementById('pro-period').textContent=t.pro_period;
+  ['1','2','3','4','5','6','7'].forEach(i=>{const fe=document.getElementById('f'+i);const pfe=document.getElementById('pf'+i);if(fe)fe.textContent=t['f'+i];if(pfe)pfe.innerHTML=t['pf'+i];});
+  document.getElementById('free-btn').textContent=t.free_btn;
+  document.getElementById('pro-btn').textContent=t.pro_btn;
+  document.getElementById('price-note').textContent=t.price_note;
+  document.getElementById('faq-ey').textContent=t.faq_ey;
+  document.getElementById('faq-h2').textContent=t.faq_h2;
+  document.querySelectorAll('.fi').forEach((el,i)=>{if(t.faq[i]){el.querySelector('.fq-text').textContent=t.faq[i][0];el.querySelector('.fa').textContent=t.faq[i][1];}});
+  document.getElementById('wl-h2').innerHTML=t.wl_h2;
+  document.getElementById('wl-sub').textContent=t.wl_sub;
+  document.getElementById('em2').placeholder=t.wl_placeholder;
+  document.getElementById('wl-btn').textContent=t.wl_btn;
+  document.getElementById('wl-note').innerHTML=t.wl_note;
+  ['service','company','follow'].forEach(k=>document.getElementById('ft-'+k).textContent=t['ft_'+k]);
+  ['1','2','3','4'].forEach(i=>{document.getElementById('fts'+i).textContent=t['ft_s'+i];document.getElementById('ftc'+i).textContent=t['ft_c'+i];document.getElementById('ftf'+i).textContent=t['ft_f'+i];});
+  document.getElementById('copy').textContent=t.copy;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
+}
+</script>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo"><div class="nav-mark">AI</div>AI Diet</a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="ko" onclick="setLang('ko')">🇰🇷 KR</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">🇺🇸 EN</button>
+    </div>
+    <a href="#how" class="nav-link" id="nav-how">작동 방식</a>
+    <a href="#pricing" class="nav-link" id="nav-pricing">요금제</a>
+    <button class="nav-cta" id="nav-cta-btn" onclick="openDiag()">무료 진단 시작 →</button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span><span id="badge-text">얼리버드 모집 중 · 무료로 시작하세요</span></div>
+    <h1 id="hero-h1">AI 구독,<br><span class="g">얼마나</span> 낭비하고<br><em>있나요?</em></h1>
+    <p class="hero-sub" id="hero-sub">Smarter AI. Lighter Bill.</p>
+    <p class="hero-desc" id="hero-desc">평균 직장인은 매달 <strong>$89</strong>를 AI 툴에 씁니다.<br>하지만 실제 필요한 건 <strong>$57</strong>면 충분합니다.<br>AI Diet가 중복을 찾고, 최적 조합을 추천합니다.</p>
+    <div class="hero-cta-wrap">
+      <button id="hero-diag-btn" class="hero-diag-btn" onclick="openDiag()">🔍 지금 무료 진단하기</button>
+      <p id="hero-diag-sub" class="hero-diag-sub">5분이면 충분 · 신용카드 불필요 · 즉시 결과 확인</p>
+    </div>
+    <div class="stats">
+      <div><div class="stat-n">36%</div><div class="stat-l" id="stat1-l">평균 비용 절감</div></div>
+      <div class="sdiv"></div>
+      <div><div class="stat-n">200+</div><div class="stat-l" id="stat2-l">AI 툴 분석</div></div>
+      <div class="sdiv"></div>
+      <div><div class="stat-n">$288</div><div class="stat-l" id="stat3-l">연간 평균 절약액</div></div>
+      <div class="sdiv"></div>
+      <div><div class="stat-n">12</div><div class="stat-l" id="stat4-l">직업군별 맞춤 추천</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROBLEM ══ -->
+<section class="sec">
+  <div class="si">
+    <div class="ey r" id="prob-ey">문제 인식</div>
+    <h2 class="r" id="prob-h2">AI 구독, 왜<br><span class="g">이렇게 복잡</span>해졌을까요</h2>
+    <p class="sub r" id="prob-sub">좋다는 AI는 다 써보고 싶은데, 청구서를 보면 한숨이 나옵니다.</p>
+    <div class="pgrid">
+      <div class="pc r"><div class="pn">01</div><div class="pt" id="p1t">중복 구독의 함정</div><div class="pd" id="p1d">ChatGPT로 카피를 쓰는데 Jasper도 구독 중. 기능이 70% 겹치는 줄 몰랐습니다. 매달 $39 낭비 중입니다.</div><span class="ph" id="p1h">평균 2.3개 중복 발견</span></div>
+      <div class="pc r d1"><div class="pn">02</div><div class="pt" id="p2t">과다 플랜의 낭비</div><div class="pd" id="p2d">월 200장 이상 쓸 것 같아서 Midjourney Pro로 올렸는데, 실제 사용은 50장도 안 됩니다. 차이는 $40.</div><span class="ph" id="p2h">43%가 상위 플랜 불필요</span></div>
+      <div class="pc r d2"><div class="pn">03</div><div class="pt" id="p3t">더 나은 대안 모름</div><div class="pd" id="p3d">AI 시장은 매달 바뀝니다. 6개월 전 선택한 조합이 지금은 최적이 아닐 수 있어요.</div><span class="ph" id="p3h">월평균 12개 신규 AI 출시</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOLUTION ══ -->
+<section class="sec dark" id="how">
+  <div class="si">
+    <div class="ey r" id="sol-ey" style="color:var(--gm)">작동 방식</div>
+    <h2 class="r" id="sol-h2">3단계로 <span style="color:var(--gm)">완성</span>되는<br>AI 최적화</h2>
+    <p class="sub r" id="sol-sub">복잡한 설정 없이, 5분이면 충분합니다.</p>
+    <div class="sgrid">
+      <div class="sc r"><span class="sn">STEP 01</span><span class="si2">🔍</span><div class="st" id="s1t">현재 상황 진단</div><div class="sd" id="s1d">직업을 선택하고 현재 쓰는 AI 툴을 알려주세요.</div><div class="sr" id="s1r">📊 평균 2.3개 중복 발견</div></div>
+      <div class="sc r d1"><span class="sn">STEP 02</span><span class="si2">⚡</span><div class="st" id="s2t">최적 조합 추천</div><div class="sd" id="s2d">직업과 예산에 딱 맞는 조합을 실시간으로 제안합니다.</div><div class="sr" id="s2r">💡 직업별 12가지 맞춤 추천</div></div>
+      <div class="sc r d2"><span class="sn">STEP 03</span><span class="si2">💚</span><div class="st" id="s3t">절약 시작</div><div class="sd" id="s3d">추천 조합으로 전환하면 즉시 절약이 시작됩니다.</div><div class="sr" id="s3r">💰 평균 $32/월 절약</div></div>
+    </div>
+    <div class="sol-cta r">
+      <button id="sol-cta-btn" class="sol-cta-btn" onclick="openDiag()">지금 바로 진단해보기 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROOF ══ -->
+<div class="strip">
+  <div class="pi">🏆 <span id="pr1"><strong>200+</strong> AI 툴 실시간 가격 추적</span></div>
+  <div class="pdv"></div>
+  <div class="pi">🔒 <span id="pr2"><strong>개인정보 안전</strong> · 카드 정보 저장 안 함</span></div>
+  <div class="pdv"></div>
+  <div class="pi">✦ <span id="pr3">어필리에이트 공개 원칙 · <strong>투명한 추천</strong></span></div>
+  <div class="pdv"></div>
+  <div class="pi">🌍 <span id="pr4"><strong>한국어</strong> 완전 지원</span></div>
+</div>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="sec">
+  <div class="si">
+    <div class="ey r" id="testi-ey">베타 유저 후기</div>
+    <h2 class="r" id="testi-h2">직접 써본 <span class="g">사람들의 말</span></h2>
+    <p class="sub r" id="testi-sub">얼리 베타 테스터 50인의 실제 경험입니다.</p>
+    <div class="tgrid">
+      <div class="tc r"><div class="ts">★★★★★</div><div class="tq" id="t1q">"Jasper AI를 쓰고 있었는데, ChatGPT랑 70% 기능이 겹친다는 걸 AI Diet로 처음 알았어요. 바로 해지했습니다."</div><div class="ta"><div class="av">📢</div><div><div class="an" id="t1n">이지현</div><div class="ar" id="t1r">마케터 · 스타트업 재직</div></div></div><div class="tsav" id="t1s">💚 월 $39 절약 중</div></div>
+      <div class="tc r d1"><div class="ts">★★★★★</div><div class="tq" id="t2q">"AI 처음 쓰는데 막막했어요. 직업 입력하니까 딱 맞는 조합이 바로 나왔어요."</div><div class="ta"><div class="av">🎬</div><div><div class="an" id="t2n">박준혁</div><div class="ar" id="t2r">유튜버 · 구독자 5만</div></div></div><div class="tsav" id="t2s">💚 월 $35로 시작</div></div>
+      <div class="tc r d2"><div class="ts">★★★★☆</div><div class="tq" id="t3q">"강의안 만들 때 쓰는 AI가 4개였는데 2개로 줄였어요. 오히려 더 효율적이고 월 $44 아끼고 있습니다."</div><div class="ta"><div class="av">📚</div><div><div class="an" id="t3n">김수진</div><div class="ar" id="t3r">대학 강사 · 온라인 교육</div></div></div><div class="tsav" id="t3s">💚 월 $44 절약 중</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section class="sec cream" id="pricing">
+  <div class="si">
+    <div class="ey r" id="price-ey">요금제</div>
+    <h2 class="r" id="price-h2">부담 없이 <span class="g">시작하세요</span></h2>
+    <p class="sub r" id="price-sub">무료로 시작하고, 필요할 때 업그레이드.</p>
+    <div class="plgrid r">
+      <div class="plc">
+        <div class="plbar"></div>
+        <div class="plbody">
+          <div class="pltype">Free</div>
+          <div class="plprice">$0</div>
+          <div class="plperiod" id="free-period">평생 무료 · 신용카드 불필요</div>
+          <hr class="pldiv">
+          <div class="plf"><span class="ck">✓</span> <span id="f1">AI 구독 진단 1회</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="f2">직업별 맞춤 조합 추천</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="f3">중복 구독 감지</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="f4">절감액 시각화</span></div>
+          <div class="plf"><span class="na">–</span> <span id="f5">가격 모니터링 알림</span></div>
+          <div class="plf"><span class="na">–</span> <span id="f6">무제한 재진단</span></div>
+          <div class="plf"><span class="na">–</span> <span id="f7">월간 절약 리포트</span></div>
+          <button class="plbtn" id="free-btn" onclick="openDiag()">무료로 시작하기</button>
+        </div>
+      </div>
+      <div class="plc feat">
+        <div class="plbadge">추천</div>
+        <div class="plbar"></div>
+        <div class="plbody">
+          <div class="pltype">Pro</div>
+          <div class="plprice">$4.99</div>
+          <div class="plperiod" id="pro-period">/ 월 · 언제든 취소 가능</div>
+          <hr class="pldiv">
+          <div class="plf"><span class="ck">✓</span> <span id="pf1">Free의 모든 기능</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf2"><strong>무제한 재진단</strong></span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf3">AI 가격 변동 실시간 알림</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf4">신규 AI 툴 주간 추천</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf5">월간 절약 리포트</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf6">프로모션 · 할인코드 알림</span></div>
+          <div class="plf"><span class="ck">✓</span> <span id="pf7">우선 고객 지원</span></div>
+          <button class="plbtn" id="pro-btn" onclick="openDiag()">얼리버드 등록하기 →</button>
+        </div>
+      </div>
+    </div>
+    <p class="r" id="price-note" style="margin-top:18px;font-size:.76rem;color:var(--muted);max-width:760px">* AI Diet는 추천 서비스를 통해 어필리에이트 커미션을 받을 수 있습니다. 커미션 여부가 추천 순위에 영향을 미치지 않습니다.</p>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section class="sec">
+  <div class="si">
+    <div class="ey r" id="faq-ey">자주 묻는 질문</div>
+    <h2 class="r" id="faq-h2">궁금한 점이 있으신가요</h2>
+    <div class="faq r">
+      <div class="fi" onclick="faqToggle(this)"><div class="fq"><span class="fq-text">AI Diet는 어떻게 수익을 내나요?</span><span class="ficon">+</span></div><div class="fa">추천 서비스를 통해 어필리에이트 커미션을 받습니다. 커미션 여부가 추천 순위에 영향을 미치지 않습니다.</div></div>
+      <div class="fi" onclick="faqToggle(this)"><div class="fq"><span class="fq-text">현재 AI 구독을 어떻게 감지하나요?</span><span class="ficon">+</span></div><div class="fa">현재는 사용자가 직접 입력하는 방식입니다. 향후 이메일 연동으로 자동 감지 기능을 추가할 예정입니다.</div></div>
+      <div class="fi" onclick="faqToggle(this)"><div class="fq"><span class="fq-text">추천 조합이 제 직업에 실제로 맞나요?</span><span class="ficon">+</span></div><div class="fa">12개 직업군별로 최적화된 추천 엔진을 사용합니다. 실제 사용 패턴 데이터 기반으로 제공합니다.</div></div>
+      <div class="fi" onclick="faqToggle(this)"><div class="fq"><span class="fq-text">Free 플랜에서도 진단을 받을 수 있나요?</span><span class="ficon">+</span></div><div class="fa">네, Free 플랜에서도 진단 1회, 조합 추천, 중복 감지, 절감액 시각화까지 모두 무료입니다. 광고도 없습니다.</div></div>
+      <div class="fi" onclick="faqToggle(this)"><div class="fq"><span class="fq-text">언제 정식 출시되나요?</span><span class="ficon">+</span></div><div class="fa">2026년 내 정식 출시를 목표로 합니다. 얼리버드 등록 시 Pro 플랜 첫 달 무료 혜택을 드릴 예정입니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WAITLIST ══ -->
+<section class="wl">
+  <div class="wli">
+    <h2 id="wl-h2">AI 낭비를 멈출<br><em>준비가 됐나요?</em></h2>
+    <p class="wlsub" id="wl-sub">얼리버드 등록 시 Pro 플랜 첫 달 무료 · 오픈 시 즉시 알림</p>
+    <div class="wlform" id="wf">
+      <input id="em2" class="wli2" type="email" placeholder="이메일 주소 입력">
+      <button id="wl-btn" class="wb" onclick="wlSub()">등록하기 →</button>
+    </div>
+    <div id="ok2" class="form-ok">✦ 완료! 오픈 시 가장 먼저 알려드릴게요 🌿</div>
+    <p class="wlnote" id="wl-note">이미 <strong style="color:rgba(255,255,255,.75)">127명</strong>이 대기 중입니다</p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="fi2">
+    <div class="ft">
+      <div class="fb">
+        <div class="logo"><div class="mk">AI</div><span class="nm">AI Diet</span></div>
+        <div class="tg">Smarter AI. Lighter Bill.</div>
+      </div>
+      <div class="fls">
+        <div class="fc"><h4 id="ft-service">서비스</h4><a href="#" id="fts1">AI 진단</a><a href="#" id="fts2">조합 추천</a><a href="#" id="fts3">요금제</a><a href="#" id="fts4">블로그</a></div>
+        <div class="fc"><h4 id="ft-company">회사</h4><a href="#" id="ftc1">소개</a><a href="#" id="ftc2">이용약관</a><a href="#" id="ftc3">개인정보처리방침</a><a href="#" id="ftc4">문의</a></div>
+        <div class="fc"><h4 id="ft-follow">Follow</h4><a href="#" id="ftf1">Instagram</a><a href="#" id="ftf2">LinkedIn</a><a href="#" id="ftf3">X (Twitter)</a><a href="#" id="ftf4">뉴스레터</a></div>
+      </div>
+    </div>
+    <div class="fb2">
+      <span class="copy" id="copy">© 2025 AI Diet. All rights reserved.</span>
+      <div class="sns"><a class="sb" href="#">𝕏</a><a class="sb" href="#">in</a><a class="sb" href="#">📸</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════
+     진단 앱 모달 (하단 시트)
+══════════════════════════════ -->
+<div id="diag-modal" onclick="handleModalClick(event)">
+  <div id="diag-sheet">
+    <div class="diag-handle"></div>
+    <div class="diag-nav">
+      <div class="diag-nav-logo"><div class="diag-nav-mark">AI</div>AI Diet</div>
+      <span id="diag-nav-step">직업 선택</span>
+      <button class="diag-close" onclick="closeDiag()">✕</button>
+    </div>
+    <div class="diag-body" id="diag-main"></div>
+  </div>
+</div>
+
+<!-- ══ 랜딩 스크립트 ══ -->
+<script>
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:0.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+function faqToggle(el){const open=el.classList.contains('open');document.querySelectorAll('.fi.open').forEach(f=>f.classList.remove('open'));if(!open)el.classList.add('open');}
+function wlSub(){const inp=document.getElementById('em2');const ok=document.getElementById('ok2');const frm=document.getElementById('wf');if(!inp.value.trim()||!inp.value.includes('@')){inp.style.borderColor='#EF4444';setTimeout(()=>inp.style.borderColor='',2000);return;}frm.style.display='none';ok.style.display='flex';}
+window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>50?'0 2px 20px rgba(0,0,0,.06)':'none';});
+const browserLang=navigator.language||navigator.userLanguage;
+if(!browserLang.startsWith('ko'))setLang('en');
+
+// 모달 열기/닫기
+function openDiag(){
+  document.getElementById('diag-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  diagRender();
+}
+function closeDiag(){
+  document.getElementById('diag-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handleModalClick(e){
+  if(e.target===document.getElementById('diag-modal'))closeDiag();
+}
+</script>
+
+<!-- ══ 진단 앱 스크립트 ══ -->
+<script>
+const JOBS=[
+  {id:"marketer",icon:"📢",name:"마케터"},
+  {id:"developer",icon:"💻",name:"개발자"},
+  {id:"designer",icon:"🎨",name:"디자이너"},
+  {id:"writer",icon:"✍️",name:"작가/카피라이터"},
+  {id:"youtuber",icon:"🎬",name:"유튜버/크리에이터"},
+  {id:"teacher",icon:"📚",name:"교육자/강사"},
+  {id:"startup",icon:"🚀",name:"스타트업 창업자"},
+  {id:"freelancer",icon:"💼",name:"프리랜서"},
+  {id:"researcher",icon:"🔬",name:"연구자"},
+  {id:"hr",icon:"👥",name:"HR/채용담당자"},
+  {id:"finance",icon:"📊",name:"금융/분석가"},
+  {id:"other",icon:"✦",name:"기타"},
+];
+const TOOLS=[
+  {id:"chatgpt",name:"ChatGPT Plus",price:20,priceLabel:"$20/월",icon:"🤖",url:"https://chat.openai.com/",desc:"가장 범용적인 AI. 글쓰기·요약·번역 모두 가능"},
+  {id:"claude",name:"Claude Pro",price:20,priceLabel:"$20/월",icon:"✦",url:"https://claude.ai/",desc:"긴 문서 분석·코드리뷰에 특히 강력"},
+  {id:"gemini",name:"Gemini Advanced",price:20,priceLabel:"$20/월",icon:"♊",url:"https://gemini.google.com/",desc:"구글 서비스와 통합, 실시간 검색 강점"},
+  {id:"copilot",name:"MS Copilot",price:30,priceLabel:"$30/월",icon:"🪟",url:"https://copilot.microsoft.com/",desc:"Word·Excel·Teams 등 MS 오피스 통합"},
+  {id:"perplexity",name:"Perplexity Pro",price:20,priceLabel:"$20/월",icon:"🔍",url:"https://www.perplexity.ai/",desc:"출처 포함 AI 검색. 리서치·팩트체크 최강"},
+  {id:"notion",name:"Notion AI",price:16,priceLabel:"$16/월",icon:"📝",url:"https://www.notion.so/",desc:"문서·DB·프로젝트 관리를 AI와 함께"},
+  {id:"jasper",name:"Jasper AI",price:49,priceLabel:"$49/월",icon:"🖊️",url:"https://www.jasper.ai/",desc:"마케팅 카피 특화 AI 작성 도구"},
+  {id:"copyai",name:"Copy.ai",price:49,priceLabel:"$49/월",icon:"📄",url:"https://www.copy.ai/",desc:"세일즈·마케팅 카피 자동 생성"},
+  {id:"writesonic",name:"Writesonic",price:19,priceLabel:"$19/월",icon:"⚡",url:"https://writesonic.com/",desc:"블로그·SNS 글쓰기 특화 AI"},
+  {id:"midjourney",name:"Midjourney",price:30,priceLabel:"$30/월",icon:"🖼️",url:"https://www.midjourney.com/",desc:"텍스트로 고퀄리티 이미지 생성"},
+  {id:"runway",name:"Runway ML",price:15,priceLabel:"$15/월",icon:"🎬",url:"https://runwayml.com/",desc:"이미지→영상 변환, AI 영상 편집"},
+  {id:"canva",name:"Canva Pro",price:15,priceLabel:"$15/월",icon:"🖌️",url:"https://www.canva.com/",desc:"누구나 쉽게 쓰는 AI 디자인 툴"},
+  {id:"grammarly",name:"Grammarly",price:30,priceLabel:"$30/월",icon:"📖",url:"https://www.grammarly.com/",desc:"영문 문법·톤·설득력 AI 교정"},
+  {id:"gamma",name:"Gamma",price:15,priceLabel:"$15/월",icon:"📊",url:"https://gamma.app/",desc:"텍스트 입력만으로 프레젠테이션 자동 완성"},
+];
+const BUDGETS=[
+  {id:"under30",label:"$30 이하",sub:"딱 하나만",max:30},
+  {id:"30to60",label:"$30–60",sub:"기본 세트",max:60},
+  {id:"60to100",label:"$60–100",sub:"풀 세트",max:100},
+  {id:"over100",label:"$100+",sub:"제한 없음",max:999},
+];
+const STARTER_STACKS={
+  marketer:{title:"마케터 입문 스택",intro:"콘텐츠 기획부터 카피라이팅, 디자인까지 마케터의 핵심 업무를 커버하는 조합입니다.",core:[{id:"chatgpt",why:"캠페인 기획, 카피 초안, 이메일 작성까지 마케터의 필수 AI",tip:"'마케터처럼 작성해줘' 프롬프트로 즉시 활용 가능"},{id:"canva",why:"SNS 콘텐츠, 광고 배너, 카드뉴스를 AI 도움으로 빠르게 제작",tip:"Magic Design 기능으로 아이디어만 넣으면 시안 자동 생성"}],optional:[{id:"notion",why:"캠페인 일정, 콘텐츠 캘린더, 보고서 관리를 AI와 함께",tip:"회의록을 붙여넣으면 자동으로 할일 목록 정리"},{id:"grammarly",why:"영문 카피 퀄리티 체크 및 톤 조정에 유용",tip:"영어 SNS 운영, 해외 마케팅 담당자에게 특히 추천"}],tips:["ChatGPT에게 '마케터 역할'을 부여하면 전문적인 카피 바로 생성","'경쟁사 분석 프레임워크로 정리해줘' 프롬프트 활용","Canva AI로 레퍼런스 이미지 스타일 그대로 재현 가능"]},
+  developer:{title:"개발자 입문 스택",intro:"코드 작성, 디버깅, 기술 문서 작성을 AI로 가속화하는 개발자 최적 조합입니다.",core:[{id:"claude",why:"긴 코드 컨텍스트 이해력이 뛰어나 복잡한 리팩토링과 코드리뷰에 최적",tip:"전체 파일을 붙여넣고 '이 코드 개선해줘' 바로 가능"},{id:"perplexity",why:"최신 라이브러리 문서, 스택오버플로우 검색을 AI가 요약해 제공",tip:"'React 19 새 기능 요약해줘' 같은 실시간 검색에 최고"}],optional:[{id:"chatgpt",why:"코드 외 문서 작성, 기술 블로그, PR 설명 작성에 활용",tip:"'주니어도 이해할 수 있게 설명해줘' 프롬프트 유용"},{id:"notion",why:"기술 문서, API 스펙, 위키 관리를 AI 자동화",tip:"회의 내용을 기술 스펙으로 자동 변환 가능"}],tips:["Claude에게 '시니어 개발자로서 코드리뷰해줘' 프롬프트 활용","에러 메시지를 그대로 붙여넣으면 원인과 해결책 즉시 제공","테스트 코드 자동 생성으로 커버리지 빠르게 확보"]},
+  designer:{title:"디자이너 입문 스택",intro:"아이디어 시각화, 레퍼런스 탐색, 콘텐츠 제작까지 디자이너의 창작 워크플로우 최적 조합.",core:[{id:"midjourney",why:"텍스트 프롬프트로 고퀄리티 컨셉 이미지, 무드보드 즉시 생성",tip:"'--style raw --ar 16:9' 파라미터로 깔끔한 레퍼런스 생성"},{id:"canva",why:"생성한 이미지를 바탕으로 최종 결과물, 프레젠테이션 빠르게 완성",tip:"Midjourney 이미지 + Canva 레이아웃 조합이 최강"}],optional:[{id:"chatgpt",why:"클라이언트 제안서, 디자인 콘셉트 설명 텍스트 작성에 활용",tip:"'브랜드 스토리를 감성적으로 써줘' 프롬프트 유용"},{id:"runway",why:"정적 이미지를 영상으로 변환, 모션 그래픽 빠르게 제작",tip:"포트폴리오 영상 제작에 특히 유용"}],tips:["Midjourney에서 Claude로 프롬프트 최적화 가능","레퍼런스 이미지를 Midjourney에 넣으면 스타일 그대로 재현","Canva 'Brand Kit'으로 클라이언트별 색상/폰트 프리셋 저장"]},
+  writer:{title:"작가/카피라이터 입문 스택",intro:"초안 작성, 편집, 문체 다듬기까지 글쓰기 전 과정을 AI로 가속화하는 조합입니다.",core:[{id:"chatgpt",why:"브레인스토밍, 구성 잡기, 초안 작성까지 글쓰기 전 과정 지원",tip:"'블로그 글 구성을 5개 섹션으로 잡아줘' 프롬프트로 시작"},{id:"grammarly",why:"문법 교정은 물론 톤, 명확성, 설득력까지 AI가 개선 제안",tip:"Premium의 'Rewrite' 기능으로 문장 퀄리티 즉시 업그레이드"}],optional:[{id:"notion",why:"아이디어 노트, 원고 관리, 출판 일정 통합 관리",tip:"AI 요약 기능으로 리서치 노트를 글 소재로 즉시 활용"},{id:"perplexity",why:"팩트 체크, 최신 통계, 레퍼런스 검색을 AI가 출처 포함해 제공",tip:"논픽션, 저널리즘 콘텐츠 작성 시 특히 유용"}],tips:["ChatGPT에게 '내 글체를 분석해서 비슷하게 써줘' 가능","초안은 AI, 퇴고는 본인이 하면 속도와 퀄리티 둘 다 잡힘","Grammarly + ChatGPT 조합이 영문 작업 시 최강"]},
+  youtuber:{title:"유튜버/크리에이터 입문 스택",intro:"기획부터 썸네일, 스크립트까지 영상 제작 전 과정을 AI로 효율화하는 조합.",core:[{id:"chatgpt",why:"영상 기획, 스크립트, 제목·설명·해시태그 일괄 생성",tip:"'조회수 높은 유튜브 제목 10개 만들어줘' 바로 활용"},{id:"canva",why:"썸네일, 채널 아트, 쇼츠 자막 카드를 빠르게 제작",tip:"유튜브 썸네일 템플릿 수백 개 + AI 텍스트 자동 배치"}],optional:[{id:"midjourney",why:"독창적인 썸네일 배경, 캐릭터, 콘셉트 이미지 생성",tip:"경쟁 채널과 차별화된 비주얼 스타일 구축에 유용"},{id:"runway",why:"영상 클립 편집, B-roll 생성, 자막 자동화",tip:"AI가 자동으로 하이라이트 구간 추출"}],tips:["ChatGPT로 한 달치 콘텐츠 캘린더 한번에 기획 가능","'내 채널 타겟은 20대 직장인' 컨텍스트를 항상 제공","썸네일 A/B 테스트 아이디어도 AI에게 물어보기"]},
+  teacher:{title:"교육자/강사 입문 스택",intro:"강의 자료 제작, 퀴즈 생성, 학습자 피드백까지 교육 전 과정을 AI로 지원하는 조합.",core:[{id:"chatgpt",why:"강의 계획서, 퀴즈, 과제, 피드백 문구를 빠르게 생성",tip:"'초등학생도 이해할 수 있게 설명해줘' 수준 조정 가능"},{id:"gamma",why:"강의 자료, 프레젠테이션을 텍스트만 넣으면 AI가 슬라이드로 자동 완성",tip:"강의 노트를 붙여넣으면 즉시 발표 자료로 변환"}],optional:[{id:"notion",why:"커리큘럼, 학생 관리, 강의 자료 아카이브를 한곳에",tip:"AI로 학생 피드백을 분석해 강의 개선점 파악"},{id:"canva",why:"인포그래픽, 학습 자료, 수료증 디자인을 쉽게",tip:"교육용 템플릿이 풍부해 비디자이너도 즉시 활용"}],tips:["ChatGPT로 같은 내용을 '초급/중급/고급' 버전으로 즉시 분리","학생 질문을 ChatGPT에 넣으면 답변 초안 빠르게 작성","Gamma로 지루한 PPT 제작 시간을 90% 단축"]},
+  startup:{title:"스타트업 창업자 입문 스택",intro:"사업 계획, 투자자 커뮤니케이션, 팀 운영까지 1인 다역을 AI로 커버하는 조합.",core:[{id:"chatgpt",why:"IR 자료, 사업계획서, 투자자 이메일, 채용 공고까지 전방위 지원",tip:"'시리즈A 투자자에게 보내는 콜드 이메일 써줘' 즉시 활용"},{id:"notion",why:"팀 위키, OKR, 투자자 업데이트, 미팅 노트를 AI와 함께 관리",tip:"회의록 → 액션아이템 자동 정리로 실행력 극대화"}],optional:[{id:"perplexity",why:"시장 조사, 경쟁사 분석, 트렌드 파악을 AI가 출처 포함해 요약",tip:"'국내 SaaS 시장 현황 요약해줘' 바로 가능"},{id:"canva",why:"피치덱, 마케팅 자료, SNS 콘텐츠를 빠르게 제작",tip:"투자자용 피치덱 템플릿으로 첫 VC 미팅 준비"}],tips:["ChatGPT로 린 캔버스, SWOT 분석 30분 안에 초안 완성","'악마의 변호인 역할로 내 사업 비판해줘' 프롬프트로 약점 파악","Notion AI로 팀원 온보딩 문서 자동화 가능"]},
+  freelancer:{title:"프리랜서 입문 스택",intro:"제안서, 클라이언트 커뮤니케이션, 포트폴리오까지 혼자서도 전문가처럼 운영하는 조합.",core:[{id:"chatgpt",why:"제안서, 견적서, 클라이언트 이메일, 계약서 초안을 빠르게 작성",tip:"'클라이언트에게 추가 비용을 정중하게 요청하는 이메일' 즉시 생성"},{id:"canva",why:"포트폴리오, 제안서, 인보이스 디자인을 전문적으로 제작",tip:"프리랜서용 브랜드 킷 만들어두면 매번 재사용 가능"}],optional:[{id:"notion",why:"프로젝트 관리, 클라이언트 DB, 수익 트래킹을 한 곳에",tip:"클라이언트별 작업 현황을 대시보드로 한눈에"},{id:"grammarly",why:"영문 클라이언트와 소통 시 전문적인 영어 이메일 작성",tip:"해외 클라이언트 비중이 높다면 필수"}],tips:["ChatGPT로 같은 제안서를 업종별로 5분 만에 커스터마이징","나쁜 클라이언트 상황 대처법도 ChatGPT에게 물어보기","Notion으로 반복 작업 템플릿화 → 시간 50% 단축"]},
+  researcher:{title:"연구자 입문 스택",intro:"논문 검색, 요약, 아이디어 발전까지 리서치 워크플로우를 AI로 가속화하는 조합.",core:[{id:"perplexity",why:"학술 논문, 최신 연구 동향을 AI가 출처 포함해 요약 제공",tip:"'2024년 이후 LLM 연구 동향 요약해줘' 즉시 활용"},{id:"claude",why:"긴 논문을 붙여넣어도 핵심 요약, 비판적 분석, 반론 생성 가능",tip:"PDF 업로드 후 '이 논문의 한계점 3가지만 뽑아줘'"}],optional:[{id:"notion",why:"리서치 노트, 참고문헌, 아이디어를 체계적으로 관리",tip:"AI로 흩어진 노트를 자동 분류하고 연결고리 찾기"},{id:"chatgpt",why:"연구 결과를 일반인도 이해할 수 있는 언어로 번역·설명",tip:"논문을 블로그/SNS 포스트로 자동 변환"}],tips:["Claude에게 '이 논문을 반박하는 논거를 찾아줘' 프롬프트 활용","Perplexity로 최신 연구 동향 주 1회 모니터링 루틴 추천","ChatGPT로 연구 결과를 다양한 청중에게 맞게 설명"]},
+  hr:{title:"HR/채용 담당자 입문 스택",intro:"채용 공고, 면접 질문, HR 커뮤니케이션까지 인사 업무 전반을 AI로 효율화하는 조합.",core:[{id:"chatgpt",why:"채용 공고, 면접 질문, 오퍼 레터, 사내 공지를 빠르게 작성",tip:"'데이터 사이언티스트 채용 공고 초안 써줘' 즉시 가능"},{id:"notion",why:"채용 파이프라인, 직원 온보딩, HR 정책 문서를 AI와 함께 관리",tip:"신규 입사자 온보딩 체크리스트 AI로 자동 생성"}],optional:[{id:"grammarly",why:"영문 채용 공고, 글로벌 커뮤니케이션의 전문성 강화",tip:"다국적 기업 HR 담당자에게 특히 추천"},{id:"canva",why:"채용 브랜딩, 사내 행사 자료, 인포그래픽을 빠르게 제작",tip:"LinkedIn 채용 공고 이미지 템플릿으로 브랜드 통일"}],tips:["ChatGPT로 JD(직무기술서)를 포지션별로 30분 내 완성","면접 평가 기준도 AI로 구조화하면 편견 감소 효과","Notion으로 채용 KPI 대시보드 자동화 가능"]},
+  finance:{title:"금융/분석가 입문 스택",intro:"데이터 해석, 리포트 작성, 시장 조사를 AI로 가속화하는 금융 전문가 조합.",core:[{id:"perplexity",why:"실시간 시장 동향, 기업 뉴스, 경제 지표를 AI가 출처 포함해 요약",tip:"'테슬라 최근 3개월 주요 이슈 요약해줘' 즉시 활용"},{id:"chatgpt",why:"분석 리포트, 투자 메모, 고객 커뮤니케이션을 빠르게 초안 작성",tip:"엑셀 수식, VBA 코드 작성도 ChatGPT로 해결"}],optional:[{id:"claude",why:"긴 재무제표, 공시 문서를 붙여넣어 핵심만 빠르게 추출",tip:"IR 자료 전체를 넣고 '투자 리스크 3가지만 뽑아줘'"},{id:"notion",why:"투자 아이디어, 리서치 노트, 포트폴리오 관리를 체계화",tip:"AI로 시장 메모를 자동 분류하고 패턴 파악"}],tips:["ChatGPT Code Interpreter로 CSV 데이터 즉시 시각화","Perplexity로 경쟁사 실적 발표 빠르게 파악","'CFO에게 보고하는 형식으로 써줘' 프롬프트로 즉시 격식 조정"]},
+  other:{title:"AI 입문 추천 스택",intro:"처음 AI를 시작하는 분들을 위한 가장 범용적이고 효율적인 기본 조합입니다.",core:[{id:"chatgpt",why:"가장 범용적인 AI로 글쓰기, 요약, 번역, 아이디어 발굴 등 모든 업무에 활용",tip:"무엇이든 질문해보세요. 생각보다 훨씬 많은 걸 해줍니다"},{id:"notion",why:"업무 정리, 메모, 프로젝트 관리를 AI와 함께 체계화",tip:"회의록을 붙여넣으면 AI가 정리하고 할일 목록 자동 생성"}],optional:[{id:"canva",why:"디자인 전문 지식 없이도 전문적인 비주얼 콘텐츠 제작",tip:"AI 디자인 제안으로 빈 캔버스 앞에서 막막함 해소"},{id:"perplexity",why:"일반 검색보다 신뢰할 수 있는 출처와 함께 AI가 답변",tip:"뉴스 요약, 트렌드 파악, 팩트 체크에 활용"}],tips:["처음엔 ChatGPT 하나로 2주간 최대한 활용해보기","'더 자세히', '다시 써줘', '예시 들어줘' 프롬프트로 결과 개선","AI가 틀릴 수 있으니 중요한 정보는 반드시 팩트체크"]}
+};
+const OVERLAP_GROUPS=[
+  {ids:["chatgpt","claude","gemini","copilot"],reason:"ChatGPT, Claude, Gemini, Copilot은 모두 범용 AI 챗봇으로 핵심 기능이 90% 이상 겹칩니다. 가장 자주 쓰는 하나만 유지하면 충분합니다."},
+  {ids:["jasper","copyai","writesonic"],reason:"Jasper, Copy.ai, Writesonic은 모두 AI 카피라이팅 툴입니다. ChatGPT나 Claude로 대부분 대체 가능합니다."},
+  {ids:["jasper","chatgpt"],reason:"Jasper의 핵심 기능은 ChatGPT Plus로 거의 대체 가능합니다. 월 $49를 추가로 낼 필요가 없습니다."},
+  {ids:["copyai","chatgpt"],reason:"Copy.ai와 ChatGPT Plus는 마케팅 카피 생성 기능이 크게 겹칩니다."},
+  {ids:["writesonic","chatgpt"],reason:"Writesonic과 ChatGPT는 블로그·SNS 글쓰기 기능이 중복됩니다."},
+];
+const JOB_RECS={
+  marketer:{keep:["chatgpt","canva","notion"],avoid:["jasper","writesonic","copilot"]},
+  developer:{keep:["claude","chatgpt","perplexity"],avoid:["jasper","copyai","canva"]},
+  designer:{keep:["midjourney","canva","chatgpt"],avoid:["jasper","copyai","grammarly"]},
+  writer:{keep:["chatgpt","grammarly","notion"],avoid:["midjourney","runway","gamma"]},
+  youtuber:{keep:["chatgpt","midjourney","canva"],avoid:["jasper","copyai","grammarly"]},
+  teacher:{keep:["chatgpt","notion","gamma"],avoid:["midjourney","runway","copyai"]},
+  startup:{keep:["chatgpt","notion","canva"],avoid:["jasper","writesonic","copilot"]},
+  freelancer:{keep:["chatgpt","grammarly","canva"],avoid:["midjourney","runway"]},
+  researcher:{keep:["perplexity","claude","notion"],avoid:["jasper","copyai","midjourney"]},
+  hr:{keep:["chatgpt","grammarly","notion"],avoid:["midjourney","runway","gamma"]},
+  finance:{keep:["chatgpt","perplexity","notion"],avoid:["jasper","midjourney","runway"]},
+  other:{keep:["chatgpt","notion"],avoid:[]},
+};
+
+let DS={step:1,job:null,mode:null,tools:[],budget:null,result:null,loading:false};
+const DSTEPS=["직업 선택","구독 현황","예산/툴 선택","결과"];
+
+function gt(id){return TOOLS.find(t=>t.id===id);}
+function gj(id){return JOBS.find(j=>j.id===id);}
+
+function dprog(step){
+  const pct=((step-1)/3)*100;
+  const dots=Array.from({length:4},(_,i)=>`<span class="sdot ${i<step-1?'done':i===step-1?'active':''}"></span>`).join('');
+  return`<div class="progress-wrap"><div class="progress-labels"><span>${DSTEPS[step-1]}</span><span>Step ${step} / 4</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="step-dots">${dots}</div></div>`;
+}
+
+function diagRender(){
+  document.getElementById('diag-nav-step').textContent=DSTEPS[Math.min(DS.step-1,3)];
+  const m=document.getElementById('diag-main');
+  if(DS.step===1) m.innerHTML=dHtml1();
+  else if(DS.step===2) m.innerHTML=dHtml2();
+  else if(DS.step===3) m.innerHTML=dHtml3();
+  else if(DS.loading){m.innerHTML=dHtmlLoad();setTimeout(()=>dAnimL(0),100);}
+  else if(DS.mode==='new') m.innerHTML=dHtmlNewResult();
+  else m.innerHTML=dHtmlDiagResult();
+  // 모달 스크롤 상단으로
+  document.getElementById('diag-sheet').scrollTop=0;
+}
+
+function dHtml1(){
+  const cards=JOBS.map(j=>`<div class="job-card${DS.job===j.id?' sel':''}" onclick="dPickJob('${j.id}')"><div class="job-icon">${j.icon}</div><div class="job-name">${j.name}</div></div>`).join('');
+  return`${dprog(1)}<div class="eyebrow">Step 01</div><h2 class="step-title">어떤 일을<br>하시나요?</h2><p class="step-sub">직업에 맞는 AI 조합을 찾아드립니다.</p><div class="job-grid">${cards}</div><button class="btn-primary" onclick="dGoStep2()" ${!DS.job?'disabled':''}>다음 단계 →</button>`;
+}
+function dHtml2(){
+  return`${dprog(2)}<div class="eyebrow">Step 02</div><h2 class="step-title">AI 구독이<br><span class="g">있으신가요?</span></h2><p class="step-sub">현재 상황에 맞는 진단을 제공해드립니다.</p>
+  <div class="mode-grid">
+    <div class="mode-card${DS.mode==='diag'?' sel':''}" onclick="dPickMode('diag')"><div class="mode-icon">🔍</div><div class="mode-title">있어요</div><div class="mode-desc">현재 구독 중인 AI 툴들을 진단하고 중복을 제거해 절약액을 계산합니다.</div><span class="mode-badge badge-diag">중복 진단 → 절약</span></div>
+    <div class="mode-card${DS.mode==='new'?' sel':''}" onclick="dPickMode('new')"><div class="mode-icon">✨</div><div class="mode-title">처음이에요</div><div class="mode-desc">AI를 처음 시작하는 분을 위한 직업별 최적 입문 스택을 추천해드립니다.</div><span class="mode-badge badge-new">맞춤 스택 추천</span></div>
+  </div>
+  <div class="btn-row"><button class="btn-back" onclick="DS.step=1;diagRender()">← 이전</button><button class="btn-primary" onclick="dGoStep3()" ${!DS.mode?'disabled':''}>다음 단계 →</button></div>`;
+}
+function dHtml3(){
+  if(DS.mode==='new'){
+    const cards=BUDGETS.map(b=>`<button class="budget-btn${DS.budget===b.id?' sel':''}" onclick="dPickBudget('${b.id}')"><span class="budget-amount">${b.label}</span><span class="budget-sub">${b.sub}</span></button>`).join('');
+    return`${dprog(3)}<div class="eyebrow">Step 03</div><h2 class="step-title">월 <span class="g">예산</span>은<br>얼마인가요?</h2><p class="step-sub">예산에 맞는 AI 입문 스택을 추천해드립니다.</p><div class="budget-grid">${cards}</div><div class="btn-row"><button class="btn-back" onclick="DS.step=2;diagRender()">← 이전</button><button class="btn-primary" onclick="dStartNew()" ${!DS.budget?'disabled':''}>추천 스택 보기 →</button></div>`;
+  }
+  const sum=DS.tools.length>0?`<div class="sel-summary">${DS.tools.map(id=>{const t=gt(id);return`<span class="sel-tag">✓ ${t.name}</span>`;}).join('')}</div>`:'';
+  const cards=TOOLS.map(t=>`<div class="tool-card${DS.tools.includes(t.id)?' sel':''}" onclick="dPickTool('${t.id}')"><div class="tool-logo">${t.icon}</div><div style="flex:1;min-width:0"><div class="tool-name">${t.name}</div><div class="tool-price">${t.priceLabel}</div></div><div class="tool-chk">${DS.tools.includes(t.id)?'✓':''}</div></div>`).join('');
+  return`${dprog(3)}<div class="eyebrow">Step 03</div><h2 class="step-title">현재 구독 중인<br><span class="g">AI 툴</span> 선택</h2><p class="step-sub">지금 쓰고 있는 AI 툴을 모두 선택해주세요.</p>${sum}<div class="tool-grid">${cards}</div><div class="btn-row"><button class="btn-back" onclick="DS.step=2;diagRender()">← 이전</button><button class="btn-primary" onclick="dStartDiag()" ${DS.tools.length===0?'disabled':''}>${DS.tools.length>0?DS.tools.length+'개 선택 완료 →':'하나 이상 선택해주세요'}</button></div>`;
+}
+function dHtmlLoad(){
+  const isNew=DS.mode==='new';
+  const steps=isNew?["직업 특성 분석 중...","예산 범위 확인 중...","최적 툴 조합 계산 중...","입문 팁 준비 중...","추천 스택 생성 중..."]:["구독 목록 분석 중...","중복 기능 감지 중...","최적 조합 계산 중...","절약액 시뮬레이션 중...","리포트 생성 중..."];
+  return`<div class="loading-wrap"><div class="loading-orb">${isNew?'✨':'🔍'}</div><div class="loading-title">${isNew?'맞춤 스택 준비 중':'AI가 분석 중입니다'}</div><div class="loading-sub">${isNew?'최적 입문 조합을 찾고 있어요':'중복 구독을 찾고 있어요'}</div><div class="loading-steps">${steps.map((s,i)=>`<div class="lstep" id="dls${i}"><span>○</span> ${s}</div>`).join('')}</div></div>`;
+}
+function dAnimL(i){
+  if(i>=5)return;
+  if(i>0){const p=document.getElementById('dls'+(i-1));if(p){p.classList.remove('active');p.querySelector('span').textContent='✓';}}
+  const el=document.getElementById('dls'+i);
+  if(el){el.classList.add('active');el.querySelector('span').textContent='⟳';}
+  setTimeout(()=>dAnimL(i+1),700);
+}
+function dHtmlNewResult(){
+  const job=gj(DS.job);
+  const stack=STARTER_STACKS[DS.job]||STARTER_STACKS.other;
+  const budgetMax=BUDGETS.find(b=>b.id===DS.budget)?.max||999;
+  const coreTools=stack.core.map(c=>gt(c.id)).filter(Boolean);
+  const coreTotal=coreTools.reduce((s,t)=>s+t.price,0);
+  const coreCards=stack.core.map((c,i)=>{const t=gt(c.id);if(!t)return'';return`<div class="tool-rec-card core"><div class="tool-rec-num">${i+1}</div><div class="tool-rec-body"><div class="tool-rec-name">${t.icon} ${t.name} <span class="core-badge">핵심</span></div><div class="tool-rec-why">${c.why}</div><span class="tool-rec-tip">💡 ${c.tip}</span>${t.url?`<br><a href="${t.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:7px;padding:5px 12px;background:var(--g);color:#fff;border-radius:6px;font-size:.68rem;font-weight:700;text-decoration:none;">무료로 시작하기 →</a>`:''}</div><div class="tool-rec-price">${t.priceLabel}</div></div>`;}).join('');
+  const optCards=stack.optional.filter(c=>{const t=gt(c.id);return t&&(coreTotal+t.price)<=budgetMax;}).map((c,i)=>{const t=gt(c.id);return`<div class="tool-rec-card optional"><div class="tool-rec-num">${i+1}</div><div class="tool-rec-body"><div class="tool-rec-name">${t.icon} ${t.name} <span class="opt-badge">선택</span></div><div class="tool-rec-why">${c.why}</div><span class="tool-rec-tip">💡 ${c.tip}</span>${t.url?`<br><a href="${t.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:7px;padding:5px 12px;background:var(--border);color:var(--ink);border-radius:6px;font-size:.68rem;font-weight:700;text-decoration:none;">사이트 보기 →</a>`:''}</div><div class="tool-rec-price">${t.priceLabel}</div></div>`;}).join('');
+  const tips=stack.tips.map(tip=>`<div class="tip-item">${tip}</div>`).join('');
+  return`<div class="eyebrow">추천 완료</div><h2 class="step-title" style="margin-bottom:18px"><span class="g">${job?.name||''}</span>님을 위한<br>AI 입문 스택</h2>
+  <div class="stack-hero"><div class="stack-hero-tag">✨ ${stack.title}</div><div class="stack-hero-title">월 <span>$${coreTotal}</span>부터<br>시작할 수 있어요</div><div class="stack-hero-sub">${stack.intro}</div><div class="stack-stats"><div class="sstat"><div class="sstat-n">${stack.core.length}개</div><div class="sstat-l">핵심 툴</div></div><div class="sstat"><div class="sstat-n">$${coreTotal}</div><div class="sstat-l">최소 월 비용</div></div><div class="sstat"><div class="sstat-n">${stack.optional.length}개</div><div class="sstat-l">선택 추가</div></div></div></div>
+  <div class="ai-box"><div class="ai-box-head"><span class="ai-badge">AI Diet 추천</span><span style="font-size:.78rem;font-weight:600">왜 이 조합인가요?</span></div><div class="ai-text">${stack.intro} 핵심 툴 ${stack.core.length}개로 시작해서 업무에 익숙해지면 선택 툴을 하나씩 추가하는 방식을 추천드립니다.</div></div>
+  <div class="section-title">🌟 핵심 툴 (필수 시작)</div>${coreCards}
+  ${optCards?`<div class="section-title">➕ 선택 추가 (예산 여유 시)</div>${optCards}`:''}
+  <div class="tip-box"><div class="tip-box-head">💬 ${job?.name||''} 입문 프롬프트 팁</div>${tips}</div>
+  <div class="cta-box"><div class="cta-title">업데이트 알림 받기</div><div class="cta-sub">새로운 AI 툴 추천 · 가격 변동 알림 · 월간 최적화 리포트</div><div id="dcta-area"><div class="cta-form"><input class="cta-input" type="email" id="dcta-email" placeholder="이메일 주소 입력"><button class="cta-btn" onclick="dSubmitCTA()">무료 등록 →</button></div></div></div>
+  <button class="restart-btn" onclick="dRestart()">처음부터 다시</button>`;
+}
+function dHtmlDiagResult(){
+  const r=DS.result;
+  const job=gj(DS.job);
+  const icoMap={keep:'✓',cancel:'✕',new:'★'};
+  const lMap={keep:'유지',cancel:'해지 추천',new:'신규 추천'};
+  const overlaps=(r.overlaps||[]).map(o=>`<div class="overlap-card"><div class="overlap-icon">🔁</div><div><div class="overlap-title">${o.tools}</div><div class="overlap-desc">${o.reason}</div><span class="overlap-badge">절약 가능: ${o.saving}</span></div></div>`).join('');
+  const recs=(r.recommendations||[]).map(rec=>{const t=TOOLS.find(x=>x.name===rec.tool);const link=t?.url&&rec.action==='keep'?`<br><a href="${t.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--gl);color:var(--g);border-radius:5px;font-size:.65rem;font-weight:700;text-decoration:none;border:1px solid var(--gm);">사이트 바로가기 →</a>`:'';return`<div class="rec-card${rec.action==='keep'?' keep':''}"><div class="rec-ico ${rec.action}">${icoMap[rec.action]||'•'}</div><div class="rec-body"><div class="rec-title-row">${rec.tool} <span class="badge badge-${rec.action}">${lMap[rec.action]||rec.action}</span></div><div class="rec-desc">${rec.reason}</div>${link}</div><div class="rec-price">${rec.price}</div></div>`;}).join('');
+  const savSec=r.monthly_saving>0?`<div class="saving-num">월 <span>$${r.monthly_saving}</span> 절약 가능</div><div class="saving-label">연간 $${r.annual_saving} · 지금 바로 시작할 수 있어요</div>`:`<div class="saving-num" style="font-size:1.6rem">최적화 완료 <span>✓</span></div><div class="saving-label">현재 구독이 효율적으로 구성되어 있습니다</div>`;
+  return`<div class="eyebrow">진단 완료</div><h2 class="step-title" style="margin-bottom:18px"><span class="g">${job?.name||''}</span>님의<br>AI 최적화 리포트</h2>
+  <div class="result-hero"><div class="result-tag">✦ AI Diet 진단 결과</div>${savSec}<div class="result-stats"><div class="rstat"><div class="rstat-n">$${r.monthly_current}</div><div class="rstat-l">현재 월 지출</div></div><div class="rstat"><div class="rstat-n">$${r.monthly_optimized}</div><div class="rstat-l">최적화 후</div></div><div class="rstat"><div class="rstat-n">${r.overlap_count}개</div><div class="rstat-l">중복 감지</div></div></div></div>
+  <div class="ai-box"><div class="ai-box-head"><span class="ai-badge">AI Diet 분석</span><span style="font-size:.78rem;font-weight:600">맞춤 분석 리포트</span></div><div class="ai-text">${r.analysis}</div></div>
+  ${overlaps?`<div class="section-title">⚠️ 중복 감지</div>${overlaps}`:''}
+  ${recs?`<div class="section-title">💡 최적 조합 추천</div>${recs}`:''}
+  <div class="cta-box"><div class="cta-title">Pro로 계속 최적화하기</div><div class="cta-sub">가격 변동 알림 · 무제한 재진단 · 월간 절약 리포트</div><div id="dcta-area"><div class="cta-form"><input class="cta-input" type="email" id="dcta-email" placeholder="이메일 주소 입력"><button class="cta-btn" onclick="dSubmitCTA()">무료 등록 →</button></div></div></div>
+  <button class="restart-btn" onclick="dRestart()">다시 진단하기</button>`;
+}
+function dAnalyze(){
+  const jobRec=JOB_RECS[DS.job]||JOB_RECS.other;
+  const toolObjs=DS.tools.map(id=>gt(id)).filter(Boolean);
+  const totalCurrent=toolObjs.reduce((s,t)=>s+t.price,0);
+  const cancelSet=new Set();const foundOverlaps=[];
+  OVERLAP_GROUPS.forEach(group=>{
+    const matched=group.ids.filter(id=>DS.tools.includes(id));
+    if(matched.length>=2){
+      const mo=matched.map(id=>gt(id)).filter(Boolean);mo.sort((a,b)=>b.price-a.price);
+      mo.slice(1).forEach(t=>cancelSet.add(t.id));
+      foundOverlaps.push({tools:matched.map(id=>gt(id)?.name).join(' + '),reason:group.reason,saving:'$'+mo.slice(1).reduce((s,t)=>s+t.price,0)+'/월'});
+    }
+  });
+  toolObjs.forEach(t=>{if(jobRec.avoid.includes(t.id)&&!cancelSet.has(t.id))cancelSet.add(t.id);});
+  const keepTools=toolObjs.filter(t=>!cancelSet.has(t.id));
+  const totalOpt=keepTools.reduce((s,t)=>s+t.price,0);
+  const saving=totalCurrent-totalOpt;
+  const recs=[];
+  toolObjs.forEach(t=>{
+    if(cancelSet.has(t.id))recs.push({tool:t.name,action:"cancel",reason:jobRec.avoid.includes(t.id)?gj(DS.job)?.name+' 업무에는 필수도가 낮아 해지를 권장합니다.':"기능이 유사한 다른 구독과 중복됩니다.",price:t.priceLabel});
+    else recs.push({tool:t.name,action:"keep",reason:jobRec.keep?.includes(t.id)?gj(DS.job)?.name+' 업무에 핵심적인 툴입니다.':"현재 예산 범위 내에서 유지 가능합니다.",price:t.priceLabel});
+  });
+  const jn=gj(DS.job)?.name||"사용자";
+  const analysis=saving<=0?`${jn}님의 현재 AI 구독은 비교적 효율적으로 구성되어 있습니다. 총 ${toolObjs.length}개 툴을 구독 중이며 분기별로 재진단을 받아보시길 추천드립니다.`:`${jn}님은 현재 ${toolObjs.length}개 AI 툴에 월 $${totalCurrent}을 지출하고 있습니다. ${cancelSet.size}개 구독을 정리하면 월 $${Math.max(saving,0)}을 절약할 수 있으며, 연간 $${Math.max(saving*12,0)}에 달합니다.`;
+  return{monthly_current:totalCurrent,monthly_optimized:totalOpt,monthly_saving:Math.max(saving,0),annual_saving:Math.max(saving*12,0),overlap_count:foundOverlaps.length,overlaps:foundOverlaps,recommendations:recs,analysis};
+}
+function dPickJob(id){DS.job=id;diagRender();}
+function dPickMode(m){DS.mode=m;diagRender();}
+function dPickTool(id){if(DS.tools.includes(id))DS.tools=DS.tools.filter(x=>x!==id);else DS.tools.push(id);diagRender();}
+function dPickBudget(id){DS.budget=id;diagRender();}
+function dGoStep2(){if(DS.job){DS.step=2;diagRender();}}
+function dGoStep3(){if(DS.mode){DS.step=3;diagRender();}}
+function dStartDiag(){if(DS.tools.length===0)return;DS.step=4;DS.loading=true;diagRender();setTimeout(()=>{DS.result=dAnalyze();DS.loading=false;diagRender();},3800);}
+function dStartNew(){if(!DS.budget)return;DS.step=4;DS.loading=true;diagRender();setTimeout(()=>{DS.loading=false;diagRender();},3800);}
+function dRestart(){DS={step:1,job:null,mode:null,tools:[],budget:null,result:null,loading:false};diagRender();}
+function dSubmitCTA(){const v=document.getElementById('dcta-email')?.value||'';if(v.includes('@')){document.getElementById('dcta-area').innerHTML='<div class="cta-ok">✦ 등록 완료! 오픈 시 가장 먼저 알려드릴게요 🌿</div>';}}
+</script>
+</body>
+</html>
