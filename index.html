@@ -6,7 +6,7 @@
 <title>AI Diet — Smarter AI. Lighter Bill.</title>
 <meta name="description" content="Stop wasting money on redundant AI subscriptions. AI Diet finds overlaps and recommends your perfect stack.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── SHARED VARS ── */
 :root{
@@ -14,8 +14,8 @@
   --gl:#EDF7F2;--gm:#C4E4D4;
   --ink:#0D0D0B;--ink2:#2A2A27;--muted:#7A7A72;
   --border:#E4E4DC;--bg:#F9F9F6;--white:#FFFFFF;
-  --serif:'DM Serif Display',Georgia,serif;
-  --sans:'DM Sans',system-ui,sans-serif;
+  --serif:'Plus Jakarta Sans','Noto Sans KR',sans-serif;
+  --sans:'Plus Jakarta Sans','Noto Sans KR',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -48,7 +48,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;padding:0 48px;d
 @keyframes pulse{50%{opacity:.4;transform:scale(.8)}}
 h1{font-family:var(--serif);font-size:clamp(3rem,8vw,6rem);line-height:1.04;letter-spacing:-1.5px;color:var(--ink);margin-bottom:10px;animation:up .6s .1s ease both}
 h1 .g{color:var(--g)}
-h1 em{font-style:italic;color:var(--muted)}
+h1 em{font-style:normal;color:var(--muted)}
 .hero-sub{font-family:var(--serif);font-size:clamp(1.3rem,3vw,1.9rem);color:var(--muted);font-style:italic;margin-bottom:28px;animation:up .6s .2s ease both}
 .hero-desc{font-size:1.05rem;font-weight:300;color:var(--ink2);line-height:1.75;max-width:540px;margin:0 auto 44px;animation:up .6s .3s ease both}
 .hero-desc strong{font-weight:600;color:var(--ink)}
@@ -71,7 +71,7 @@ h1 em{font-style:italic;color:var(--muted)}
 .ey::before,.ey::after{content:'';width:18px;height:1px;background:var(--gm)}
 h2{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.3rem);line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:14px}
 h2 .g{color:var(--g)}
-h2 em{font-style:italic;color:var(--muted)}
+h2 em{font-style:normal;color:var(--muted)}
 .sub{font-size:1rem;font-weight:300;color:var(--muted);line-height:1.7;max-width:500px}
 
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
