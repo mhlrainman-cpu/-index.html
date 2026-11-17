@@ -45,6 +45,7 @@ def fetch_snapshot():
         out.append({
             "t": e.get("time"), "n": h.get("name"), "m": h.get("magnitude", -1),
             "d": h.get("depth", -1), "s": e.get("maxScale", -1), "ts": e.get("domesticTsunami", "Unknown"),
+            "la": h.get("latitude", -200), "lo": h.get("longitude", -200),
             "p": compact_points(q.get("points", [])),
         })
     jst = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
