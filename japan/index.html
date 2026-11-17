@@ -2,127 +2,170 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>더 안전하고 더 재미있는 일본여행</title>
-<meta name="description" content="일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안심 여행 지역과 관광 상품을 제안합니다.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>안심재팬</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="더 안전하고 더 재미있는 일본여행. 일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안심 여행 지역 랭킹과 관광 정보를 제안합니다.">
+<meta name="keywords" content="일본 지진, 일본 여행 지진, 오사카 지진, 도쿄 지진, 후쿠오카 지진, 일본 여행 안전, 난카이 해곡, 일본 지진 실시간">
+<meta property="og:title" content="안심재팬 · 더 안전하고 더 재미있는 일본여행">
+<meta property="og:description" content="일본 지진 정보를 한곳에 모아 제공하고, 안심 여행 지역과 관광 정보를 제안합니다.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e5484d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
+/* Layout: 한 열의 긴 스크롤 페이지. 정보(지진) → 판단(랭킹) → 행동(여행 정보·예약) 순서로 흐른다. */
 :root{
-  --bg:#f7f8fb; --card:#ffffff; --ink:#18202c; --sub:#5b6676; --line:#e3e7ee;
+  --bg:#f6f7fa; --card:#ffffff; --ink:#18202c; --sub:#5b6676; --line:#e2e6ed; --soft:#eef1f6;
   --brand:#e5484d; --brand-ink:#ffffff; --accent:#2563eb;
-  --ok:#16a34a; --mid:#ca8a04; --warn:#ea580c; --bad:#dc2626;
+  --ok:#15803d; --mid:#b45309; --warn:#c2410c; --bad:#b91c1c;
   --shadow:0 2px 10px rgba(20,30,50,.06);
+  --font:'Noto Sans KR',system-ui,-apple-system,sans-serif;
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0f141b; --card:#18202b; --ink:#e8edf4; --sub:#9aa6b6; --line:#2a3442; --shadow:none; }
+  :root:not([data-theme="light"]){ --bg:#0f141b; --card:#182029; --ink:#e8edf4; --sub:#9aa6b6; --line:#2a3442; --soft:#1f2834; --ok:#4ade80; --mid:#fbbf24; --warn:#fb923c; --bad:#f87171; --shadow:none; color-scheme:dark }
 }
+:root[data-theme="dark"]{ --bg:#0f141b; --card:#182029; --ink:#e8edf4; --sub:#9aa6b6; --line:#2a3442; --soft:#1f2834; --ok:#4ade80; --mid:#fbbf24; --warn:#fb923c; --bad:#f87171; --shadow:none; color-scheme:dark }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg)}
+body{font-family:var(--font);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 a{color:var(--accent)}
-.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
-header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
-.logo{font-weight:900;font-size:17px;letter-spacing:-.3px;white-space:nowrap}
+.logo{font-weight:900;font-size:17px;letter-spacing:-.3px;white-space:nowrap;text-decoration:none;color:var(--ink)}
 .logo span{color:var(--brand)}
-nav a{color:var(--sub);text-decoration:none;font-size:14px;margin-left:14px;white-space:nowrap}
-nav a:hover{color:var(--ink)}
-@media (max-width:560px){ nav a:not(.keep){display:none} }
+nav{display:flex;gap:4px}
+nav a{color:var(--sub);text-decoration:none;font-size:14px;padding:6px 8px;border-radius:8px;white-space:nowrap}
+nav a:hover{color:var(--ink);background:var(--soft)}
+@media (max-width:600px){ nav a.opt{display:none} }
 
-.hero{padding:56px 0 40px;text-align:center}
+.hero{padding-block:52px 36px;text-align:center}
 .hero .badge{display:inline-block;font-size:12px;font-weight:700;color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,transparent);padding:4px 12px;border-radius:99px;margin-bottom:16px}
-.hero h1{font-size:clamp(28px,6vw,46px);font-weight:900;letter-spacing:-1px;line-height:1.25}
+.hero h1{font-size:clamp(28px,6vw,46px);font-weight:900;letter-spacing:-1px;line-height:1.25;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--brand)}
-.hero p{color:var(--sub);margin:16px auto 0;max-width:620px;font-size:clamp(15px,2.4vw,17px)}
+.hero p{color:var(--sub);margin:16px auto 0;max-width:620px;font-size:clamp(15px,2.4vw,17px);text-wrap:balance}
 .hero .cta{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:6px;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:15px;padding:12px 20px;border-radius:12px;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;cursor:pointer;font-weight:700;font-size:15px;padding:12px 20px;border-radius:12px;text-decoration:none;color:var(--ink)}
 .btn.primary{background:var(--brand);color:var(--brand-ink)}
-.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:var(--card);border:1px solid var(--line)}
+.btn.sm{padding:8px 14px;font-size:13px}
 
-section{padding:36px 0}
+section{padding-block:34px}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .sec-head h2{font-size:22px;font-weight:900;letter-spacing:-.5px}
-.sec-head p{color:var(--sub);font-size:14px}
+.sec-head p{color:var(--sub);font-size:14px;max-width:70ch}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
 
-/* status */
 .status{padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:14px}
 .dot{width:12px;height:12px;border-radius:50%;flex:none;background:var(--sub)}
 .dot.ok{background:var(--ok);box-shadow:0 0 0 6px color-mix(in srgb,var(--ok) 18%,transparent)}
 .dot.warn{background:var(--bad);box-shadow:0 0 0 6px color-mix(in srgb,var(--bad) 18%,transparent)}
 .status b{display:block;font-size:16px}
-.status small{color:var(--sub)}
-
+.status small{color:var(--sub);display:block}
+.srcline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--sub);font-size:12px;margin:8px 2px 0}
 .quakes{overflow:hidden}
-.q{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.q{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
 .q:first-child{border-top:0}
 .shindo{width:48px;height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:18px;line-height:1;color:#fff}
 .shindo small{font-size:10px;font-weight:500;opacity:.9;margin-top:3px}
 .q .place{font-weight:700;font-size:15px}
+.q .place span{font-weight:500;color:var(--sub);font-size:13px;margin-left:6px}
 .q .meta{color:var(--sub);font-size:13px}
 .q .mag{text-align:right;font-weight:700;font-size:14px;white-space:nowrap}
 .q .mag small{display:block;color:var(--sub);font-weight:400;font-size:12px}
 .empty{padding:22px;color:var(--sub);font-size:14px;text-align:center}
-
-.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--sub)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--sub)}
 .legend span{display:inline-flex;align-items:center;gap:4px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
-
 .notice{padding:16px 18px;margin-top:14px;font-size:14px;color:var(--sub)}
 .notice b{color:var(--ink)}
 
-/* ranking */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{padding:14px 16px}
+.stat small{display:block;color:var(--sub);font-size:12px}
+.stat b{font-size:22px;font-weight:900}
+
 .rank-list{display:grid;gap:10px}
-.r{display:grid;grid-template-columns:40px 1fr auto;gap:14px;align-items:center;padding:14px 16px;cursor:pointer;transition:transform .12s}
+.r{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;cursor:pointer;transition:transform .12s;text-align:left;width:100%;color:var(--ink)}
 .r:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
 .r .no{font-size:22px;font-weight:900;color:var(--sub);text-align:center}
 .r:nth-child(-n+3) .no{color:var(--brand)}
 .r .name{font-weight:900;font-size:17px}
 .r .name small{font-weight:500;color:var(--sub);font-size:13px;margin-left:6px}
 .r .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--sub)}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--soft);border:1px solid var(--line);color:var(--sub)}
 .tag.hot{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
+.tag.alert{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,var(--line));font-weight:700}
 .score{text-align:right}
 .score b{font-size:24px;font-weight:900}
 .score small{display:block;color:var(--sub);font-size:11px}
 .bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:4px;width:80px;margin-left:auto}
 .bar i{display:block;height:100%}
+.howto{margin-top:12px;padding:14px 18px;font-size:13px;color:var(--sub)}
+.howto b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){ .r{transition:none} }
 
-/* guide */
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.tip{padding:18px}
+.tip{padding:18px;min-width:0}
 .tip h3{font-size:16px;margin-bottom:8px}
 .tip ol,.tip ul{padding-left:18px;color:var(--sub);font-size:14px}
 .tip li{margin:4px 0}
+.tip b{color:var(--ink)}
 
-/* modal */
 .modal{position:fixed;inset:0;background:rgba(10,14,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:50}
 .modal.open{display:flex}
-.sheet{background:var(--card);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:22px 18px 28px}
-@media (min-width:720px){ .modal{align-items:center} .sheet{border-radius:20px} }
-.sheet .close{float:right;background:var(--bg);border:1px solid var(--line);border-radius:10px;width:36px;height:36px;font-size:18px;cursor:pointer;color:var(--ink)}
+.sheet{background:var(--card);color:var(--ink);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:22px max(18px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
+@media (min-width:720px){ .modal{align-items:center;padding:16px} .sheet{border-radius:20px} }
+.sheet .close{float:right;background:var(--soft);border:1px solid var(--line);border-radius:10px;width:36px;height:36px;font-size:18px;cursor:pointer;color:var(--ink)}
 .sheet h2{font-size:24px;font-weight:900}
+.sheet h3{font-size:16px;margin:18px 0 6px}
+.sheet p{font-size:14px;color:var(--sub)}
 .sheet .lead{color:var(--sub);font-size:14px;margin-top:4px}
 .risk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}
-.risk div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.risk div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
 .risk small{display:block;color:var(--sub);font-size:11px}
 .risk b{font-size:16px}
-.tabs{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:12px}
-.tabs button{background:none;border:0;font:inherit;font-size:14px;font-weight:700;color:var(--sub);padding:10px 12px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:12px}
+.tabs button{background:none;border:0;font-size:14px;font-weight:700;color:var(--sub);padding:10px 12px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
 .tabs button.on{color:var(--ink);border-color:var(--brand)}
-.items li{list-style:none;padding:10px 0;border-bottom:1px dashed var(--line)}
+.items{list-style:none}
+.items li{padding:10px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.items li div{min-width:0}
 .items li b{display:block}
 .items li span{color:var(--sub);font-size:13px}
+.items li a.go{flex:none;font-size:12px;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:8px;background:var(--soft);border:1px solid var(--line);color:var(--ink);white-space:nowrap}
 .safety{background:color-mix(in srgb,var(--warn) 10%,var(--card));border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:12px;padding:12px 14px;font-size:14px;margin-top:14px}
+.alertbox{background:color-mix(in srgb,var(--bad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 40%,var(--line));border-radius:12px;padding:14px;font-size:14px;margin-top:14px}
 .deals{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px}
-.deal{display:block;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);text-decoration:none;color:var(--ink);cursor:pointer;font:inherit;text-align:left}
+.deal{display:block;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--soft);text-decoration:none;color:var(--ink);cursor:pointer;text-align:left}
+.deal:hover{border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
 .deal b{display:block;font-size:14px}
 .deal small{color:var(--sub);font-size:12px}
 .adnote{color:var(--sub);font-size:11px;margin-top:8px}
 
-footer{padding:36px 0 60px;color:var(--sub);font-size:12px;border-top:1px solid var(--line);margin-top:20px}
-footer p{margin:4px 0}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;z-index:60;pointer-events:none}
+.faq details{border-top:1px solid var(--line);padding:12px 0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::after{content:"+";color:var(--sub)}
+.faq details[open] summary::after{content:"−"}
+.faq p{color:var(--sub);font-size:14px;margin-top:8px;max-width:70ch}
+
+.subscribe{padding:20px;display:grid;gap:10px}
+.subscribe h3{font-size:17px}
+.subscribe p{color:var(--sub);font-size:14px}
+.subscribe form{display:flex;gap:8px;flex-wrap:wrap}
+.subscribe input{flex:1;min-width:200px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+
+footer{padding-block:32px 60px;color:var(--sub);font-size:12px;border-top:1px solid var(--line);margin-top:20px}
+footer p{margin:4px 0;max-width:80ch}
+footer .links{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+footer .links button{background:none;border:0;color:var(--accent);cursor:pointer;font-size:12px;padding:0;text-decoration:underline}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;z-index:60;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1}
 </style>
 </head>
@@ -130,35 +173,35 @@ footer p{margin:4px 0}
 
 <header class="top">
   <div class="wrap">
-    <div class="logo">안심<span>재팬</span></div>
+    <a class="logo" href="#top">안심<span>재팬</span></a>
     <nav>
-      <a href="#live" class="keep">지진정보</a>
-      <a href="#ranking" class="keep">안심랭킹</a>
-      <a href="#guide">행동요령</a>
+      <a href="#live">지진정보</a>
+      <a href="#ranking">안심랭킹</a>
+      <a href="#guide" class="opt">행동요령</a>
+      <a href="#faq" class="opt">자주 묻는 질문</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="top">
 
   <div class="hero">
-    <div class="badge">일본 지진 정보 실시간 제공</div>
+    <div class="badge">일본 지진 정보 전문 제공</div>
     <h1>더 <em>안전하고</em><br>더 <em>재미있는</em> 일본여행</h1>
-    <p>일본 지진 정보를 한곳에 모아 전문적으로 제공하고,<br>이를 바탕으로 안심 여행 지역과 관광 상품을 제안합니다.</p>
+    <p>일본 지진 정보를 한곳에 모아 전문적으로 제공하고,<br>이를 바탕으로 안심 여행 지역과 관광 정보를 제안합니다.</p>
     <div class="cta">
       <a class="btn primary" href="#ranking">안심 지역 랭킹 보기</a>
       <a class="btn ghost" href="#live">지금 일본 지진 현황</a>
     </div>
   </div>
 
-  <!-- 1. 지진 정보 -->
   <section id="live">
     <div class="sec-head">
       <div>
         <h2>지금 일본 지진 현황</h2>
-        <p>일본 기상청 발표를 바탕으로 한 실시간 정보입니다.</p>
+        <p>일본 기상청(JMA) 발표를 바탕으로 한 정보입니다. 5분마다 자동으로 갱신됩니다.</p>
       </div>
-      <button class="btn ghost" id="refresh" style="padding:8px 14px;font-size:13px">새로고침</button>
+      <button class="btn ghost sm" id="refresh" type="button">새로고침</button>
     </div>
 
     <div class="card status" id="status">
@@ -169,28 +212,32 @@ footer p{margin:4px 0}
       </div>
     </div>
 
+    <div class="stats" id="stats"></div>
     <div class="card quakes" id="quakeList"><div class="empty">불러오는 중…</div></div>
+    <div class="srcline"><span id="srcNote"></span><span>진도는 일본 기상청 기준(0~7)</span></div>
     <div class="legend" id="legend"></div>
 
     <div class="card notice">
       <b>알아두세요.</b> 지진은 현재 과학으로 정확히 예측할 수 없습니다. 이 서비스는 공식 발표 정보를 이해하기 쉽게 정리할 뿐, 지진 발생을 예보하지 않습니다.
-      난카이 해곡 지진 관련 '임시 정보'가 발표되면 이 영역에 가장 먼저 안내합니다.
+      난카이 해곡 지진 '임시 정보'처럼 일본 정부의 특별 발표가 있으면 이 영역에서 가장 먼저 안내합니다.
     </div>
   </section>
 
-  <!-- 2. 랭킹 -->
   <section id="ranking">
     <div class="sec-head">
       <div>
         <h2>안심 여행 지역 랭킹</h2>
-        <p>장기 지진 위험 등급과 최근 지진 활동을 합산한 <b>안심 지수</b> 순입니다. 지역을 누르면 여행 정보가 열립니다.</p>
+        <p>장기 지진 위험 등급과 최근 30일 지진 활동을 합산한 <b>안심 지수</b> 순입니다. 지역을 누르면 볼거리·숙박·쇼핑·먹거리 정보가 열립니다.</p>
       </div>
     </div>
     <div class="rank-list" id="rankList"></div>
-    <p class="adnote">※ 장기 위험 등급은 일본 지진조사연구추진본부·방재과학기술연구소(J-SHIS)의 '30년 내 진도 6약 이상 확률'을 바탕으로 한 베타 버전 등급이며, 정식 출시 전 최신 수치로 확정합니다. 안심 지수는 참고용이며 안전을 보장하지 않습니다.</p>
+    <div class="card howto">
+      <b>안심 지수 계산법</b> · 장기 위험 등급(일본 지진조사연구추진본부·J-SHIS의 '30년 내 진도 6약 이상 확률' 기준, 베타 단계에서는 5단계 등급으로 적용) 기본 점수에서
+      최근 30일 동안 그 지역에서 진도 3 이상이 관측될 때마다 2점, 진도 5약 이상이면 8점을 뺍니다(최대 20점).
+      큰 지진이 난 지역은 48시간 동안 여행 상품 안내를 중단하고 안전 정보만 보여드립니다. 안심 지수는 참고용이며 안전을 보장하지 않습니다.
+    </div>
   </section>
 
-  <!-- 3. 행동요령 -->
   <section id="guide">
     <div class="sec-head">
       <div>
@@ -235,10 +282,57 @@ footer p{margin:4px 0}
       </div>
     </div>
   </section>
+
+  <section id="faq">
+    <div class="sec-head">
+      <div>
+        <h2>자주 묻는 질문</h2>
+      </div>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>지진 때문에 일본 여행을 취소해야 하나요?</summary>
+        <p>대부분의 경우 그럴 필요는 없습니다. 일본은 매년 진도 1 이상 지진이 2,000회 안팎 발생하지만, 여행자가 피해를 입는 경우는 드뭅니다. 건물 내진 기준과 대응 체계가 세계 최고 수준입니다. 다만 '쓰나미 경보'나 '난카이 해곡 지진 임시 정보'가 발표된 지역은 일정을 조정하는 것이 좋습니다.</p>
+      </details>
+      <details>
+        <summary>'진도'와 '규모(M)'는 무엇이 다른가요?</summary>
+        <p>규모(매그니튜드)는 지진 자체의 에너지 크기이고, 진도는 특정 장소에서 느껴지는 흔들림의 세기입니다. 여행자에게 중요한 것은 진도입니다. 일본 기상청 진도 4까지는 대부분 피해가 없고, 5약부터 물건이 떨어지거나 교통이 멈출 수 있습니다.</p>
+      </details>
+      <details>
+        <summary>난카이 해곡 지진이 뭔가요?</summary>
+        <p>시즈오카부터 규슈 동쪽 바다까지 이어지는 해곡에서 100~150년 주기로 발생해 온 거대지진입니다. 일본 정부는 30년 내 발생 확률을 70~80%로 보고 있으며, 발생 시 도쿄 서쪽부터 나고야, 오사카, 시코쿠, 미야자키까지 넓은 지역에 강한 흔들림과 쓰나미가 예상됩니다. 이 서비스의 장기 위험 등급에 이 점이 반영되어 있습니다.</p>
+      </details>
+      <details>
+        <summary>안심 지수가 높으면 안전하다는 뜻인가요?</summary>
+        <p>아닙니다. 상대적으로 장기 위험이 낮고 최근 활동이 적다는 뜻일 뿐, 어디서든 지진은 일어날 수 있습니다. 안심 지수는 여행지를 고를 때 참고하는 정보 중 하나로만 활용하세요.</p>
+      </details>
+      <details>
+        <summary>여행 중 지진이 났을 때 한국어로 정보를 얻으려면?</summary>
+        <p>일본 관광청의 'Safety tips' 앱(한국어 지원)과 NHK WORLD-JAPAN 앱을 미리 설치하세요. 외교부 영사콜센터(+82-2-3210-0404)는 24시간 한국어로 연결됩니다. 이 페이지도 계속 갱신됩니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="card subscribe">
+      <h3>큰 지진이 나면 알려드릴게요</h3>
+      <p>진도 5약 이상 지진이나 쓰나미 경보가 발표되면 이메일로 알려드리는 안심 알림을 준비하고 있습니다. 이메일을 남겨 두시면 시작할 때 가장 먼저 안내해 드립니다.</p>
+      <form id="subForm">
+        <input type="email" id="subEmail" placeholder="이메일 주소" required autocomplete="email">
+        <button class="btn primary" type="submit">알림 신청</button>
+      </form>
+    </div>
+  </section>
 </main>
 
 <footer>
   <div class="wrap">
+    <div class="links">
+      <button type="button" data-legal="terms">이용약관</button>
+      <button type="button" data-legal="privacy">개인정보처리방침</button>
+      <button type="button" data-legal="disclaimer">면책 고지</button>
+      <button type="button" id="shareBtn">링크 복사</button>
+    </div>
     <p><b>안심재팬</b> · 더 안전하고 더 재미있는 일본여행 (베타)</p>
     <p>지진 데이터: 일본 기상청 발표 정보(P2P지진정보 API 경유). 이 서비스는 지진을 예보하지 않으며, 긴급 상황에서는 일본 정부와 현지 당국의 안내를 우선 따르세요.</p>
     <p>일부 링크는 제휴 링크로, 예약 시 서비스 운영에 필요한 수수료를 받을 수 있습니다. 이용자에게 추가 비용은 없습니다.</p>
@@ -251,104 +345,156 @@ footer p{margin:4px 0}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ---------- 지역 데이터 (베타) ---------- */
-// tier: 장기 위험 등급 (1 낮음 ~ 5 높음) — J-SHIS 기반 초안, 출시 전 최신 수치로 확정 필요
+/* ========== 설정: 제휴 ID (가입 후 채워 넣으면 됩니다) ========== */
+const AFF = {
+  agodaCid: '',        // 아고다 파트너스 CID
+  klookAid: '',        // 클룩 제휴 AID
+  tripAllianceId: '',  // 트립닷컴 얼라이언스 ID
+  esimUrl: '',         // eSIM 제휴 링크 (비우면 기본 링크)
+};
+function hotelUrl(r){
+  const u = new URL('https://www.agoda.com/ko-kr/search');
+  u.searchParams.set('city', r.agoda || ''); u.searchParams.set('textToSearch', r.en);
+  if(AFF.agodaCid) u.searchParams.set('cid', AFF.agodaCid);
+  return u.toString();
+}
+function tourUrl(r, q){
+  const u = new URL('https://www.klook.com/ko/search/result/');
+  u.searchParams.set('query', q || r.en);
+  if(AFF.klookAid) u.searchParams.set('aid', AFF.klookAid);
+  return u.toString();
+}
+function esimUrl(){ return AFF.esimUrl || 'https://www.klook.com/ko/search/result/?query=%EC%9D%BC%EB%B3%B8%20eSIM' + (AFF.klookAid?'&aid='+AFF.klookAid:''); }
+const INSURANCE_URL = 'https://www.e-insmarket.or.kr/'; // 보험다모아(금융감독원·보험협회 공식 비교 사이트)
+
+/* ========== 지역 데이터 ========== */
+// tier: 장기 위험 등급 1(낮음)~5(높음). J-SHIS 30년 내 진도 6약 이상 확률을 5단계로 나눈 베타 등급.
 const TIER_LABEL = {1:'낮음',2:'다소 낮음',3:'보통',4:'다소 높음',5:'높음'};
 const TIER_BASE  = {1:92,2:84,3:74,4:64,5:54};
 
 const REGIONS = [
-  { id:'fukuoka', name:'후쿠오카', jp:'福岡', match:{pref:['福岡県']}, tier:1, coast:true,
+  { id:'fukuoka', name:'후쿠오카', jp:'福岡', en:'Fukuoka', agoda:'Fukuoka', match:{pref:['福岡県']}, tier:1,
     tags:['비행기 1시간대','미식'],
     note:'시내를 지나는 경고(警固) 단층이 있지만 장기 확률은 낮은 편입니다.',
-    safety:'모모치 해변 쪽 숙소라면 쓰나미 대피 경로를 체크인할 때 확인하세요.',
-    sights:[['다자이후 텐만구','학문의 신을 모신 신사, 매화와 우메가에모치'],['오호리 공원','호수 산책과 후쿠오카 성터'],['후쿠오카 타워·모모치 해변','바다 전망과 노을'],['야나가와 뱃놀이','근교 물의 도시']],
+    safety:'모모치 해변 쪽 숙소라면 체크인할 때 쓰나미 대피 경로를 확인하세요.',
+    sights:[['다자이후 텐만구','학문의 신을 모신 신사, 매화와 우메가에모치','다자이후'],['오호리 공원','호수 산책과 후쿠오카 성터'],['후쿠오카 타워·모모치 해변','바다 전망과 노을','후쿠오카 타워'],['야나가와 뱃놀이','근교 물의 도시','야나가와']],
     stay:[['하카타역 주변','공항·신칸센 접근성 최고'],['텐진','쇼핑·야간 활동 중심'],['나카스','야타이(포장마차) 거리 인접']],
     shop:[['캐널시티 하카타','대형 복합몰과 분수쇼'],['텐진 지하상가','비 오는 날에도 쇼핑'],['아뮤플라자 하카타','역 직결 쇼핑']],
     food:[['돈코츠 라멘','하카타의 원조'],['모쓰나베','곱창 전골'],['야타이','나카스 강변 포장마차']] },
 
-  { id:'sapporo', name:'삿포로', jp:'札幌', match:{addr:['札幌']}, tier:1, coast:false,
+  { id:'sapporo', name:'삿포로', jp:'札幌', en:'Sapporo', agoda:'Sapporo', match:{addr:['札幌']}, tier:1,
     tags:['겨울 축제','온천 근교'],
     note:'장기 확률은 낮은 편입니다. 2018년 홋카이도 이부리 동부 지진 때 대규모 정전이 있었습니다.',
     safety:'겨울에는 정전 시 난방이 끊길 수 있어 방한 준비와 보조배터리를 챙기세요.',
-    sights:[['오도리 공원','눈 축제의 메인 무대'],['모이와야마 야경','일본 신 3대 야경'],['오타루 운하','기차로 40분 근교'],['삿포로 시계탑','도심 랜드마크']],
+    sights:[['오도리 공원','눈 축제의 메인 무대'],['모이와야마 야경','일본 신 3대 야경','모이와야마'],['오타루 운하','기차로 40분 근교','오타루'],['삿포로 시계탑','도심 랜드마크']],
     stay:[['삿포로역 주변','공항철도·근교 이동 편리'],['스스키노','먹거리·야간 활동 중심']],
     shop:[['다누키코지 상점가','드럭스토어·기념품'],['삿포로 팩토리','옛 맥주 공장 복합몰']],
     food:[['미소라멘','삿포로 대표 라멘'],['징기스칸','양고기 구이'],['수프카레','삿포로 발상 요리']] },
 
-  { id:'nagasaki', name:'나가사키', jp:'長崎', match:{pref:['長崎県']}, tier:1, coast:true,
+  { id:'nagasaki', name:'나가사키', jp:'長崎', en:'Nagasaki', agoda:'Nagasaki', match:{pref:['長崎県']}, tier:1,
     tags:['이국적 풍경','야경'],
     note:'장기 확률이 낮은 지역 중 하나입니다.',
     safety:'항구 주변 저지대 숙소라면 가까운 고지대 피난 장소를 확인하세요.',
-    sights:[['이나사야마 야경','세계 신 3대 야경'],['글로버 정원','개항기 서양식 저택'],['데지마','에도 시대 네덜란드 무역지'],['하우스텐보스','사세보의 테마파크']],
+    sights:[['이나사야마 야경','세계 신 3대 야경','이나사야마'],['글로버 정원','개항기 서양식 저택'],['데지마','에도 시대 네덜란드 무역지'],['하우스텐보스','사세보의 테마파크','하우스텐보스']],
     stay:[['나가사키역 주변','교통 편리'],['하마노마치','쇼핑가·먹거리 인접']],
     shop:[['하마노마치 아케이드','현지 상점가'],['아뮤플라자 나가사키','역 직결']],
     food:[['나가사키 짬뽕','원조 짬뽕'],['카스텔라','대표 기념품'],['사라우동','바삭한 면 요리']] },
 
-  { id:'okinawa', name:'오키나와', jp:'沖縄', match:{pref:['沖縄県']}, tier:2, coast:true,
+  { id:'hakodate', name:'하코다테', jp:'函館', en:'Hakodate', agoda:'Hakodate', match:{addr:['函館']}, tier:2,
+    tags:['야경','해산물'],
+    note:'홋카이도 남부 해안 도시로 장기 확률은 다소 낮은 편이나, 바다에 면해 있어 쓰나미 정보에 유의해야 합니다.',
+    safety:'아침시장·베이 에어리어는 해안 저지대입니다. 흔들림이 크면 하코다테산 방향 고지대로 이동하세요.',
+    sights:[['하코다테산 야경','로프웨이로 오르는 세계적 야경','하코다테산'],['하코다테 아침시장','해산물 덮밥 아침식사'],['고료카쿠','별 모양 성곽과 벚꽃','고료카쿠'],['모토마치','교회와 언덕길']],
+    stay:[['하코다테역 주변','아침시장 도보권'],['유노카와 온천','온천 호텔 밀집']],
+    shop:[['가네모리 붉은 벽돌 창고','베이 에어리어 쇼핑'],['하코다테 아침시장','건어물·멜론']],
+    food:[['해산물 덮밥','아침시장'],['시오라멘','하코다테 소금 라멘'],['럭키 피에로','현지 햄버거 체인']] },
+
+  { id:'okinawa', name:'오키나와', jp:'沖縄', en:'Okinawa', agoda:'Okinawa', match:{pref:['沖縄県']}, tier:2,
     tags:['휴양','가족여행'],
     note:'강한 흔들림 확률은 비교적 낮지만 섬 지역이라 쓰나미 정보에 유의해야 합니다.',
     safety:'해변 리조트에서는 객실 층수와 가장 가까운 쓰나미 피난 빌딩을 확인하세요.',
-    sights:[['츄라우미 수족관','고래상어 대형 수조'],['고우리 대교','에메랄드빛 바다 드라이브'],['슈리성 공원','복원 공사 진행 중인 류큐 왕궁'],['만좌모','코끼리 코 모양 절벽']],
+    sights:[['츄라우미 수족관','고래상어 대형 수조','츄라우미'],['고우리 대교','에메랄드빛 바다 드라이브'],['슈리성 공원','복원 공사 진행 중인 류큐 왕궁'],['만좌모','코끼리 코 모양 절벽']],
     stay:[['나하 국제거리','렌터카 없이도 편리'],['온나손 리조트 지역','해변 리조트 밀집']],
     shop:[['국제거리','기념품·특산품'],['아시비나 아울렛','공항 근처 아울렛']],
     food:[['오키나와 소바','돼지고기 국수'],['타코라이스','오키나와식 덮밥'],['블루실 아이스크림','현지 아이스크림']] },
 
-  { id:'kanazawa', name:'가나자와', jp:'金沢', match:{pref:['石川県']}, tier:2, coast:true,
+  { id:'beppu', name:'벳푸·유후인', jp:'別府', en:'Beppu', agoda:'Beppu', match:{pref:['大分県']}, tier:2,
+    tags:['온천','료칸'],
+    note:'온천 지대라 작은 지진이 종종 있지만 장기적으로 강한 흔들림 확률은 다소 낮은 편입니다. 2016년 구마모토 지진의 영향을 받은 적이 있습니다.',
+    safety:'료칸은 목조 건물이 많습니다. 흔들림이 멈춘 뒤 직원 안내에 따라 이동하세요.',
+    sights:[['벳푸 지옥 순례','7가지 색의 온천','벳푸 지옥'],['유후인 긴린코','호수와 아기자기한 거리','유후인'],['벳푸 로프웨이','쓰루미다케 전망']],
+    stay:[['벳푸 간나와','온천 증기 마을'],['유후인','료칸 중심 온천 마을']],
+    shop:[['유후인 유노쓰보 거리','잡화·디저트'],['벳푸역 주변','온천 기념품']],
+    food:[['지옥 찜','온천 증기 요리'],['도리텐','오이타식 닭튀김'],['단고지루','수제비 된장국']] },
+
+  { id:'kanazawa', name:'가나자와', jp:'金沢', en:'Kanazawa', agoda:'Kanazawa', match:{pref:['石川県']}, tier:2,
     tags:['전통 정원','해산물'],
     note:'2024년 노토반도 지진 이후 이시카와현 북부의 여진 활동을 지켜볼 필요가 있습니다. 가나자와 시내는 관광이 정상 운영 중입니다.',
     safety:'노토반도 방면 일정은 현지 도로·복구 상황을 출발 전 확인하세요.',
-    sights:[['겐로쿠엔','일본 3대 정원'],['히가시차야가이','옛 찻집 거리'],['21세기 미술관','현대미술관'],['오미초 시장','신선한 해산물 시장']],
+    sights:[['겐로쿠엔','일본 3대 정원','겐로쿠엔'],['히가시차야가이','옛 찻집 거리'],['21세기 미술관','현대미술관'],['오미초 시장','신선한 해산물 시장']],
     stay:[['가나자와역 주변','교통 편리'],['고린보','시내 중심가']],
     shop:[['고린보·가타마치','쇼핑 중심가'],['금박 공예품점','가나자와 대표 특산품']],
     food:[['해산물 덮밥','오미초 시장'],['노도구로','고급 생선 요리'],['금박 소프트아이스크림','명물 디저트']] },
 
-  { id:'kyoto', name:'교토', jp:'京都', match:{pref:['京都府']}, tier:3, coast:false,
+  { id:'kyoto', name:'교토', jp:'京都', en:'Kyoto', agoda:'Kyoto', match:{pref:['京都府']}, tier:3,
     tags:['문화유산','사계절'],
     note:'내륙이라 쓰나미 걱정은 적지만 주변에 활단층이 있어 등급은 보통입니다.',
     safety:'목조 건물이 밀집한 지역이 많으니 흔들림 후에는 넓은 공원이나 학교로 피하세요.',
-    sights:[['후시미 이나리 신사','천 개의 붉은 도리이'],['기요미즈데라','교토 대표 사찰'],['아라시야마','대나무 숲과 도게쓰교'],['킨카쿠지','금각사']],
+    sights:[['후시미 이나리 신사','천 개의 붉은 도리이','후시미 이나리'],['기요미즈데라','교토 대표 사찰','기요미즈데라'],['아라시야마','대나무 숲과 도게쓰교','아라시야마'],['킨카쿠지','금각사']],
     stay:[['교토역 주변','오사카·나라 이동 편리'],['시조 가와라마치','먹거리·쇼핑 중심']],
     shop:[['니시키 시장','교토의 부엌'],['시조 가와라마치','백화점·상점가']],
     food:[['유도후','두부 요리'],['말차 디저트','우지 말차'],['교 가이세키','교토식 코스 요리']] },
 
-  { id:'hiroshima', name:'히로시마', jp:'広島', match:{pref:['広島県']}, tier:3, coast:true,
+  { id:'hiroshima', name:'히로시마', jp:'広島', en:'Hiroshima', agoda:'Hiroshima', match:{pref:['広島県']}, tier:3,
     tags:['세계유산 2곳','당일치기 섬'],
     note:'난카이 해곡 지진의 영향권 가장자리에 있어 등급은 보통입니다.',
     safety:'미야지마 방문 시 섬 안 대피 장소와 페리 운항 정보를 확인하세요.',
-    sights:[['평화기념공원','원폭 돔과 평화기념자료관'],['미야지마 이쓰쿠시마 신사','바다 위 도리이'],['슈케이엔','다이묘 정원']],
+    sights:[['평화기념공원','원폭 돔과 평화기념자료관'],['미야지마 이쓰쿠시마 신사','바다 위 도리이','미야지마'],['슈케이엔','다이묘 정원']],
     stay:[['히로시마역 주변','신칸센 이용 편리'],['핫초보리','시내 중심가']],
     shop:[['혼도리 상점가','아케이드 쇼핑가'],['미야지마 오모테산도','기념품 거리']],
     food:[['히로시마식 오코노미야키','면이 들어간 오코노미야키'],['굴 요리','히로시마 특산'],['모미지 만주','단풍 모양 과자']] },
 
-  { id:'osaka', name:'오사카', jp:'大阪', match:{pref:['大阪府']}, tier:4, coast:true,
+  { id:'kobe', name:'고베', jp:'神戸', en:'Kobe', agoda:'Kobe', match:{pref:['兵庫県']}, tier:3,
+    tags:['야경','고베규'],
+    note:'1995년 한신·아와지 대지진 이후 재건된 도시로, 현재 건물 내진 수준이 높습니다. 난카이 해곡 영향권에 있어 등급은 보통입니다.',
+    safety:'하버랜드·메리켄파크는 해안 저지대입니다. 흔들림이 크면 산 쪽(기타노) 방향으로 이동하세요.',
+    sights:[['기타노 이진칸','서양식 저택 거리','기타노'],['고베 하버랜드','항구 야경과 쇼핑'],['롯코산 야경','1000만 달러 야경','롯코산'],['아리마 온천','일본 3대 고탕','아리마 온천']],
+    stay:[['산노미야','교통·쇼핑 중심'],['하버랜드','야경 호텔']],
+    shop:[['산노미야 센터가이','아케이드 상점가'],['고베 모자이크','하버랜드 복합몰']],
+    food:[['고베규','세계적 와규'],['소바메시','고베식 볶음'],['난킨마치','차이나타운 길거리 음식']] },
+
+  { id:'osaka', name:'오사카', jp:'大阪', en:'Osaka', agoda:'Osaka', match:{pref:['大阪府']}, tier:4,
     tags:['먹방','테마파크'],
-    note:'난카이 해곡 거대지진 발생 시 강한 흔들림과 쓰나미 영향이 예상되는 지역입니다.',
+    note:'난카이 해곡 거대지진 발생 시 강한 흔들림과 쓰나미 영향이 예상되는 지역입니다. 2018년 오사카 북부 지진(진도 6약)이 있었습니다.',
     safety:'USJ·베이 에어리어 방문 시 쓰나미 피난 빌딩 위치를 확인하세요. 시내 숙소는 난바·우메다 등 내륙 쪽이 유리합니다.',
-    sights:[['오사카성','천수각과 공원'],['도톤보리','글리코 간판과 먹자골목'],['유니버설 스튜디오 재팬','닌텐도 월드'],['우메다 공중정원','도심 전망대']],
+    sights:[['오사카성','천수각과 공원','오사카성'],['도톤보리','글리코 간판과 먹자골목'],['유니버설 스튜디오 재팬','닌텐도 월드','유니버설 스튜디오 재팬'],['우메다 공중정원','도심 전망대','우메다 공중정원']],
     stay:[['난바','공항철도·먹거리 중심'],['우메다','교토·고베 이동 편리']],
     shop:[['신사이바시스지','아케이드 쇼핑가'],['우메다 백화점가','한큐·한신 백화점']],
     food:[['타코야키','오사카 대표 간식'],['쿠시카츠','꼬치 튀김'],['오코노미야키','간사이식']] },
 
-  { id:'tokyo', name:'도쿄', jp:'東京', match:{pref:['東京都']}, tier:5, coast:true,
+  { id:'tokyo', name:'도쿄', jp:'東京', en:'Tokyo', agoda:'Tokyo', match:{pref:['東京都']}, tier:5,
     tags:['쇼핑','트렌드'],
     note:'수도 직하 지진 가능성이 꾸준히 거론되는 지역으로 장기 확률이 높습니다. 대신 건물 내진 기준과 대응 체계는 세계 최고 수준입니다.',
     safety:'지진 후 대중교통이 멈추면 귀가 곤란자가 대량 발생합니다. 무리하게 이동하지 말고 숙소나 지정 시설에 머무세요.',
-    sights:[['아사쿠사 센소지','도쿄 대표 사찰'],['시부야 스크램블 교차로','시부야 스카이 전망대'],['도쿄 스카이트리','634m 전망탑'],['메이지 신궁','도심 속 숲']],
+    sights:[['아사쿠사 센소지','도쿄 대표 사찰','아사쿠사'],['시부야 스크램블 교차로','시부야 스카이 전망대','시부야 스카이'],['도쿄 스카이트리','634m 전망탑','도쿄 스카이트리'],['메이지 신궁','도심 속 숲']],
     stay:[['신주쿠','교통 허브'],['긴자','쇼핑·고급 숙소'],['우에노','공항 접근성·가성비']],
     shop:[['긴자','명품·백화점'],['시부야·하라주쿠','트렌드 쇼핑'],['아키하바라','전자제품·서브컬처']],
     food:[['스시','쓰키지 장외시장'],['몬자야키','쓰키시마 명물'],['라멘','지역별 명점']] },
 
-  { id:'nagoya', name:'나고야', jp:'名古屋', match:{pref:['愛知県']}, tier:5, coast:true,
+  { id:'nagoya', name:'나고야', jp:'名古屋', en:'Nagoya', agoda:'Nagoya', match:{pref:['愛知県']}, tier:5,
     tags:['지브리 파크','독특한 미식'],
     note:'난카이 해곡 지진의 영향이 클 것으로 예상되는 지역이라 장기 확률이 높습니다.',
     safety:'항구 주변(나고야항 수족관 등) 방문 시 쓰나미 피난 장소를 확인하세요.',
-    sights:[['나고야성','금 샤치호코 성'],['지브리 파크','아이치 엑스포 공원 내'],['아쓰타 신궁','유서 깊은 신사'],['오아시스21','유리 지붕 랜드마크']],
+    sights:[['나고야성','금 샤치호코 성','나고야성'],['지브리 파크','아이치 엑스포 공원 내','지브리 파크'],['아쓰타 신궁','유서 깊은 신사'],['오아시스21','유리 지붕 랜드마크']],
     stay:[['나고야역 주변','교통 편리'],['사카에','쇼핑·먹거리 중심']],
     shop:[['오스 상점가','레트로 상점가'],['사카에','백화점·지하상가']],
     food:[['히쓰마부시','장어 덮밥'],['미소카츠','된장 소스 돈가스'],['데바사키','닭날개 튀김']] },
 ];
 
-/* ---------- 진도 표기 ---------- */
+/* 백업 데이터: build.py 가 최신 자료로 갱신합니다. 실시간 API 에 접근할 수 없을 때 사용됩니다. */
+const SNAPSHOT = {"at":"2026/11/17 11:20","list":[{"t":"2026/11/17 10:40:00","n":"熊本県天草・芦北地方","m":2.6,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/17 08:27:00","n":"島根県東部","m":2.8,"d":10,"s":10,"ts":"None","p":[["鳥取県",10]]},{"t":"2026/11/17 01:45:00","n":"宮古島近海","m":3.9,"d":30,"s":10,"ts":"None","p":[["沖縄県",10]]},{"t":"2026/11/16 13:28:00","n":"静岡県東部","m":2.8,"d":0,"s":10,"ts":"None","p":[["神奈川県",10],["静岡県",10]]},{"t":"2026/11/16 13:24:00","n":"石川県能登地方","m":5.1,"d":280,"s":10,"ts":"None","p":[["青森県",10],["岩手県",10],["宮城県",10],["福島県",10],["茨城県",10],["東京都",10]]},{"t":"2026/11/16 06:08:00","n":"愛知県東部","m":3.4,"d":40,"s":10,"ts":"None","p":[["長野県",10],["岐阜県",10],["静岡県",10],["愛知県",10]]},{"t":"2026/11/16 04:34:00","n":"愛知県東部","m":2.6,"d":40,"s":10,"ts":"None","p":[["愛知県",10]]},{"t":"2026/11/16 02:43:00","n":"薩摩半島西方沖","m":2.5,"d":10,"s":10,"ts":"None","p":[["鹿児島県",10]]},{"t":"2026/11/16 00:57:00","n":"大阪府北部","m":2.7,"d":10,"s":10,"ts":"None","p":[["大阪府",10]]},{"t":"2026/11/15 16:23:00","n":"熊本県熊本地方","m":3.1,"d":10,"s":20,"ts":"None","p":[["熊本県",20]]},{"t":"2026/11/15 14:00:00","n":"茨城県沖","m":3.6,"d":40,"s":10,"ts":"None","p":[["茨城県",10]]},{"t":"2026/11/15 13:16:00","n":"渡島地方東部","m":2.6,"d":0,"s":10,"ts":"None","p":[["函館",10]]},{"t":"2026/11/15 06:31:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":30,"ts":"None","p":[["熊本県",30],["鹿児島県",20],["長崎県",10],["宮崎県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":-1,"ts":"None","p":[]},{"t":"2026/11/15 01:50:00","n":"茨城県沖","m":3.7,"d":90,"s":10,"ts":"None","p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":30,"ts":"None","p":[["熊本県",30],["宮崎県",20],["福岡県",10],["長崎県",10],["大分県",10],["鹿児島県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":-1,"ts":"None","p":[]},{"t":"2026/11/14 22:02:00","n":"和歌山県北部","m":2.9,"d":10,"s":20,"ts":"None","p":[["和歌山県",20]]},{"t":"2026/11/14 15:39:00","n":"根室半島南東沖","m":4.2,"d":30,"s":10,"ts":"None","p":[["北海道",10]]},{"t":"2026/11/14 11:16:00","n":"富山県西部","m":3,"d":10,"s":20,"ts":"None","p":[["岐阜県",20]]},{"t":"2026/11/14 09:02:00","n":"浦河沖","m":3.3,"d":60,"s":10,"ts":"None","p":[["函館",10]]},{"t":"2026/11/14 00:03:00","n":"島根県西部","m":3.5,"d":10,"s":20,"ts":"None","p":[["島根県",20]]},{"t":"2026/11/13 19:42:00","n":"和歌山県北部","m":2.4,"d":10,"s":10,"ts":"None","p":[["和歌山県",10]]},{"t":"2026/11/13 15:26:00","n":"熊本県熊本地方","m":2.2,"d":0,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":30,"ts":"None","p":[["熊本県",30],["長崎県",20],["宮崎県",20],["鹿児島県",20],["福岡県",10],["佐賀県",10],["大分県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":-1,"ts":"None","p":[]},{"t":"2026/11/13 03:48:00","n":"茨城県沖","m":3.6,"d":50,"s":10,"ts":"None","p":[["茨城県",10]]},{"t":"2026/11/12 22:27:00","n":"千葉県北東部","m":3.9,"d":50,"s":20,"ts":"None","p":[["千葉県",20],["茨城県",10]]},{"t":"2026/11/12 21:43:00","n":"熊本県熊本地方","m":2.1,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/12 21:34:00","n":"大分県中部","m":2,"d":10,"s":10,"ts":"None","p":[["大分県",10]]},{"t":"2026/11/12 13:46:00","n":"トカラ列島近海","m":2.6,"d":0,"s":10,"ts":"None","p":[["鹿児島県",10]]},{"t":"2026/11/12 13:07:00","n":"三陸沖","m":4.7,"d":10,"s":10,"ts":"None","p":[["岩手県",10]]},{"t":"2026/11/12 02:15:00","n":"青森県東方沖","m":3.6,"d":60,"s":20,"ts":"None","p":[["青森県",20],["函館",10]]},{"t":"2026/11/11 21:13:00","n":"橘湾","m":2.3,"d":10,"s":10,"ts":"None","p":[["長崎県",10]]},{"t":"2026/11/11 15:21:00","n":"熊本県阿蘇地方","m":2.4,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/11 12:57:00","n":"茨城県沖","m":4.6,"d":20,"s":10,"ts":"None","p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/11 08:33:00","n":"熊本県熊本地方","m":2.7,"d":0,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/11 07:36:00","n":"岩手県内陸南部","m":2.9,"d":10,"s":10,"ts":"None","p":[["宮城県",10]]},{"t":"2026/11/10 22:23:00","n":"熊本県天草・芦北地方","m":2.5,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/10 16:53:00","n":"愛媛県南予","m":3,"d":40,"s":10,"ts":"None","p":[["愛媛県",10]]},{"t":"2026/11/10 16:14:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/10 15:36:00","n":"房総半島南方沖","m":4.5,"d":20,"s":20,"ts":"None","p":[["千葉県",20],["東京都",10],["静岡県",10]]},{"t":"2026/11/10 14:20:00","n":"茨城県沖","m":4.5,"d":30,"s":10,"ts":"None","p":[["宮城県",10],["福島県",10],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10]]},{"t":"2026/11/10 06:16:00","n":"橘湾","m":3.3,"d":10,"s":20,"ts":"None","p":[["長崎県",20],["熊本県",10]]},{"t":"2026/11/10 00:09:00","n":"瀬戸内海中部","m":2.8,"d":10,"s":10,"ts":"None","p":[["広島県",10],["愛媛県",10]]},{"t":"2026/11/09 18:35:00","n":"長野県南部","m":2.3,"d":10,"s":10,"ts":"None","p":[["長野県",10]]},{"t":"2026/11/09 14:01:00","n":"茨城県沖","m":4.5,"d":40,"s":10,"ts":"None","p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":30,"ts":"None","p":[["宮城県",30],["福島県",30],["茨城県",30],["栃木県",30],["岩手県",20],["山形県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":-1,"ts":"None","p":[]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":30,"ts":"None","p":[["岩手県",30],["宮城県",30],["福島県",20],["青森県",10],["秋田県",10]]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":-1,"ts":"None","p":[]},{"t":"2026/11/09 03:15:00","n":"茨城県北部","m":3.5,"d":10,"s":20,"ts":"None","p":[["茨城県",20],["福島県",10]]},{"t":"2026/11/08 20:47:00","n":"熊本県熊本地方","m":2,"d":0,"s":20,"ts":"None","p":[["熊本県",20]]},{"t":"2026/11/08 19:39:00","n":"日向灘","m":3,"d":30,"s":10,"ts":"None","p":[["宮崎県",10]]},{"t":"2026/11/08 11:21:00","n":"熊本県天草・芦北地方","m":2.8,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":40,"ts":"None","p":[["熊本県",40],["長崎県",30],["福岡県",20],["佐賀県",20],["大分県",20],["宮崎県",20],["鹿児島県",20],["山口県",10],["高知県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":-1,"ts":"None","p":[]},{"t":"2026/11/08 08:23:00","n":"熊本県熊本地方","m":3,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/08 07:38:00","n":"福島県沖","m":3.9,"d":60,"s":20,"ts":"None","p":[["福島県",20],["宮城県",10]]},{"t":"2026/11/08 02:31:00","n":"渡島地方東部","m":2.9,"d":0,"s":20,"ts":"None","p":[["北海道",20]]},{"t":"2026/11/08 02:30:00","n":"茨城県南部","m":3.2,"d":60,"s":10,"ts":"None","p":[["栃木県",10]]},{"t":"2026/11/08 02:03:00","n":"愛知県東部","m":3.3,"d":40,"s":20,"ts":"None","p":[["愛知県",20],["長野県",10],["岐阜県",10],["静岡県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":-1,"ts":"None","p":[]},{"t":"2026/11/08 00:42:00","n":"岩手県沖","m":4.1,"d":20,"s":10,"ts":"None","p":[["岩手県",10]]},{"t":"2026/11/07 22:48:00","n":"福島県沖","m":3.6,"d":60,"s":10,"ts":"None","p":[["福島県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":30,"ts":"None","p":[["福島県",30],["宮城県",20],["山形県",20],["茨城県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["岩手県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10],["静岡県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":-1,"ts":"None","p":[]},{"t":"2026/11/07 06:30:00","n":"山口県中部","m":2.9,"d":10,"s":20,"ts":"None","p":[["山口県",20]]},{"t":"2026/11/07 03:54:00","n":"和歌山県北部","m":2.3,"d":0,"s":10,"ts":"None","p":[["和歌山県",10]]},{"t":"2026/11/07 03:51:00","n":"和歌山県北部","m":2.1,"d":0,"s":10,"ts":"None","p":[["和歌山県",10]]},{"t":"2026/11/07 03:02:00","n":"和歌山県北部","m":3.5,"d":10,"s":20,"ts":"None","p":[["大阪府",20],["和歌山県",20]]},{"t":"2026/11/06 22:43:00","n":"淡路島付近","m":3.1,"d":10,"s":10,"ts":"None","p":[["兵庫県",10]]},{"t":"2026/11/06 22:04:00","n":"北海道北西沖","m":3.3,"d":10,"s":20,"ts":"None","p":[["北海道",20]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":30,"ts":"NonEffective","p":[["宮城県",30],["福島県",30],["茨城県",30],["青森県",20],["岩手県",20],["山形県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["神奈川県",20],["山梨県",20],["静岡県",20],["北海道",10],["秋田県",10],["新潟県",10],["長野県",10]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":30,"ts":"NonEffective","p":[["宮城県",30],["福島県",30],["茨城県",30],["青森県",20],["岩手県",20],["山形県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["神奈川県",20],["山梨県",20],["静岡県",20],["北海道",10],["秋田県",10],["新潟県",10],["長野県",10]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":-1,"ts":"NonEffective","p":[]},{"t":"2026/11/06 09:06:00","n":"相模湾","m":3.7,"d":140,"s":10,"ts":"None","p":[["埼玉県",10],["千葉県",10],["東京都",10]]},{"t":"2026/11/06 03:05:00","n":"福島県沖","m":4.3,"d":80,"s":20,"ts":"None","p":[["岩手県",20],["宮城県",20],["山形県",20],["福島県",20]]},{"t":"2026/11/05 14:16:00","n":"鹿児島県薩摩地方","m":2.8,"d":10,"s":20,"ts":"None","p":[["鹿児島県",20],["熊本県",10]]},{"t":"2026/11/05 11:35:00","n":"千葉県南東沖","m":3.4,"d":70,"s":10,"ts":"None","p":[["東京都",10]]},{"t":"2026/11/05 04:28:00","n":"鹿児島県薩摩地方","m":3.1,"d":10,"s":20,"ts":"None","p":[["鹿児島県",20],["熊本県",10]]},{"t":"2026/11/05 04:21:00","n":"宮城県沖","m":4.1,"d":50,"s":10,"ts":"None","p":[["岩手県",10],["宮城県",10]]},{"t":"2026/11/04 07:28:00","n":"熊本県熊本地方","m":2.5,"d":10,"s":10,"ts":"None","p":[["熊本県",10]]},{"t":"2026/11/04 05:34:00","n":"千葉県東方沖","m":3.4,"d":60,"s":20,"ts":"None","p":[["千葉県",20]]},{"t":"2026/11/04 05:11:00","n":"和歌山県北部","m":1.9,"d":10,"s":10,"ts":"None","p":[["和歌山県",10]]}]};//END-SNAPSHOT
+
+/* ========== 진도 표기 ========== */
 const SCALE = {10:'1',20:'2',30:'3',40:'4',45:'5약',50:'5강',55:'6약',60:'6강',70:'7'};
 function scaleColor(s){
   if(s>=55) return '#7f1d1d';
@@ -360,13 +506,18 @@ function scaleColor(s){
 }
 document.getElementById('legend').innerHTML =
   [[10,'진도1'],[20,'2'],[30,'3'],[40,'4'],[45,'5약~5강'],[55,'6약 이상']]
-  .map(([s,l])=>`<span><i style="background:${scaleColor(s)}"></i>${l}</span>`).join('') +
-  '<span>· 진도는 일본 기상청 기준 (0~7)</span>';
+  .map(([s,l])=>`<span><i style="background:${scaleColor(s)}"></i>${l}</span>`).join('');
 
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* ---------- 실시간 데이터 ---------- */
-let QUAKES = null; // null = 불러오지 못함
+/* 진원지 한국어 표기 */
+const JP_KO = [['北海道','홋카이도'],['青森県','아오모리'],['岩手県','이와테'],['宮城県','미야기'],['秋田県','아키타'],['山形県','야마가타'],['福島県','후쿠시마'],['茨城県','이바라키'],['栃木県','도치기'],['群馬県','군마'],['埼玉県','사이타마'],['千葉県','지바'],['東京都','도쿄'],['東京湾','도쿄만'],['神奈川県','가나가와'],['新潟県','니가타'],['富山県','도야마'],['石川県','이시카와'],['福井県','후쿠이'],['山梨県','야마나시'],['長野県','나가노'],['岐阜県','기후'],['静岡県','시즈오카'],['愛知県','아이치'],['三重県','미에'],['滋賀県','시가'],['京都府','교토'],['大阪府','오사카'],['兵庫県','효고'],['奈良県','나라'],['和歌山県','와카야마'],['鳥取県','돗토리'],['島根県','시마네'],['岡山県','오카야마'],['広島県','히로시마'],['山口県','야마구치'],['徳島県','도쿠시마'],['香川県','가가와'],['愛媛県','에히메'],['高知県','고치'],['福岡県','후쿠오카'],['佐賀県','사가'],['長崎県','나가사키'],['熊本県','구마모토'],['大分県','오이타'],['宮崎県','미야자키'],['鹿児島県','가고시마'],['沖縄県','오키나와'],['能登','노토'],['日向灘','휴가나다'],['伊予灘','이요나다'],['周防灘','스오나다'],['豊後水道','분고수도'],['紀伊水道','기이수도'],['相模湾','사가미만'],['駿河湾','스루가만'],['伊豆','이즈'],['十勝','도카치'],['釧路','구시로'],['根室','네무로'],['宮古島','미야코지마'],['石垣島','이시가키지마'],['奄美','아마미'],['トカラ','도카라'],['種子島','다네가시마'],['小笠原','오가사와라'],['父島','지치지마'],['択捉島','이투루프'],['国後島','구나시르'],['地方','지방'],['近海','근해'],['沖','앞바다'],['南部','남부'],['北部','북부'],['東部','동부'],['西部','서부'],['中部','중부'],['南東','남동'],['北東','북동'],['南西','남서'],['北西','북서'],['東方','동쪽'],['西方','서쪽'],['北方','북쪽'],['南方','남쪽'],['中南部','중남부'],['中西部','중서부'],['内陸','내륙'],['半島','반도'],['湾','만'],['島','섬']];
+function ko(name){ let s=name; for(const [j,k] of JP_KO) s=s.split(j).join(k+' '); return s.replace(/\s+/g,' ').trim(); }
+
+/* ========== 데이터 불러오기 ========== */
+let QUAKES = null, SOURCE = 'live';
+const norm = q => q; // API 원형
+const fromSnap = x => ({earthquake:{time:x.t,hypocenter:{name:x.n,magnitude:x.m,depth:x.d},maxScale:x.s,domesticTsunami:x.ts},points:x.p.map(([k,scale])=>({pref:k,addr:k,scale}))});
 
 async function loadQuakes(){
   const st = document.getElementById('statusTitle'), ss = document.getElementById('statusSub'), dot = document.getElementById('statusDot');
@@ -377,66 +528,82 @@ async function loadQuakes(){
     clearTimeout(t);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    QUAKES = data.filter(d=>d.earthquake && d.earthquake.hypocenter && d.earthquake.hypocenter.name);
-    renderQuakes();
+    QUAKES = data.filter(d=>d.earthquake && d.earthquake.hypocenter && d.earthquake.hypocenter.name).map(norm);
+    SOURCE='live';
   }catch(e){
-    QUAKES = null;
-    dot.className='dot';
-    st.textContent='지금은 실시간 정보를 불러오지 못했습니다';
-    ss.innerHTML='잠시 후 새로고침해 주세요. 급하실 때는 <a href="https://www.jma.go.jp/bosai/map.html#contents=earthquake_map" target="_blank" rel="noopener">일본 기상청 지진 정보</a>를 직접 확인하세요.';
-    document.getElementById('quakeList').innerHTML='<div class="empty">실시간 지진 목록을 표시할 수 없습니다.</div>';
+    if(SNAPSHOT.list.length){ QUAKES = SNAPSHOT.list.map(fromSnap); SOURCE='snapshot'; }
+    else { QUAKES = null; SOURCE='none'; }
   }
-  renderRanking();
+  renderQuakes(); renderRanking();
 }
 
 function fmtTime(s){
-  // "2026/11/11 20:00:00.000" (JST)
   const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(s||''); if(!m) return s||'';
-  return `${+m[2]}월 ${+m[3]}일 ${m[4]}:${m[5]} (일본시간)`;
+  return `${+m[2]}월 ${+m[3]}일 ${m[4]}:${m[5]}`;
 }
 function ageHours(s){
-  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+):(\d+)/.exec(s||''); if(!m) return Infinity;
-  const t = Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5],+m[6]);
-  return (Date.now()-t)/36e5;
+  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+):?(\d+)?/.exec(s||''); if(!m) return Infinity;
+  const base = SOURCE==='snapshot' && SNAPSHOT.at ? snapNow() : Date.now();
+  const t = Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5],+(m[6]||0));
+  return (base-t)/36e5;
 }
-const TSUNAMI = {None:'쓰나미 걱정 없음',Unknown:'쓰나미 정보 확인 중',Checking:'쓰나미 정보 확인 중',NonEffective:'해수면 소폭 변동 가능 (피해 우려 없음)',Watch:'쓰나미 주의보',Warning:'쓰나미 경보 발령'};
+function snapNow(){ const m=/(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(SNAPSHOT.at); return Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5]); }
+const TSUNAMI = {None:'쓰나미 걱정 없음',Unknown:'쓰나미 정보 확인 중',Checking:'쓰나미 정보 확인 중',NonEffective:'해수면 소폭 변동 가능',Watch:'쓰나미 주의보',Warning:'쓰나미 경보'};
 
 function renderQuakes(){
   const list = document.getElementById('quakeList');
+  const st = document.getElementById('statusTitle'), ss = document.getElementById('statusSub'), dot = document.getElementById('statusDot');
+  const src = document.getElementById('srcNote'), stats = document.getElementById('stats');
+  if(!QUAKES){
+    st.textContent='지금은 지진 정보를 불러오지 못했습니다';
+    ss.innerHTML='잠시 후 새로고침해 주세요. 급하실 때는 <a href="https://www.jma.go.jp/bosai/map.html#contents=earthquake_map" target="_blank" rel="noopener">일본 기상청 지진 정보</a>를 직접 확인하세요.';
+    list.innerHTML='<div class="empty">지진 목록을 표시할 수 없습니다.</div>'; src.textContent=''; stats.innerHTML=''; return;
+  }
+  const now = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  src.textContent = SOURCE==='live' ? `실시간 · ${now} 갱신 · 출처: 일본 기상청(P2P지진정보)` : `${SNAPSHOT.at} (일본시간) 기준 자료 · 실시간 연결이 막혀 있어 최근 저장 자료를 보여드립니다`;
+
   const recent = QUAKES.slice(0,10);
   const tsunamiAlert = QUAKES.find(q=>ageHours(q.earthquake.time)<24 && ['Watch','Warning'].includes(q.earthquake.domesticTsunami));
   const strong24 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24 && q.earthquake.maxScale>=45);
-  const st = document.getElementById('statusTitle'), ss = document.getElementById('statusSub'), dot = document.getElementById('statusDot');
+  const felt7 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7 && q.earthquake.maxScale>=30).length;
+  const all7 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7).length;
+  const maxQ = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7).reduce((a,q)=>!a||q.earthquake.maxScale>a.earthquake.maxScale?q:a,null);
+  stats.innerHTML = `
+    <div class="card stat"><small>최근 7일 지진 발표</small><b>${all7}건</b></div>
+    <div class="card stat"><small>그중 진도 3 이상</small><b>${felt7}건</b></div>
+    <div class="card stat"><small>7일 내 최대 진도</small><b>${maxQ?SCALE[maxQ.earthquake.maxScale]||'-':'-'}</b></div>`;
+
   if(tsunamiAlert){
     dot.className='dot warn'; st.textContent='쓰나미 '+(tsunamiAlert.earthquake.domesticTsunami==='Warning'?'경보':'주의보')+' 관련 발표가 있습니다';
-    ss.textContent=`${tsunamiAlert.earthquake.hypocenter.name} · 해안가에 계신 분은 즉시 높은 곳으로 이동하세요.`;
+    ss.textContent=`${ko(tsunamiAlert.earthquake.hypocenter.name)} · 해안가에 계신 분은 즉시 높은 곳으로 이동하세요.`;
   }else if(strong24.length){
     dot.className='dot warn'; st.textContent=`최근 24시간 내 진도 5약 이상 지진 ${strong24.length}건`;
-    ss.textContent='해당 지역 여행 중이라면 여진에 대비하고 현지 안내를 따르세요.';
+    ss.textContent=ko(strong24[0].earthquake.hypocenter.name)+' · 해당 지역 여행 중이라면 여진에 대비하고 현지 안내를 따르세요.';
   }else{
     dot.className='dot ok'; st.textContent='최근 24시간 동안 큰 지진은 없었습니다';
-    ss.textContent='진도 5약 이상 지진과 쓰나미 경보·주의보 없음 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준';
+    ss.textContent='진도 5약 이상 지진과 쓰나미 경보·주의보 없음';
   }
   if(!recent.length){ list.innerHTML='<div class="empty">최근 지진 기록이 없습니다.</div>'; return; }
   list.innerHTML = recent.map(q=>{
     const e=q.earthquake, h=e.hypocenter, s=e.maxScale;
     const lbl = SCALE[s]||'-';
-    const mag = h.magnitude>0 ? 'M'+h.magnitude.toFixed(1) : '규모 미정';
+    const mag = h.magnitude>0 ? 'M'+Number(h.magnitude).toFixed(1) : '규모 미정';
     const depth = h.depth>0 ? `깊이 ${h.depth}km` : (h.depth===0?'매우 얕음':'');
     return `<div class="q">
       <div class="shindo" style="background:${scaleColor(s)}">${esc(lbl)}<small>진도</small></div>
-      <div><div class="place">${esc(h.name)}</div><div class="meta">${esc(fmtTime(e.time))} · ${esc(TSUNAMI[e.domesticTsunami]||'')}</div></div>
+      <div><div class="place">${esc(ko(h.name))}<span>${esc(h.name)}</span></div><div class="meta">${esc(fmtTime(e.time))} 일본시간 · ${esc(TSUNAMI[e.domesticTsunami]||'')}</div></div>
       <div class="mag">${esc(mag)}<small>${esc(depth)}</small></div>
     </div>`;
   }).join('');
 }
 
-/* ---------- 안심 지수 ---------- */
+/* ========== 안심 지수 ========== */
 function regionActivity(r){
   if(!QUAKES) return null;
-  let felt=0, strong=0, maxS=0;
+  let felt=0, strong=0, maxS=0, recentStrong=false;
   for(const q of QUAKES){
-    if(ageHours(q.earthquake.time) > 24*30) continue;
+    const age = ageHours(q.earthquake.time);
+    if(age > 24*30) continue;
     const pts = (q.points||[]).filter(p=>
       (r.match.pref && r.match.pref.includes(p.pref)) ||
       (r.match.addr && r.match.addr.some(a=>(p.addr||'').startsWith(a))));
@@ -444,9 +611,10 @@ function regionActivity(r){
     const s = Math.max(...pts.map(p=>p.scale||0));
     if(s>=30) felt++;
     if(s>=45) strong++;
+    if(s>=50 && age<48) recentStrong=true;
     maxS=Math.max(maxS,s);
   }
-  return {felt,strong,maxS};
+  return {felt,strong,maxS,recentStrong};
 }
 function scoreOf(r){
   const base = TIER_BASE[r.tier];
@@ -460,30 +628,31 @@ function scoreColor(s){ return s>=85?'var(--ok)':s>=70?'var(--mid)':s>=60?'var(-
 function renderRanking(){
   const rows = REGIONS.map(r=>({r,...scoreOf(r)})).sort((x,y)=>y.score-x.score);
   document.getElementById('rankList').innerHTML = rows.map((x,i)=>{
-    const act = x.a===null ? '<span class="tag">최근 활동 정보 대기</span>'
-      : x.a.felt ? `<span class="tag hot">최근 30일 진도3+ ${x.a.felt}회</span>` : '<span class="tag">최근 30일 진도3+ 없음</span>';
-    return `<div class="card r" data-id="${x.r.id}" tabindex="0">
+    let act;
+    if(x.a===null) act='<span class="tag">최근 활동 정보 대기</span>';
+    else if(x.a.recentStrong) act='<span class="tag alert">48시간 내 강한 지진</span>';
+    else if(x.a.felt) act=`<span class="tag hot">최근 30일 진도3+ ${x.a.felt}회</span>`;
+    else act='<span class="tag">최근 30일 진도3+ 없음</span>';
+    return `<button class="card r" data-id="${x.r.id}" type="button">
       <div class="no">${i+1}</div>
       <div>
         <div class="name">${esc(x.r.name)}<small>${esc(x.r.jp)}</small></div>
         <div class="tags"><span class="tag">장기 위험 ${TIER_LABEL[x.r.tier]}</span>${act}${x.r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
       </div>
       <div class="score"><b style="color:${scoreColor(x.score)}">${x.score}</b><small>안심 지수</small><div class="bar"><i style="width:${x.score}%;background:${scoreColor(x.score)}"></i></div></div>
-    </div>`;
+    </button>`;
   }).join('');
-  document.querySelectorAll('.r').forEach(el=>{
-    el.onclick=()=>openRegion(el.dataset.id);
-    el.onkeydown=e=>{ if(e.key==='Enter') openRegion(el.dataset.id); };
-  });
+  document.querySelectorAll('.r').forEach(el=>{ el.onclick=()=>openRegion(el.dataset.id); });
 }
 
-/* ---------- 지역 상세 ---------- */
+/* ========== 지역 상세 ========== */
 const TABS = [['sights','볼거리'],['stay','숙박 추천 지역'],['shop','쇼핑'],['food','먹거리']];
 function openRegion(id){
   const r = REGIONS.find(x=>x.id===id); const {score,a} = scoreOf(r);
+  const quiet = a && a.recentStrong; // 48시간 내 강한 지진: 판촉 중단
   const sheet = document.getElementById('sheet');
   sheet.innerHTML = `
-    <button class="close" aria-label="닫기" id="closeBtn">✕</button>
+    <button class="close" aria-label="닫기" id="closeBtn" type="button">✕</button>
     <h2>${esc(r.name)} <span style="color:var(--sub);font-weight:500;font-size:16px">${esc(r.jp)}</span></h2>
     <p class="lead">${esc(r.note)}</p>
     <div class="risk">
@@ -491,31 +660,69 @@ function openRegion(id){
       <div><small>장기 위험 등급</small><b>${TIER_LABEL[r.tier]}</b></div>
       <div><small>최근 30일 진도3+</small><b>${a?a.felt+'회':'-'}</b></div>
     </div>
-    <div class="tabs" id="tabs">${TABS.map(([k,l],i)=>`<button data-k="${k}" class="${i?'':'on'}">${l}</button>`).join('')}</div>
-    <ul class="items" id="items"></ul>
+    ${quiet ? `<div class="alertbox"><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b> 여진에 대비하고 현지 당국의 안내를 따르세요. 안전을 위해 이 지역의 여행 상품 안내는 잠시 중단합니다.</div>` : ''}
     <div class="safety"><b>안전 팁</b> · ${esc(r.safety)}</div>
+    <div class="tabs" id="tabs">${TABS.map(([k,l],i)=>`<button data-k="${k}" class="${i?'':'on'}" type="button">${l}</button>`).join('')}</div>
+    <ul class="items" id="items"></ul>
+    ${quiet ? '' : `
     <div class="deals">
-      <button class="deal" data-deal="hotel"><b>🏨 ${esc(r.name)} 숙소 찾기</b><small>안전 체크된 지역 위주</small></button>
-      <button class="deal" data-deal="tour"><b>🎟️ 투어·입장권</b><small>현지 투어, 교통 패스</small></button>
-      <button class="deal" data-deal="insurance"><b>🛡️ 여행자보험 비교</b><small>지진·자연재해 보장 확인</small></button>
-      <button class="deal" data-deal="esim"><b>📶 일본 eSIM</b><small>재난 시에도 연락 유지</small></button>
+      <a class="deal" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored"><b>🏨 ${esc(r.name)} 숙소 찾기</b><small>숙박 추천 지역을 참고해 고르세요</small></a>
+      <a class="deal" href="${tourUrl(r)}" target="_blank" rel="noopener sponsored"><b>🎟️ 투어·입장권</b><small>현지 투어, 교통 패스</small></a>
+      <a class="deal" href="${INSURANCE_URL}" target="_blank" rel="noopener"><b>🛡️ 여행자보험 비교</b><small>지진·자연재해 보장 확인</small></a>
+      <a class="deal" href="${esimUrl()}" target="_blank" rel="noopener sponsored"><b>📶 일본 eSIM</b><small>재난 시에도 연락 유지</small></a>
     </div>
-    <p class="adnote">일부 링크는 제휴 링크입니다. 이용자에게 추가 비용은 없습니다.</p>`;
+    <p class="adnote">일부 링크는 제휴 링크입니다. 이용자에게 추가 비용은 없습니다. 보험 비교는 금융당국 공식 사이트(보험다모아)로 연결됩니다.</p>`}`;
   const items = document.getElementById('items');
-  const show = k => { items.innerHTML = r[k].map(([t,d])=>`<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join(''); };
+  const show = k => { items.innerHTML = r[k].map(([t,d,q])=>`<li><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${(!quiet&&k==='sights')?`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`:''}${(!quiet&&k==='stay')?`<a class="go" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">숙소</a>`:''}</li>`).join(''); };
   show('sights');
   sheet.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
     sheet.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); show(b.dataset.k);
   });
-  sheet.querySelectorAll('.deal').forEach(b=>b.onclick=()=>toast('제휴 링크는 곧 연결됩니다.'));
   document.getElementById('closeBtn').onclick=closeModal;
-  const m=document.getElementById('modal'); m.classList.add('open'); m.setAttribute('aria-hidden','false');
+  openModal();
 }
+
+/* ========== 법적 고지 ========== */
+const LEGAL = {
+  terms:['이용약관',`<h3>1. 서비스의 성격</h3><p>안심재팬(이하 '서비스')은 일본 기상청 등 공공기관이 발표한 지진 정보를 정리해 제공하고, 이를 바탕으로 여행 정보를 안내하는 정보 제공 서비스입니다. 서비스는 지진을 예측하거나 예보하지 않습니다.</p>
+  <h3>2. 정보의 한계</h3><p>서비스가 제공하는 정보는 참고용이며, 정확성·완전성·적시성을 보장하지 않습니다. 긴급 상황에서는 일본 정부, 현지 당국, 대한민국 외교부의 안내를 우선 따라야 합니다.</p>
+  <h3>3. 제휴 링크</h3><p>서비스 내 일부 링크는 제휴 링크이며, 이용자가 해당 링크를 통해 예약·구매할 경우 서비스는 수수료를 받을 수 있습니다. 이용자에게 추가 비용은 발생하지 않습니다. 예약·구매 계약은 해당 업체와 이용자 사이에 성립하며 서비스는 당사자가 아닙니다.</p>
+  <h3>4. 책임의 제한</h3><p>서비스는 정보 이용으로 발생한 여행 일정 변경, 취소, 재산상 손해 등에 대해 법령이 허용하는 범위에서 책임을 지지 않습니다.</p>`],
+  privacy:['개인정보처리방침',`<h3>1. 수집하는 정보</h3><p>알림 신청 시 이메일 주소를 수집합니다. 서비스 이용 과정에서 접속 기록, 기기 정보, 방문 페이지 등이 자동으로 수집될 수 있습니다.</p>
+  <h3>2. 이용 목적</h3><p>지진 알림 발송, 서비스 개선, 이용 통계 분석에 사용합니다.</p>
+  <h3>3. 보유 기간</h3><p>알림 구독을 해지하거나 서비스가 종료될 때까지 보유하며, 이후 지체 없이 파기합니다.</p>
+  <h3>4. 제3자 제공</h3><p>법령에 따른 경우를 제외하고 개인정보를 제3자에게 제공하지 않습니다. 방문 분석 도구(예: Google Analytics)는 익명화된 정보를 처리합니다.</p>
+  <h3>5. 문의</h3><p>개인정보 관련 문의는 서비스 운영자에게 이메일로 연락해 주세요. (연락처는 정식 출시 시 게시)</p>`],
+  disclaimer:['면책 고지',`<p><b>이 서비스는 지진을 예보하지 않습니다.</b> 지진은 현재의 과학 기술로 발생 시점과 장소를 정확히 예측할 수 없습니다. '안심 지수'와 '장기 위험 등급'은 공공기관이 발표한 장기 확률과 최근 관측 자료를 바탕으로 한 상대적 비교 지표이며, 특정 지역이 안전하다는 보증이 아닙니다.</p>
+  <p>지진 정보는 일본 기상청 발표를 P2P지진정보 API를 통해 전달받으며, 전달 지연이나 누락이 있을 수 있습니다. 긴급 상황에서는 일본 기상청, 현지 당국, 숙소·시설 직원의 안내를 우선 따르세요.</p>
+  <p>여행 정보(볼거리, 숙박, 쇼핑, 먹거리)는 일반적인 안내이며 운영 시간, 요금, 휴무 등은 변경될 수 있습니다.</p>`]
+};
+function openLegal(k){
+  const [t,b] = LEGAL[k];
+  document.getElementById('sheet').innerHTML = `<button class="close" aria-label="닫기" id="closeBtn" type="button">✕</button><h2>${t}</h2><p class="lead">베타 버전 · 2026년 11월</p>${b}`;
+  document.getElementById('closeBtn').onclick=closeModal; openModal();
+}
+document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>openLegal(b.dataset.legal));
+
+function openModal(){ const m=document.getElementById('modal'); m.classList.add('open'); m.setAttribute('aria-hidden','false'); m.querySelector('.sheet').scrollTop=0; }
 function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* 알림 신청: 정식 출시 전까지는 기기에만 저장 */
+document.getElementById('subForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v = document.getElementById('subEmail').value.trim();
+  try{ localStorage.setItem('anshin_sub', v); }catch(_){}
+  toast('신청이 접수되었습니다. 알림 서비스가 시작되면 안내해 드릴게요.');
+  document.getElementById('subEmail').value='';
+});
+document.getElementById('shareBtn').onclick=()=>{
+  const url = location.href.split('#')[0];
+  navigator.clipboard.writeText(url).then(()=>toast('링크를 복사했습니다.')).catch(()=>toast(url));
+};
 
 document.getElementById('refresh').onclick=loadQuakes;
 renderRanking();
