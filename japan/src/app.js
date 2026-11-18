@@ -5,7 +5,12 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 /* ========== 데이터 연결 ========== */
 const REGION_BY_ID = Object.fromEntries(REGIONS.map(r=>[r.id,r]));
 const PREF_BY_ID = Object.fromEntries(PREFS.map(p=>[p.id,p]));
-REGIONS.forEach(r=>{ Object.assign(r,REGION_META[r.id]); r.tier = PREF_BY_ID[r.pf].tier; });
+/* 장기 위험은 J-SHIS 공식 수치(RISK)에서 옵니다: 확률(%) → 5단계 등급, 점수 */
+const tierOf = p => p<3?1:p<10?2:p<26?3:p<50?4:5;
+const baseOf = p => Math.round(96 - 42*Math.min(1,Math.max(0,Math.log10(Math.max(p,1))/Math.log10(90))));
+const fmtProb = p => p>=10 ? Math.round(p)+'%' : p.toFixed(1)+'%';
+PREFS.forEach(p=>{ p.prob=RISK.pref[p.id].p; p.tier=tierOf(p.prob); });
+REGIONS.forEach(r=>{ Object.assign(r,REGION_META[r.id]); r.prob=RISK.city[r.id].p; r.tier=tierOf(r.prob); });
 
 /* ========== 아이콘 ========== */
 const IC = {
@@ -96,11 +101,9 @@ function computeAct(){
   }
 }
 const actOf = p => ACT ? (ACT[p.jp]||ZERO) : null;
-function prefScore(p){
-  const a=actOf(p), base=TIER_BASE[p.tier]; if(!a) return base;
-  return Math.max(0, base - Math.min(20, a.felt*2 + a.strong*8));
-}
-const scoreOf = r => { const p=PREF_BY_ID[r.pf]; return {score:prefScore(p), a:actOf(p)}; };
+const penalty = a => a ? Math.min(20, a.felt*2 + a.strong*8) : 0;
+const prefScore = p => Math.max(0, baseOf(p.prob) - penalty(actOf(p)));
+const scoreOf = r => { const p=PREF_BY_ID[r.pf]; return {score:Math.max(0, baseOf(r.prob) - penalty(actOf(p))), a:actOf(p)}; };
 const SUF = {'都':'도','府':'부','県':'현'};
 const prefName = p => p.ko + (SUF[p.jp.slice(-1)]||'');
 
@@ -283,8 +286,14 @@ function recentList(p){
     return `<li><div>${esc(fmtTime(e.time))} · ${esc(ko(h.name))}</div><span>진도 ${esc(SCALE[s]||'-')} · ${h.magnitude>0?'M'+Number(h.magnitude).toFixed(1):'규모 미정'}</span></li>`;
   }).join('')}</ul></details>`;
 }
-function statsBox(score,p,a){
-  return `<div class="sx-stats"><div><small>안심 지수</small><b style="color:${ringColor(score)==='#dbe4f4'?'inherit':''}">${score}</b></div><div><small>장기 위험</small><b>${TIER_LABEL[p.tier]}</b></div><div><small>30일 진도 3+</small><b>${a?a.felt+'회':'-'}</b></div></div>`;
+function statsBox(score,prob,a){
+  return `<div class="sx-stats"><div><small>안심 지수</small><b>${score}</b></div><div><small>30년 내 진도 6약+</small><b>${fmtProb(prob)}</b></div><div><small>30일 진도 3+</small><b>${a?a.felt+'회':'-'}</b></div></div>`;
+}
+/* 같은 현의 다른 대표 지점(공식 수치) */
+function ptsBlock(pid,except){
+  const pts=RISK.pref[pid].pts.filter(x=>x[0]!==except);
+  if(!pts.length) return '';
+  return `<details class="more"${except?'':' open'}><summary>${except?'같은 현의 다른 지점':'대표 지점별'} 30년 내 진도 6약 이상 확률</summary><ul class="plist">${pts.map(([n,v])=>`<li><div>${esc(n)}</div><span>${fmtProb(v)} · ${TIER_LABEL[tierOf(v)]}</span></li>`).join('')}</ul></details>`;
 }
 const credLine = k => { const c=IMGCRED[k]; return c?`<p class="credit">사진 ${esc(c.artist)} · <a href="${esc(c.page)}" target="_blank" rel="noopener">${esc(c.license)}</a></p>`:''; };
 
@@ -302,11 +311,12 @@ function openRegion(id){
       <div class="sx-title"><span class="jp">${esc(r.jp)} · ${esc(r.en.toUpperCase())}</span><h2>${esc(r.name)}</h2><p>${esc(r.tags.join(' · '))}</p></div>
     </div>
     <div class="sx-body">
-      ${statsBox(score,p,a)}
-      ${credLine(hk)}
+      ${statsBox(score,r.prob,a)}
+      <p class="credit">확률 출처: 방재과학기술연구소 J-SHIS(${RISK.version}), ${esc(RISK.city[id].pt)} 지점 기준</p>
       ${quiet?`<div class="callout alert">${IC.alert}<div><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b><br>여진에 대비하고 현지 당국의 안내를 따르세요. 안전을 위해 여행 상품 안내를 잠시 중단합니다.</div></div>`:''}
       <div class="callout">${IC.shield}<div>${esc(r.note)}<br><b style="color:var(--ink)">안전 팁</b> · ${esc(r.safety)}</div></div>
       <div class="lock"><div class="bars"><i></i><i></i><i></i><i></i></div><div class="over">${IC.lock}<b>내 일정 맞춤 심층 리포트</b><span>출발일 기준 위험 점검 · 대피 가이드 · 추천 코스</span><button class="btn" type="button" data-pass="${id}">안심 플러스 알아보기</button></div></div>
+      ${ptsBlock(r.pf,RISK.city[id].pt)}
       ${recentList(p)}
       <div class="sx-sec"><h3>볼거리 <small>SIGHTS</small></h3><div class="rail">${sights}</div></div>
       <div class="sx-sec"><h3>먹거리 <small>FOOD</small></h3><div class="rail">${foods}</div></div>
@@ -334,8 +344,10 @@ function openPref(id){
       <div class="sx-title" style="position:relative;left:auto;right:auto;bottom:auto;padding:100px var(--gutr) 56px var(--gut)"><span class="jp">${esc(p.jp)}</span><h2>${esc(prefName(p))}</h2></div>
     </div>
     <div class="sx-body">
-      ${statsBox(score,p,a)}
+      ${statsBox(score,p.prob,a)}
+      <p class="credit">확률 출처: 방재과학기술연구소 J-SHIS(${RISK.version}), 현의 대표 지점 평균</p>
       ${quiet?`<div class="callout alert">${IC.alert}<div><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b><br>여진에 대비하고 현지 당국의 안내를 따르세요.</div></div>`:''}
+      ${ptsBlock(id)}
       ${recentList(p)}
       <div class="sx-sec"><h3>${guides.length?'여행 안내 보기':'가까운 여행 안내 지역'} <small>${guides.length?'GUIDE':'NEARBY'}</small></h3>${guides.length?'':'<p style="color:var(--sub);font-size:14px;margin:-6px 0 14px">이 지역의 여행 안내는 준비 중입니다.</p>'}<div class="pgrid">${tiles}</div></div>
     </div>`);
