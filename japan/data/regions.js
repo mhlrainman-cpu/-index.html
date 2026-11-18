@@ -110,11 +110,11 @@ const REGIONS = [
 
 /* 여행 안내 도시: pf=소속 현, ll=[위도,경도], lab=지도 라벨 방향(r/l/t/b) */
 const REGION_META = {
-  fukuoka:{pf:'fukuoka',ll:[33.59,130.40],lab:'l'}, sapporo:{pf:'hokkaido',ll:[43.06,141.35],lab:'l'},
-  nagasaki:{pf:'nagasaki',ll:[32.75,129.88],lab:'l'}, hakodate:{pf:'hokkaido',ll:[41.77,140.73],lab:'r'},
-  okinawa:{pf:'okinawa',ll:null,lab:'r'}, beppu:{pf:'oita',ll:[33.28,131.49],lab:'r'},
-  kanazawa:{pf:'ishikawa',ll:[36.56,136.66],lab:'l'}, kyoto:{pf:'kyoto',ll:[35.01,135.77],lab:'t'},
-  hiroshima:{pf:'hiroshima',ll:[34.39,132.46],lab:'b'}, kobe:{pf:'hyogo',ll:[34.69,135.20],lab:'l'},
-  osaka:{pf:'osaka',ll:[34.69,135.50],lab:'b'}, tokyo:{pf:'tokyo',ll:[35.68,139.69],lab:'r'},
-  nagoya:{pf:'aichi',ll:[35.18,136.91],lab:'b'},
+  fukuoka:{pf:'fukuoka',iata:'FUK',ll:[33.59,130.40],lab:'l'}, sapporo:{pf:'hokkaido',iata:'CTS',ll:[43.06,141.35],lab:'l'},
+  nagasaki:{pf:'nagasaki',iata:'NGS',ll:[32.75,129.88],lab:'l'}, hakodate:{pf:'hokkaido',iata:'HKD',ll:[41.77,140.73],lab:'r'},
+  okinawa:{pf:'okinawa',iata:'OKA',ll:null,lab:'r'}, beppu:{pf:'oita',iata:'OIT',ll:[33.28,131.49],lab:'r'},
+  kanazawa:{pf:'ishikawa',iata:'KMQ',ll:[36.56,136.66],lab:'l'}, kyoto:{pf:'kyoto',iata:'KIX',ll:[35.01,135.77],lab:'t'},
+  hiroshima:{pf:'hiroshima',iata:'HIJ',ll:[34.39,132.46],lab:'b'}, kobe:{pf:'hyogo',iata:'KIX',ll:[34.69,135.20],lab:'l'},
+  osaka:{pf:'osaka',iata:'OSA',ll:[34.69,135.50],lab:'b'}, tokyo:{pf:'tokyo',iata:'TYO',ll:[35.68,139.69],lab:'r'},
+  nagoya:{pf:'aichi',iata:'NGO',ll:[35.18,136.91],lab:'b'},
 };

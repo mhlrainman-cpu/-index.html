@@ -14,6 +14,8 @@ const IC = {
   bed:'<svg viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.5"/></svg>',
   ticket:'<svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
   sim:'<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/></svg>',
+  lock:'<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+  plane:'<svg viewBox="0 0 24 24"><path d="M3 13l18-9-4 16-5-6-9-1z"/><path d="M12 14l9-10"/></svg>',
   shield:'<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
 };
 
@@ -261,6 +263,7 @@ function openSheet(html){
   s.innerHTML=html; s.scrollTop=0; s.classList.add('open'); s.setAttribute('aria-hidden','false'); lockScroll(true);
   const c=s.querySelector('.sx-close'); if(c){ c.onclick=closeSheet; c.focus({preventScroll:true}); }
   s.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>openRegion(b.dataset.go));
+  s.querySelectorAll('[data-pass]').forEach(b=>b.onclick=()=>openPass(b.dataset.pass));
 }
 function closeSheet(){
   const s=$('#sheet'); s.classList.remove('open'); s.setAttribute('aria-hidden','true'); lockScroll(false);
@@ -303,12 +306,14 @@ function openRegion(id){
       ${credLine(hk)}
       ${quiet?`<div class="callout alert">${IC.alert}<div><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b><br>여진에 대비하고 현지 당국의 안내를 따르세요. 안전을 위해 여행 상품 안내를 잠시 중단합니다.</div></div>`:''}
       <div class="callout">${IC.shield}<div>${esc(r.note)}<br><b style="color:var(--ink)">안전 팁</b> · ${esc(r.safety)}</div></div>
+      <div class="lock"><div class="bars"><i></i><i></i><i></i><i></i></div><div class="over">${IC.lock}<b>내 일정 맞춤 심층 리포트</b><span>출발일 기준 위험 점검 · 대피 가이드 · 추천 코스</span><button class="btn" type="button" data-pass="${id}">안심 플러스 알아보기</button></div></div>
       ${recentList(p)}
       <div class="sx-sec"><h3>볼거리 <small>SIGHTS</small></h3><div class="rail">${sights}</div></div>
       <div class="sx-sec"><h3>먹거리 <small>FOOD</small></h3><div class="rail">${foods}</div></div>
       <div class="sx-sec"><h3>숙박 추천 지역 <small>STAY</small></h3><div class="rows">${stay}</div></div>
       <div class="sx-sec"><h3>쇼핑 <small>SHOP</small></h3><div class="rows">${shop}</div></div>
       ${quiet?'':`<div class="cta-bar">
+        <a href="${flightUrl(r)}" target="_blank" rel="noopener sponsored">${IC.plane}항공</a>
         <a href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">${IC.bed}숙소</a>
         <a href="${tourUrl(r)}" target="_blank" rel="noopener sponsored">${IC.ticket}투어</a>
         <a href="${esimUrl()}" target="_blank" rel="noopener sponsored">${IC.sim}eSIM</a>
@@ -357,10 +362,47 @@ $('#creditsBtn').onclick=()=>{
 
 /* ========== 기타 ========== */
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
-$('#subForm').addEventListener('submit',e=>{
+/* ========== 분석, 신청 수집, 안심 플러스 ========== */
+function track(name,p){ try{ if(window.gtag) gtag('event',name,p||{}); }catch(e){} }
+if(CONFIG.gaId){
+  window.dataLayer=window.dataLayer||[]; window.gtag=function(){ dataLayer.push(arguments); };
+  const g=document.createElement('script'); g.async=true; g.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(CONFIG.gaId); document.head.appendChild(g);
+  gtag('js',new Date()); gtag('config',CONFIG.gaId);
+}
+document.addEventListener('click',e=>{ const a=e.target.closest('a[rel~="sponsored"]'); if(a) track('affiliate_click',{label:a.textContent.trim()}); });
+async function submitLead(d){
+  const rec={...d,ts:new Date().toISOString()};
+  try{ const a=JSON.parse(localStorage.getItem('anshin_leads')||'[]'); a.push(rec); localStorage.setItem('anshin_leads',JSON.stringify(a)); }catch(e){}
+  track('lead',{source:d.source,region:d.region||''});
+  if(CONFIG.captureUrl){ try{ await fetch(CONFIG.captureUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)}); return true; }catch(e){ return false; } }
+  return false;
+}
+const PILOT_NOTE = '<p class="note">시범 운영 중입니다. 신청 정보는 아직 서버에 저장되지 않고 이 기기에만 기록됩니다.</p>';
+function openPass(rid){
+  track('pass_open',{region:rid||''});
+  const now=new Date(), months=Array.from({length:12},(_,i)=>{ const d=new Date(now.getFullYear(),now.getMonth()+i,1); return `<option value="${d.getFullYear()}-${d.getMonth()+1}">${d.getFullYear()}년 ${d.getMonth()+1}월</option>`; }).join('');
+  const regs=REGIONS.map(r=>`<option value="${r.id}"${r.id===rid?' selected':''}>${esc(r.name)}</option>`).join('');
+  openModal(`<h2>안심 플러스</h2><p>$3 · 30일 · 자동 갱신 없음. 지금은 결제하지 않고, 오픈 알림만 받습니다.</p>
+    <form class="lead" id="leadForm">
+      <label>이메일<input type="email" id="leadEmail" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>가장 가고 싶은 지역<select id="leadRegion">${regs}</select></label>
+      <label>출발 시기<select id="leadMonth">${months}</select></label>
+      <label class="chk"><input type="checkbox" id="leadOk" required><span>개인정보(이메일, 선택한 지역·시기) 수집·이용에 동의합니다. 알림 발송 목적으로 해지 시까지 보관합니다.</span></label>
+      <button class="btn" type="submit">오픈 알림 신청</button>
+      ${CONFIG.captureUrl?'':PILOT_NOTE}
+    </form>`);
+  $('#leadForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const sent=await submitLead({source:'pass',email:$('#leadEmail').value.trim(),region:$('#leadRegion').value,month:$('#leadMonth').value});
+    $('#dialog').innerHTML=`<button class="x" type="button" aria-label="닫기">${IC.close}</button><h2>신청 완료</h2><p>${sent?'오픈하면 가장 먼저 알려드리겠습니다.':'신청을 기록했습니다.'}</p>${sent?'':PILOT_NOTE}`;
+    $('#dialog .x').onclick=closeModal;
+  });
+}
+$('#passBtn').onclick=()=>openPass();
+$('#subForm').addEventListener('submit',async e=>{
   e.preventDefault();
-  try{ localStorage.setItem('anshin_sub',$('#subEmail').value.trim()); }catch(_){}
-  toast('신청이 접수되었습니다. 알림 서비스가 시작되면 안내해 드릴게요.'); $('#subEmail').value='';
+  const sent=await submitLead({source:'alert',email:$('#subEmail').value.trim()});
+  toast(sent?'신청이 접수되었습니다. 알림 서비스가 시작되면 안내해 드릴게요.':'시범 운영 중이라 이 기기에만 기록했습니다.'); $('#subEmail').value=''; $('#subOk').checked=false;
 });
 $('#shareBtn').onclick=()=>{ const url=location.href.split('#')[0]; navigator.clipboard.writeText(url).then(()=>toast('링크를 복사했습니다.')).catch(()=>toast(url)); };
 $('#refresh').onclick=loadQuakes;

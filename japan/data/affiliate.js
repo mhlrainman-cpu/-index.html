@@ -20,3 +20,5 @@ function tourUrl(r, q){
 function esimUrl(){ return AFF.esimUrl || 'https://www.klook.com/ko/search/result/?query=%EC%9D%BC%EB%B3%B8%20eSIM' + (AFF.klookAid?'&aid='+AFF.klookAid:''); }
 const INSURANCE_URL = 'https://www.e-insmarket.or.kr/'; // 보험다모아(금융감독원·보험협회 공식 비교 사이트)
 function mapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+/* 항공권: 서울 출발 기준. 제휴 가입 후 받은 정식 링크 형식으로 교체하세요(지금은 제휴 없는 검색 링크). */
+function flightUrl(r){ return 'https://www.skyscanner.co.kr/transport/flights/sela/' + (r.iata||'tyo').toLowerCase() + '/'; }
