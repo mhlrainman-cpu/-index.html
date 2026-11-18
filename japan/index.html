@@ -5,214 +5,299 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>안심재팬</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="더 안전하고 더 재미있는 일본여행. 일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안심 여행 지역 랭킹과 관광 정보를 제안합니다.">
+<meta name="description" content="더 안전하고 더 재미있는 일본여행. 일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안전한 지역과 관광 정보를 제안합니다.">
 <meta name="keywords" content="일본 지진, 일본 여행 지진, 오사카 지진, 도쿄 지진, 후쿠오카 지진, 일본 여행 안전, 난카이 해곡, 일본 지진 실시간">
 <meta property="og:title" content="안심재팬 · 더 안전하고 더 재미있는 일본여행">
-<meta property="og:description" content="일본 지진 정보를 한곳에 모아 제공하고, 안심 여행 지역과 관광 정보를 제안합니다.">
+<meta property="og:description" content="일본 지진 정보를 한눈에 보고, 안심 지수가 높은 지역으로 여행을 떠나세요.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e5484d'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b1220'/%3E%3Ccircle cx='32' cy='32' r='13' fill='%23e5484d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-/* Layout: 한 열의 긴 스크롤 페이지. 정보(지진) → 판단(랭킹) → 행동(여행 정보·예약) 순서로 흐른다. */
+/* Layout: 사진이 주인공인 한 열 스크롤. 위에서부터 '지도(색 범례가 맨 위) → 사진 타일 랭킹 → 최근 지진 → 행동요령'.
+   서체: 페이퍼로지 200/300/400/500만 사용(굵은 글씨 없음). 색: 지도의 붉은색(위험)과 푸른색(안심)이 의미색이고, UI는 차분한 회청색. */
+@font-face{font-family:'Paperlogy';font-weight:200;font-style:normal;font-display:swap;src:url(fonts/Paperlogy-2ExtraLight.woff2) format('woff2')}
+@font-face{font-family:'Paperlogy';font-weight:300;font-style:normal;font-display:swap;src:url(fonts/Paperlogy-3Light.woff2) format('woff2')}
+@font-face{font-family:'Paperlogy';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/Paperlogy-4Regular.woff2) format('woff2')}
+@font-face{font-family:'Paperlogy';font-weight:500;font-style:normal;font-display:swap;src:url(fonts/Paperlogy-5Medium.woff2) format('woff2')}
+
 :root{
-  --bg:#f6f7fa; --card:#ffffff; --ink:#18202c; --sub:#5b6676; --line:#e2e6ed; --soft:#eef1f6;
-  --brand:#e5484d; --brand-ink:#ffffff; --accent:#2563eb;
-  --ok:#15803d; --mid:#b45309; --warn:#c2410c; --bad:#b91c1c;
-  --shadow:0 2px 10px rgba(20,30,50,.06);
-  --font:'Noto Sans KR',system-ui,-apple-system,sans-serif;
+  --bg:#f3f4f6; --panel:#ffffff; --ink:#0e1420; --sub:#667085; --faint:#98a1b0; --line:#e3e6ec; --soft:#eceff4;
+  --accent:#e5484d; --safe:#2f6fe4; --risk:#d6303b; --warn:#c2410c; --ok:#15803d;
+  --stage:#0b1220; --stage-ink:#eaf0fa; --stage-sub:#93a0b6;
+  --font:'Paperlogy','Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --gut:max(18px,env(safe-area-inset-left,0px));
+  --gutr:max(18px,env(safe-area-inset-right,0px));
+  --r:22px; --shadow:0 10px 30px rgba(14,20,32,.08);
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --bg:#0f141b; --card:#182029; --ink:#e8edf4; --sub:#9aa6b6; --line:#2a3442; --soft:#1f2834; --ok:#4ade80; --mid:#fbbf24; --warn:#fb923c; --bad:#f87171; --shadow:none; color-scheme:dark }
+  :root:not([data-theme="light"]){ --bg:#080c13; --panel:#111824; --ink:#eef2f8; --sub:#98a3b5; --faint:#6b7587; --line:#1e2735; --soft:#172030; --shadow:none; --stage:#0d1524; color-scheme:dark }
 }
-:root[data-theme="dark"]{ --bg:#0f141b; --card:#182029; --ink:#e8edf4; --sub:#9aa6b6; --line:#2a3442; --soft:#1f2834; --ok:#4ade80; --mid:#fbbf24; --warn:#fb923c; --bad:#f87171; --shadow:none; color-scheme:dark }
+:root[data-theme="dark"]{ --bg:#080c13; --panel:#111824; --ink:#eef2f8; --sub:#98a3b5; --faint:#6b7587; --line:#1e2735; --soft:#172030; --shadow:none; --stage:#0d1524; color-scheme:dark }
+
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg)}
-body{font-family:var(--font);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-a{color:var(--accent)}
-button{font:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
-.logo{font-weight:900;font-size:17px;letter-spacing:-.3px;white-space:nowrap;text-decoration:none;color:var(--ink)}
-.logo span{color:var(--brand)}
-nav{display:flex;gap:4px}
-nav a{color:var(--sub);text-decoration:none;font-size:14px;padding:6px 8px;border-radius:8px;white-space:nowrap}
-nav a:hover{color:var(--ink);background:var(--soft)}
-@media (max-width:600px){ nav a.opt{display:none} }
+body{font-family:var(--font);font-weight:300;color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+button{font:inherit;color:inherit;font-weight:300}
+img{display:block}
+:focus-visible{outline:2px solid var(--safe);outline-offset:3px}
+b,strong{font-weight:500}
+.wrap{max-width:1120px;margin:0 auto;padding-left:var(--gut);padding-right:var(--gutr)}
+.eb{font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
 
-.hero{padding-block:26px 16px;text-align:center}
-.hero .badge{display:inline-block;font-size:12px;font-weight:700;color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,transparent);padding:4px 12px;border-radius:99px;margin-bottom:16px}
-.hero h1{font-size:clamp(24px,5.6vw,40px);font-weight:900;letter-spacing:-1px;line-height:1.3;text-wrap:balance}
-.hero h1 em{font-style:normal;color:var(--brand)}
-.hero p{color:var(--sub);margin:10px auto 0;max-width:560px;font-size:clamp(13px,2.4vw,15px);text-wrap:balance}
-.hero .cta{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:6px;border:0;cursor:pointer;font-weight:700;font-size:15px;padding:12px 20px;border-radius:12px;text-decoration:none;color:var(--ink)}
-.btn.primary{background:var(--brand);color:var(--brand-ink)}
-.btn.ghost{background:var(--card);border:1px solid var(--line)}
-.btn.sm{padding:8px 14px;font-size:13px}
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px}
+.brand{font-size:19px;font-weight:300;letter-spacing:-.03em;text-decoration:none;white-space:nowrap}
+.brand i{font-style:normal;display:inline-block;width:.46em;height:.46em;border-radius:50%;background:var(--accent);margin-left:.22em;vertical-align:.12em}
+.top nav{display:flex;gap:2px}
+.top nav a{font-size:13px;font-weight:300;color:var(--sub);text-decoration:none;padding:7px 10px;border-radius:99px;white-space:nowrap}
+.top nav a:hover{color:var(--ink);background:var(--soft)}
+@media (max-width:600px){ .top nav a.opt{display:none} }
 
-section{padding-block:34px}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.sec-head h2{font-size:22px;font-weight:900;letter-spacing:-.5px}
-.sec-head p{color:var(--sub);font-size:14px;max-width:70ch}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+/* intro */
+.intro{padding-block:30px 22px}
+.intro h1{font-size:clamp(32px,8vw,64px);font-weight:200;letter-spacing:-.045em;line-height:1.14;text-wrap:balance}
+.intro h1 em{font-style:normal;color:var(--accent)}
+.intro p{margin-top:14px;max-width:34em;font-size:clamp(14px,2.6vw,16px);color:var(--sub);text-wrap:balance}
 
-.status{padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:14px}
-.dot{width:12px;height:12px;border-radius:50%;flex:none;background:var(--sub)}
-.dot.ok{background:var(--ok);box-shadow:0 0 0 6px color-mix(in srgb,var(--ok) 18%,transparent)}
-.dot.warn{background:var(--bad);box-shadow:0 0 0 6px color-mix(in srgb,var(--bad) 18%,transparent)}
-.status b{display:block;font-size:16px}
-.status small{color:var(--sub);display:block}
-.srcline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--sub);font-size:12px;margin:8px 2px 0}
-.quakes{overflow:hidden}
-.q{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
-.q:first-child{border-top:0}
-.shindo{width:48px;height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:18px;line-height:1;color:#fff}
-.shindo small{font-size:10px;font-weight:500;opacity:.9;margin-top:3px}
-.q .place{font-weight:700;font-size:15px}
-.q .place span{font-weight:500;color:var(--sub);font-size:13px;margin-left:6px}
-.q .meta{color:var(--sub);font-size:13px}
-.q .mag{text-align:right;font-weight:700;font-size:14px;white-space:nowrap}
-.q .mag small{display:block;color:var(--sub);font-weight:400;font-size:12px}
-.empty{padding:22px;color:var(--sub);font-size:14px;text-align:center}
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--sub)}
-.legend span{display:inline-flex;align-items:center;gap:4px}
-.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.notice{padding:16px 18px;margin-top:14px;font-size:14px;color:var(--sub)}
-.notice b{color:var(--ink)}
-
-.mapcard{padding:14px 14px 12px;margin-bottom:6px}
-.maptitle{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
-.maptitle b{display:block;font-size:16px;font-weight:900}
-.maptitle span{display:block;font-size:11px;color:var(--sub)}
-#map{padding-top:4px}
-.mapstatus{display:flex;gap:12px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--soft)}
-.mapstatus .st{flex:1;min-width:0}
-.mapstatus b{display:block;font-size:14px}
-.mapstatus small{display:block;color:var(--sub);font-size:12px}
-.pick{display:grid;gap:8px;margin-top:12px}
-.maphead{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;margin-top:8px}
-.maplegend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--sub);flex-wrap:wrap}
-.lg-title{font-weight:700;color:var(--ink)}
-.lg-bar{width:110px;height:8px;border-radius:99px;background:linear-gradient(90deg,#991b1b,#f3b2b2,#d7dbe2,#9ec5fb,#1e3a8a)}
-.lg-ends{display:flex;gap:6px}
-.lg-ends i{font-style:normal}
-.lg-q{display:inline-flex;align-items:center;gap:4px}
-.qdot{display:inline-block;border-radius:50%;background:rgba(255,200,0,.85);border:1px solid #7c5a00;margin-left:6px}
-.qdot.s1{width:6px;height:6px}.qdot.s3{width:10px;height:10px}.qdot.s5{width:14px;height:14px;background:rgba(229,72,77,.85);border-color:#7f1d1d}
-.mapwrap{position:relative;max-width:500px;margin:8px auto 0}
+/* stage: 지도 */
+.stage{position:relative;background:var(--stage);color:var(--stage-ink);border-radius:30px;padding:18px 16px 14px;overflow:hidden}
+.stage::before{content:"";position:absolute;inset:-30% -10% auto auto;width:70%;height:70%;background:radial-gradient(closest-side,rgba(60,110,255,.18),transparent);pointer-events:none}
+.legend{position:relative;display:grid;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.lg-main{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.lg-side{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:300;white-space:nowrap}
+.lg-side i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.lg-side.r i{background:#e5484d;box-shadow:0 0 10px #e5484d}
+.lg-side.b i{background:#4c8dff;box-shadow:0 0 10px #4c8dff}
+.lg-side small{font-size:11px;color:var(--stage-sub);font-weight:300}
+.lg-bar{height:8px;border-radius:99px;background:linear-gradient(90deg,#ef3347 0%,#a23b4d 29%,#44506a 58%,#3b79de 81%,#7ab4ff 100%)}
+.lg-sub{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--stage-sub);font-weight:300}
+.lg-sub .qd{display:inline-flex;align-items:center;gap:7px}
+.qdot{display:inline-block;border-radius:50%;background:#ffd666;box-shadow:0 0 8px rgba(255,200,80,.8)}
+.qdot.s1{width:5px;height:5px}.qdot.s3{width:8px;height:8px}.qdot.s5{width:12px;height:12px;background:#ff5a5f;box-shadow:0 0 10px rgba(255,90,95,.9)}
+.stage-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-top:6px}
+.mapwrap{position:relative;width:100%;max-width:520px;margin:0 auto}
+.stage-side{display:grid;gap:18px;align-content:center}
+.sidelists{display:none}
+@media (min-width:900px){
+  .stage{padding:26px 30px 24px}
+  .stage-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:40px;align-items:center}
+  .stage-grid .mapwrap{order:2;max-width:600px;margin-left:auto}
+  .stage-side{order:1}
+  .stage-side .stage-foot{margin:0;padding:0 0 18px;border-top:0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .sidelists{display:grid;gap:22px}
+}
+.sl h4{font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--stage-sub);margin-bottom:8px}
+.sl button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:11px 0;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:none;color:var(--stage-ink);cursor:pointer;text-align:left}
+.sl button:hover b{text-decoration:underline;text-underline-offset:4px}
+.sl b{font-size:20px;font-weight:300;letter-spacing:-.03em}
+.sl b small{font-size:11px;color:var(--stage-sub);font-weight:400;letter-spacing:.18em;margin-left:8px}
+.sl i{font-style:normal;font-size:22px;font-weight:200;letter-spacing:-.03em}
+.sl.good i{color:#7fb0ff}.sl.bad i{color:#ff7a82}
 #jpmap{width:100%;height:auto;display:block;max-width:100%}
-#jpmap path.pf{stroke:var(--card);stroke-width:.7;cursor:pointer;transition:opacity .12s}
-#jpmap path.pf:hover{opacity:.8}
-#jpmap .inset{fill:none;stroke:var(--line);stroke-dasharray:3 2;stroke-width:.8}
+#jpmap path.pf{stroke:var(--stage);stroke-width:.7;cursor:pointer;transition:filter .15s}
+#jpmap path.pf:hover{filter:brightness(1.25)}
+#jpmap .inset{fill:none;stroke:rgba(255,255,255,.14);stroke-dasharray:2 3;stroke-width:.7}
 #jpmap .city{cursor:pointer}
-#jpmap .city .dotc{fill:#fff;stroke:#18202c;stroke-width:1.3}
-#jpmap .city .hit{fill:transparent;stroke:none}
-#jpmap .city text{font-size:11px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
-#jpmap .qk{fill:rgba(255,200,0,.75);stroke:#7c5a00;stroke-width:.6;pointer-events:none}
-#jpmap .qk.big{fill:rgba(229,72,77,.8);stroke:#7f1d1d}
-@media (prefers-reduced-motion:reduce){ #jpmap path.pf{transition:none} }
-.maptip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 10px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-110%);z-index:5}
-.mapnote{font-size:12px;color:var(--sub);margin-top:8px;max-width:70ch}
-.plist{list-style:none;margin-top:10px}
-.plist li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
-.plist li span{color:var(--sub);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
-.stat{padding:14px 16px}
-.stat small{display:block;color:var(--sub);font-size:12px}
-.stat b{font-size:22px;font-weight:900}
+#jpmap .city .dotc{fill:#fff;stroke:rgba(255,255,255,.35);stroke-width:4;paint-order:stroke}
+#jpmap .city .hit{fill:transparent}
+#jpmap .city text{font-family:var(--font);font-size:11.5px;font-weight:300;fill:#fff;paint-order:stroke;stroke:rgba(8,13,24,.85);stroke-width:3px;stroke-linejoin:round;pointer-events:none;letter-spacing:.02em}
+#jpmap .qk{fill:rgba(255,214,102,.85);pointer-events:none;filter:drop-shadow(0 0 3px rgba(255,200,80,.9))}
+#jpmap .qk.big{fill:rgba(255,90,95,.9);filter:drop-shadow(0 0 5px rgba(255,90,95,.95))}
+.maptip{position:absolute;pointer-events:none;background:rgba(255,255,255,.95);color:#0e1420;font-size:12px;font-weight:400;padding:5px 11px;border-radius:99px;white-space:nowrap;transform:translate(-50%,-135%);z-index:5}
+.stage-foot{position:relative;display:flex;align-items:center;gap:10px;margin-top:6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--stage-sub)}
+.dot.ok{background:#3ddc84;box-shadow:0 0 0 4px rgba(61,220,132,.16)}
+.dot.warn{background:#ff5a5f;box-shadow:0 0 0 4px rgba(255,90,95,.2)}
+.stage-foot .st{flex:1;min-width:0}
+.stage-foot b{display:block;font-size:14px;font-weight:300}
+.stage-foot small{display:block;font-size:11px;color:var(--stage-sub);font-weight:300}
+.iconbtn{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:transparent;color:var(--stage-ink);cursor:pointer;display:grid;place-items:center}
+.iconbtn:hover{background:rgba(255,255,255,.08)}
+.iconbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 
-.rank-list{display:grid;gap:10px}
-.r{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;cursor:pointer;transition:transform .12s;text-align:left;width:100%;color:var(--ink)}
-.r:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
-.r .no{font-size:22px;font-weight:900;color:var(--sub);text-align:center}
-.r:nth-child(-n+3) .no{color:var(--brand)}
-.r .name{font-weight:900;font-size:17px}
-.r .name small{font-weight:500;color:var(--sub);font-size:13px;margin-left:6px}
-.r .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--soft);border:1px solid var(--line);color:var(--sub)}
-.tag.hot{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
-.tag.alert{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,var(--line));font-weight:700}
-.score{text-align:right}
-.score b{font-size:24px;font-weight:900}
-.score small{display:block;color:var(--sub);font-size:11px}
-.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:4px;width:80px;margin-left:auto}
-.bar i{display:block;height:100%}
-.howto{margin-top:12px;padding:14px 18px;font-size:13px;color:var(--sub)}
-.howto b{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){ .r{transition:none} }
+/* sections */
+section{padding-block:46px 8px}
+.sh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sh h2{font-size:clamp(26px,5.4vw,40px);font-weight:200;letter-spacing:-.04em;line-height:1.2}
+.sh p{font-size:13px;color:var(--sub);max-width:34em}
+details.more{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+details.more summary{cursor:pointer;font-size:13px;color:var(--sub);list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:" +";color:var(--faint)}
+details.more[open] summary::after{content:" −"}
+details.more p{font-size:13px;color:var(--sub);margin-top:8px;max-width:60ch}
 
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.tip{padding:18px;min-width:0}
-.tip h3{font-size:16px;margin-bottom:8px}
-.tip ol,.tip ul{padding-left:18px;color:var(--sub);font-size:14px}
-.tip li{margin:4px 0}
-.tip b{color:var(--ink)}
+/* ranking tiles */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;cursor:pointer;border:0;padding:0;text-align:left;color:#fff;isolation:isolate;background:linear-gradient(150deg,hsl(var(--hue) 40% 38%),hsl(calc(var(--hue) + 40) 45% 22%))}
+.tile:first-child{grid-column:span 2;aspect-ratio:16/10}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.tile::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,18,.42) 0%,rgba(6,10,18,0) 34%,rgba(6,10,18,.2) 58%,rgba(6,10,18,.82) 100%)}
+.tile:hover img{transform:scale(1.05)}
+.tile .rk{position:absolute;left:14px;top:12px;font-size:13px;font-weight:300;letter-spacing:.14em}
+.tile .ring{position:absolute;right:10px;top:10px;width:46px;height:46px}
+.tile .meta{position:absolute;left:14px;right:12px;bottom:13px}
+.tile .nm{font-size:clamp(20px,5vw,26px);font-weight:300;letter-spacing:-.03em;line-height:1.2}
+.tile:first-child .nm{font-size:clamp(28px,7vw,40px);font-weight:200}
+.tile .jp{display:block;font-size:11px;font-weight:300;letter-spacing:.22em;opacity:.8;margin-top:2px}
+.tile .tg{display:block;font-size:12px;font-weight:300;opacity:.88;margin-top:5px}
+.tile .al{position:absolute;left:14px;top:38px;font-size:11px;font-weight:400;background:rgba(214,48,59,.92);padding:2px 9px;border-radius:99px}
+@media (min-width:760px){
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .tile:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+}
+.ring circle{fill:none;stroke-width:2.2}
+.ring .tr{stroke:rgba(255,255,255,.28)}
+.ring text{font-family:var(--font);font-size:13px;font-weight:300;fill:#fff;text-anchor:middle;dominant-baseline:central}
 
-.modal{position:fixed;inset:0;background:rgba(10,14,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:50}
-.modal.open{display:flex}
-.sheet{background:var(--card);color:var(--ink);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:22px max(18px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
-@media (min-width:720px){ .modal{align-items:center;padding:16px} .sheet{border-radius:20px} }
-.sheet .close{float:right;background:var(--soft);border:1px solid var(--line);border-radius:10px;width:36px;height:36px;font-size:18px;cursor:pointer;color:var(--ink)}
-.sheet h2{font-size:24px;font-weight:900}
-.sheet h3{font-size:16px;margin:18px 0 6px}
-.sheet p{font-size:14px;color:var(--sub)}
-.sheet .lead{color:var(--sub);font-size:14px;margin-top:4px}
-.risk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}
-.risk div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
-.risk small{display:block;color:var(--sub);font-size:11px}
-.risk b{font-size:16px}
-.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:12px}
-.tabs button{background:none;border:0;font-size:14px;font-weight:700;color:var(--sub);padding:10px 12px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
-.tabs button.on{color:var(--ink);border-color:var(--brand)}
-.items{list-style:none}
-.items li{padding:10px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
-.items li div{min-width:0}
-.items li b{display:block}
-.items li span{color:var(--sub);font-size:13px}
-.items li a.go{flex:none;font-size:12px;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:8px;background:var(--soft);border:1px solid var(--line);color:var(--ink);white-space:nowrap}
-.safety{background:color-mix(in srgb,var(--warn) 10%,var(--card));border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:12px;padding:12px 14px;font-size:14px;margin-top:14px}
-.alertbox{background:color-mix(in srgb,var(--bad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 40%,var(--line));border-radius:12px;padding:14px;font-size:14px;margin-top:14px}
-.deals{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px}
-.deal{display:block;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--soft);text-decoration:none;color:var(--ink);cursor:pointer;text-align:left}
-.deal:hover{border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
-.deal b{display:block;font-size:14px}
-.deal small{color:var(--sub);font-size:12px}
-.adnote{color:var(--sub);font-size:11px;margin-top:8px}
+/* recent quakes */
+.statline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.statline div{padding:14px 4px;text-align:center;border-top:1px solid var(--line)}
+.statline b{display:block;font-size:clamp(28px,7vw,40px);font-weight:200;letter-spacing:-.04em;line-height:1.1}
+.statline small{font-size:12px;color:var(--sub)}
+.quakes{background:var(--panel);border-radius:var(--r);overflow:hidden}
+.q{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:13px 16px;border-top:1px solid var(--line)}
+.q:first-child{border-top:0}
+.shindo{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:17px;font-weight:300;color:#fff}
+.q .place{font-size:15px;font-weight:300}
+.q .place span{font-size:12px;color:var(--faint);margin-left:6px}
+.q .meta{font-size:12px;color:var(--sub)}
+.q .mag{text-align:right;font-size:14px;font-weight:300;white-space:nowrap}
+.q .mag small{display:block;color:var(--faint);font-size:11px}
+.empty{padding:22px;color:var(--sub);font-size:14px;text-align:center}
+.srcline{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--faint);font-size:11px;margin:10px 2px 0}
+.linkbtn{background:none;border:0;cursor:pointer;color:var(--sub);font-size:13px;padding:12px 0 0;text-decoration:underline;text-underline-offset:4px}
 
-.faq details{border-top:1px solid var(--line);padding:12px 0}
+/* guide */
+.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.gcard{background:var(--panel);border-radius:var(--r);padding:22px 20px 20px}
+.gcard svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;margin-bottom:16px}
+.gcard h3{font-size:19px;font-weight:300;letter-spacing:-.03em;margin-bottom:8px}
+.gcard li{list-style:none;font-size:14px;color:var(--sub);padding:3px 0}
+.gcard li b{color:var(--ink);font-weight:400}
+
+/* faq */
+.faq details{border-top:1px solid var(--line);padding:16px 0}
 .faq details:last-child{border-bottom:1px solid var(--line)}
-.faq summary{cursor:pointer;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:10px}
-.faq summary::after{content:"+";color:var(--sub)}
+.faq summary{cursor:pointer;font-size:16px;font-weight:300;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--faint);font-size:20px;line-height:1}
 .faq details[open] summary::after{content:"−"}
-.faq p{color:var(--sub);font-size:14px;margin-top:8px;max-width:70ch}
+.faq p{color:var(--sub);font-size:14px;margin-top:10px;max-width:62ch}
 
-.subscribe{padding:20px;display:grid;gap:10px}
-.subscribe h3{font-size:17px}
-.subscribe p{color:var(--sub);font-size:14px}
+.subscribe{background:var(--panel);border-radius:var(--r);padding:28px 22px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.subscribe h3{font-size:24px;font-weight:200;letter-spacing:-.04em}
+.subscribe p{color:var(--sub);font-size:14px;max-width:44ch}
 .subscribe form{display:flex;gap:8px;flex-wrap:wrap}
-.subscribe input{flex:1;min-width:200px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.subscribe input{flex:1 1 180px;min-width:0;padding:13px 16px;border:1px solid var(--line);border-radius:99px;background:var(--bg);color:var(--ink);font:inherit;font-weight:300}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;cursor:pointer;font-weight:400;font-size:14px;padding:13px 22px;border-radius:99px;text-decoration:none;background:var(--ink);color:var(--bg)}
+.btn.line{background:transparent;color:var(--ink);border:1px solid var(--line)}
 
-footer{padding-block:32px 60px;color:var(--sub);font-size:12px;border-top:1px solid var(--line);margin-top:20px}
+footer{padding-block:40px 70px;margin-top:40px;color:var(--faint);font-size:12px}
+footer .links{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+footer .links button{background:none;border:0;color:var(--sub);cursor:pointer;font-size:12px;padding:0;text-decoration:underline;text-underline-offset:4px}
 footer p{margin:4px 0;max-width:80ch}
-footer .links{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-footer .links button{background:none;border:0;color:var(--accent);cursor:pointer;font-size:12px;padding:0;text-decoration:underline}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;z-index:60;pointer-events:none;max-width:90vw}
+
+/* 지역 상세: 전체 화면 */
+.sheet{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;overscroll-behavior:contain;visibility:hidden;opacity:0;transform:translateY(18px);transition:opacity .25s,transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s}
+.sheet.open{visibility:visible;opacity:1;transform:none;transition:opacity .25s,transform .35s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){ .sheet,.sheet.open{transition:none;transform:none} .tile img{transition:none} }
+.sx-hero{position:relative;height:min(64vh,560px);min-height:340px;background:linear-gradient(150deg,hsl(var(--hue) 40% 36%),hsl(calc(var(--hue) + 40) 45% 20%));color:#fff;overflow:hidden}
+.sx-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sx-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,10,18,.5) 0%,rgba(6,10,18,0) 30%,rgba(6,10,18,.1) 55%,rgba(6,10,18,.85) 100%)}
+.sx-close{position:absolute;z-index:3;right:max(14px,env(safe-area-inset-right,0px));top:calc(14px + env(safe-area-inset-top,0px));width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(10,15,25,.38);backdrop-filter:blur(10px);color:#fff;cursor:pointer;display:grid;place-items:center}
+.sx-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.5;stroke-linecap:round}
+.sx-title{position:absolute;z-index:2;left:var(--gut);right:var(--gutr);bottom:46px;max-width:1120px;margin:0 auto}
+.sx-title .jp{font-size:12px;letter-spacing:.26em;font-weight:300;opacity:.85}
+.sx-title h2{font-size:clamp(44px,12vw,96px);font-weight:200;letter-spacing:-.05em;line-height:1.05;margin-top:6px}
+.sx-title p{font-size:15px;font-weight:300;opacity:.9;margin-top:8px;max-width:30em}
+.sx-body{max-width:1120px;margin:0 auto;padding:0 var(--gutr) 120px var(--gut)}
+.sx-stats{position:relative;z-index:4;margin-top:-30px;background:var(--panel);border-radius:24px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);padding:18px 8px}
+.sx-stats div{text-align:center;padding:2px 6px}
+.sx-stats div+div{border-left:1px solid var(--line)}
+.sx-stats small{display:block;font-size:11px;color:var(--sub);letter-spacing:.04em}
+.sx-stats b{font-size:clamp(24px,6vw,34px);font-weight:200;letter-spacing:-.03em;line-height:1.25}
+.credit{font-size:11px;color:var(--faint);margin-top:10px}
+.credit a{color:var(--sub)}
+.callout{margin-top:22px;padding:16px 18px;border-radius:18px;background:var(--panel);font-size:14px;color:var(--sub);display:flex;gap:12px;align-items:flex-start}
+.callout svg{flex:none;width:22px;height:22px;stroke:var(--warn);fill:none;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;margin-top:2px}
+.callout.alert{background:color-mix(in srgb,var(--risk) 9%,var(--panel));color:var(--ink)}
+.callout.alert svg{stroke:var(--risk)}
+.sx-sec{margin-top:44px}
+.sx-sec h3{font-size:clamp(22px,5vw,30px);font-weight:200;letter-spacing:-.04em;margin-bottom:14px;display:flex;align-items:baseline;gap:10px}
+.sx-sec h3 small{font-size:11px;letter-spacing:.2em;color:var(--faint);font-weight:400}
+.rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(var(--gutr) * -1) 0 calc(var(--gut) * -1);padding:2px var(--gutr) 8px var(--gut);scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.pc{position:relative;flex:0 0 min(70vw,270px);aspect-ratio:3/4;border-radius:var(--r);overflow:hidden;scroll-snap-align:start;color:#fff;isolation:isolate;background:linear-gradient(150deg,hsl(var(--hue) 38% 38%),hsl(calc(var(--hue) + 40) 42% 22%))}
+.pc.sq{flex-basis:min(62vw,230px);aspect-ratio:1/1}
+.pc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.pc::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,18,0) 40%,rgba(6,10,18,.82) 100%)}
+.pc .tx{position:absolute;left:14px;right:14px;bottom:14px}
+.pc .tx b{display:block;font-size:19px;font-weight:300;letter-spacing:-.03em;line-height:1.25}
+.pc .tx span{display:block;font-size:12px;font-weight:300;opacity:.86;margin-top:3px}
+.pc .go{position:absolute;right:12px;top:12px;font-size:12px;font-weight:400;text-decoration:none;color:#fff;background:rgba(10,15,25,.42);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);padding:6px 13px;border-radius:99px}
+@media (min-width:760px){ .rail{flex-wrap:wrap;overflow:visible;margin:0;padding:0} .pc{flex:0 0 calc(25% - 9px)} .pc.sq{flex:0 0 calc(33.333% - 8px)} }
+.rows{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:760px){ .rows{grid-template-columns:repeat(2,1fr)} }
+.row{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 14px 10px 10px}
+.row .th{width:84px;height:84px;border-radius:14px;overflow:hidden;background:linear-gradient(150deg,hsl(var(--hue) 38% 38%),hsl(calc(var(--hue) + 40) 42% 22%))}
+.row .th img{width:100%;height:100%;object-fit:cover}
+.row b{display:block;font-size:16px;font-weight:300;letter-spacing:-.02em}
+.row span{font-size:13px;color:var(--sub)}
+.chip{font-size:12px;font-weight:400;text-decoration:none;padding:7px 14px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;background:transparent;color:var(--ink)}
+.chip:hover{background:var(--soft)}
+.plist{list-style:none;margin-top:10px}
+.plist li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.plist li span{color:var(--sub);font-size:13px;white-space:nowrap}
+.cta-bar{position:sticky;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:6;margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:color-mix(in srgb,var(--ink) 92%,transparent);backdrop-filter:blur(14px);border-radius:99px;padding:6px;max-width:560px;margin-left:auto;margin-right:auto}
+.cta-bar a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:99px;color:var(--bg);text-decoration:none;font-size:11px;font-weight:300;white-space:nowrap}
+.cta-bar a:hover{background:rgba(255,255,255,.14)}
+.cta-bar svg{width:19px;height:19px;stroke:var(--bg);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.adnote{font-size:11px;color:var(--faint);margin-top:12px;text-align:center}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pgrid .tile{aspect-ratio:4/3}
+.pgrid .tile:first-child{grid-column:auto;aspect-ratio:4/3}
+@media (min-width:760px){ .pgrid{grid-template-columns:repeat(3,1fr)} }
+
+/* 팝업(약관, 사진 출처) */
+.modal{position:fixed;inset:0;background:rgba(6,10,18,.6);display:none;align-items:flex-end;justify-content:center;z-index:70}
+.modal.open{display:flex}
+.dialog{background:var(--panel);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:26px 26px 0 0;padding:24px var(--gutr) calc(30px + env(safe-area-inset-bottom,0px)) var(--gut)}
+@media (min-width:720px){ .modal{align-items:center;padding:16px} .dialog{border-radius:26px} }
+.dialog h2{font-size:26px;font-weight:200;letter-spacing:-.04em;margin-bottom:6px}
+.dialog h3{font-size:15px;font-weight:400;margin:18px 0 4px}
+.dialog p,.dialog li{font-size:14px;color:var(--sub)}
+.dialog ul{list-style:none}
+.dialog li{padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.dialog .x{float:right;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center}
+.dialog .x svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.5;stroke-linecap:round}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;z-index:80;pointer-events:none;max-width:90vw}
 .toast.show{opacity:1}
+
+/* 작은 글자는 가독성을 위해 Regular */
+.intro p,.sh p,.gcard li,.faq p,.callout,.credit,.row span,.pc .tx span,.q .meta,.srcline,details.more p,details.more summary,.subscribe p,.plist li,.dialog p,.dialog li,footer,.statline small,.tile .tg,.stage small,.lg-sub,.adnote,.sx-stats small,.q .mag small,.empty{font-weight:400}
+
+/* 포스터 일러스트와 필름 그레인 */
+.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tile .art,.pc .art{z-index:-3}
+.sx-hero,.row .th{isolation:isolate}
+.row .th{position:relative}
+.tile::before,.pc::before,.sx-hero .grain,.row .th::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.32;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="#top">안심<span>재팬</span></a>
+    <a class="brand" href="#top">안심재팬<i></i></a>
     <nav>
-      <a href="#map">지진지도</a>
-      <a href="#ranking">안심랭킹</a>
+      <a href="#map">지도</a>
+      <a href="#ranking">랭킹</a>
       <a href="#live" class="opt">최근 지진</a>
       <a href="#guide" class="opt">행동요령</a>
     </nav>
@@ -221,153 +306,123 @@ footer .links button{background:none;border:0;color:var(--accent);cursor:pointer
 
 <main class="wrap" id="top">
 
-  <div class="hero">
-    <h1>더 <em>안전하고</em> 더 <em>재미있는</em> 일본여행</h1>
-    <p>일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안전한 지역과 관광 정보를 제안합니다.</p>
+  <div class="intro">
+    <h1>더 안전하고,<br>더 재미있는 일본여행</h1>
+    <p>일본 지진 정보를 전문적으로 제공하고, 이를 바탕으로 안전한 지역과 관광 상품을 제안합니다.</p>
   </div>
 
-  <section id="map">
-    <div class="card mapcard">
-      <div class="maptitle"><div><b>지금 일본 지진 현황</b><span>일본 기상청 발표 기반 · 5분마다 갱신</span></div><button class="btn ghost sm" id="refresh" type="button">새로고침</button></div>
-      <div class="mapstatus" id="status">
-        <div class="dot" id="statusDot"></div>
-        <div class="st"><b id="statusTitle">지진 정보를 불러오는 중…</b><small id="statusSub">잠시만 기다려 주세요.</small></div>
-      </div>
-      <div class="mapwrap">
-        <svg id="jpmap" viewBox="0 0 438 516" role="group" aria-label="일본 지역별 안심 지수 지도"></svg>
-        <div class="maptip" id="maptip" hidden></div>
-      </div>
-      <div class="maphead">
-        <div class="maplegend">
-          <span class="lg-title">안심 지수</span>
+  <section id="map" style="padding-block:6px 0">
+    <div class="stage">
+      <div class="legend" aria-label="지도 색 범례">
+        <div class="lg-main">
+          <span class="lg-side r"><i></i>위험 높음</span>
           <span class="lg-bar"></span>
-          <span class="lg-ends"><i>낮음</i><i>높음</i></span>
+          <span class="lg-side b">안심<i></i></span>
         </div>
-        <div class="maplegend">
-          <span class="lg-title">최근 7일 지진</span>
-          <span class="lg-q"><i class="qdot s1"></i>진도 1~2 <i class="qdot s3"></i>3~4 <i class="qdot s5"></i>5약+</span>
+        <div class="lg-sub">
+          <span>붉을수록 위험, 푸를수록 안심 · 색이 진할수록 더 뚜렷합니다</span>
+          <span class="qd"><i class="qdot s1"></i><i class="qdot s3"></i><i class="qdot s5"></i>최근 7일 지진</span>
         </div>
       </div>
-      <p class="mapnote">붉을수록 장기 위험이 높거나 최근 지진이 잦은 곳, 푸를수록 안심 지수가 높은 곳입니다. 현(県) 단위로 칠했고, 흰 점은 여행 안내가 있는 도시입니다. 지역을 누르면 상세 정보가 열립니다.</p>
+      <div class="stage-grid">
+        <div class="mapwrap">
+          <svg id="jpmap" viewBox="0 0 438 516" role="group" aria-label="일본 지역별 안심 지수 지도"></svg>
+          <div class="maptip" id="maptip" hidden></div>
+        </div>
+        <div class="stage-side">
+          <div class="stage-foot" id="status">
+            <div class="dot" id="statusDot"></div>
+            <div class="st"><b id="statusTitle">지진 정보를 불러오는 중…</b><small id="statusSub">잠시만 기다려 주세요.</small></div>
+            <button class="iconbtn" id="refresh" type="button" aria-label="새로고침"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg></button>
+          </div>
+          <div class="sidelists" id="sideLists"></div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="ranking">
-    <div class="sec-head">
+    <div class="sh">
       <div>
-        <h2>안심 여행 지역 랭킹</h2>
-        <p>장기 지진 위험 등급과 최근 30일 지진 활동을 합산한 <b>안심 지수</b> 순입니다. 지역을 누르면 볼거리·숙박·쇼핑·먹거리 정보가 열립니다.</p>
+        <div class="eb">Safety Ranking</div>
+        <h2>안심 지역 랭킹</h2>
       </div>
+      <p>지도와 같은 안심 지수 순입니다. 눌러서 볼거리, 숙박, 먹거리를 확인하세요.</p>
     </div>
-    <div class="rank-list" id="rankList"></div>
-    <div class="card howto">
-      <b>안심 지수 계산법</b> · 장기 위험 등급(일본 지진조사연구추진본부·J-SHIS의 '30년 내 진도 6약 이상 확률' 기준, 베타 단계에서는 5단계 등급으로 적용) 기본 점수에서
-      최근 30일 동안 그 지역에서 진도 3 이상이 관측될 때마다 2점, 진도 5약 이상이면 8점을 뺍니다(최대 20점).
-      큰 지진이 난 지역은 48시간 동안 여행 상품 안내를 중단하고 안전 정보만 보여드립니다. 안심 지수는 참고용이며 안전을 보장하지 않습니다.
-    </div>
+    <div class="tiles" id="rankList"></div>
+    <details class="more">
+      <summary>안심 지수는 어떻게 계산하나요</summary>
+      <p>일본 지진조사연구추진본부·J-SHIS가 발표하는 '30년 내 진도 6약 이상 확률'을 바탕으로 한 장기 위험 등급(베타, 5단계)에서 시작해, 최근 30일 동안 그 현에서 진도 3 이상이 관측될 때마다 2점, 진도 5약 이상이면 8점을 뺍니다(최대 20점). 강한 지진이 난 지역은 48시간 동안 여행 상품 안내를 중단하고 안전 정보만 보여드립니다. 안심 지수는 비교를 위한 참고 지표이며 안전을 보장하지 않습니다.</p>
+    </details>
   </section>
 
   <section id="live">
-    <div class="sec-head">
+    <div class="sh">
       <div>
-        <h2>최근 지진 목록</h2>
-        <p>최근 발표된 지진 10건입니다.</p>
+        <div class="eb">Recent</div>
+        <h2>최근 지진</h2>
       </div>
+      <p>일본 기상청 발표 기준입니다. 진도 5약 이상과 쓰나미 경보가 나오면 지도 아래 상태 표시가 붉게 바뀝니다.</p>
     </div>
-
-    <div class="stats" id="stats"></div>
-    <div class="card quakes" id="quakeList"><div class="empty">불러오는 중…</div></div>
+    <div class="statline" id="stats"></div>
+    <div class="quakes" id="quakeList"><div class="empty">불러오는 중…</div></div>
+    <button class="linkbtn" id="moreQ" type="button">더 보기</button>
     <div class="srcline"><span id="srcNote"></span><span>진도는 일본 기상청 기준(0~7)</span></div>
-    <div class="legend" id="legend"></div>
-
-    <div class="card notice">
-      <b>알아두세요.</b> 지진은 현재 과학으로 정확히 예측할 수 없습니다. 이 서비스는 공식 발표 정보를 이해하기 쉽게 정리할 뿐, 지진 발생을 예보하지 않습니다.
-      난카이 해곡 지진 '임시 정보'처럼 일본 정부의 특별 발표가 있으면 이 영역에서 가장 먼저 안내합니다.
-    </div>
   </section>
 
   <section id="guide">
-    <div class="sec-head">
+    <div class="sh">
       <div>
-        <h2>여행 중 지진이 나면</h2>
-        <p>미리 한 번 읽어두면 실제 상황에서 훨씬 침착해집니다.</p>
+        <div class="eb">If it happens</div>
+        <h2>지진이 나면</h2>
       </div>
+      <p>한 번만 읽어 두면 실제 상황에서 훨씬 침착해집니다.</p>
     </div>
-    <div class="grid2">
-      <div class="card tip">
+    <div class="gcards">
+      <div class="gcard">
+        <svg viewBox="0 0 32 32"><path d="M4 12h24M8 12v14M24 12v14"/><path d="M16 4l3 5h-6z"/></svg>
         <h3>흔들리는 동안</h3>
-        <ol>
-          <li>머리를 보호하고 탁자 아래 등으로 몸을 숨깁니다.</li>
-          <li>흔들림이 멈출 때까지 밖으로 뛰어나가지 않습니다.</li>
-          <li>엘리베이터 안이라면 모든 층 버튼을 누르고 가장 먼저 열리는 층에서 내립니다.</li>
-        </ol>
+        <ul><li>머리를 보호하고 <b>탁자 아래</b>로</li><li>멈출 때까지 밖으로 뛰지 않기</li><li>엘리베이터면 가장 가까운 층에서 내리기</li></ul>
       </div>
-      <div class="card tip">
-        <h3>흔들림이 멈춘 뒤</h3>
-        <ol>
-          <li>바닷가라면 쓰나미 경보를 기다리지 말고 즉시 높은 곳으로 이동합니다.</li>
-          <li>'避難所(피난소)', '津波避難ビル(쓰나미 피난 빌딩)' 표지를 따라갑니다.</li>
-          <li>대중교통이 멈추면 무리하게 이동하지 말고 숙소나 피난소에 머뭅니다.</li>
-        </ol>
+      <div class="gcard">
+        <svg viewBox="0 0 32 32"><path d="M3 20c3-4 5-4 8 0s5 4 8 0 5-4 8 0"/><path d="M3 13c3-4 5-4 8 0s5 4 8 0 5-4 8 0"/></svg>
+        <h3>멈춘 뒤</h3>
+        <ul><li>바닷가라면 경보를 기다리지 말고 <b>즉시 높은 곳으로</b></li><li>避難所 · 津波避難ビル 표지 따라가기</li><li>교통이 멈추면 무리하게 이동하지 않기</li></ul>
       </div>
-      <div class="card tip">
-        <h3>꼭 챙길 연락처와 앱</h3>
-        <ul>
-          <li>일본 경찰 <b>110</b> · 소방·구급 <b>119</b></li>
-          <li>외교부 영사콜센터 <b>+82-2-3210-0404</b> (24시간)</li>
-          <li>일본 관광청 'Safety tips' 앱: 한국어 지진·쓰나미 경보</li>
-          <li>NHK WORLD-JAPAN: 다국어 재난 방송</li>
-        </ul>
+      <div class="gcard">
+        <svg viewBox="0 0 32 32"><path d="M8 5h5l2 6-3 2a14 14 0 0 0 7 7l2-3 6 2v5a2 2 0 0 1-2 2A22 22 0 0 1 6 7a2 2 0 0 1 2-2z"/></svg>
+        <h3>연락처</h3>
+        <ul><li>경찰 <b>110</b> · 소방·구급 <b>119</b></li><li>영사콜센터 <b>+82-2-3210-0404</b> (24시간)</li><li>일본 관광청 Safety tips 앱 · NHK WORLD</li></ul>
       </div>
-      <div class="card tip">
-        <h3>출발 전 체크리스트</h3>
-        <ul>
-          <li>숙소가 해안 저지대인지, 가까운 피난소는 어디인지 확인</li>
-          <li>여행자보험의 <b>지진·자연재해 보장</b> 여부 확인</li>
-          <li>보조배터리, 현금 약간, 상비약 준비</li>
-          <li>외교부 해외안전여행 '동행' 서비스 등록</li>
-        </ul>
+      <div class="gcard">
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M10 16.5l4 4 8-9"/></svg>
+        <h3>출발 전</h3>
+        <ul><li>숙소 위치와 가까운 피난소 확인</li><li>여행자보험의 <b>지진·자연재해</b> 보장 확인</li><li>보조배터리 · 현금 · 상비약 · 동행 서비스 등록</li></ul>
       </div>
     </div>
   </section>
 
   <section id="faq">
-    <div class="sec-head">
-      <div>
-        <h2>자주 묻는 질문</h2>
-      </div>
-    </div>
+    <div class="sh"><div><div class="eb">FAQ</div><h2>자주 묻는 질문</h2></div></div>
     <div class="faq">
-      <details>
-        <summary>지진 때문에 일본 여행을 취소해야 하나요?</summary>
-        <p>대부분의 경우 그럴 필요는 없습니다. 일본은 매년 진도 1 이상 지진이 2,000회 안팎 발생하지만, 여행자가 피해를 입는 경우는 드뭅니다. 건물 내진 기준과 대응 체계가 세계 최고 수준입니다. 다만 '쓰나미 경보'나 '난카이 해곡 지진 임시 정보'가 발표된 지역은 일정을 조정하는 것이 좋습니다.</p>
-      </details>
-      <details>
-        <summary>'진도'와 '규모(M)'는 무엇이 다른가요?</summary>
-        <p>규모(매그니튜드)는 지진 자체의 에너지 크기이고, 진도는 특정 장소에서 느껴지는 흔들림의 세기입니다. 여행자에게 중요한 것은 진도입니다. 일본 기상청 진도 4까지는 대부분 피해가 없고, 5약부터 물건이 떨어지거나 교통이 멈출 수 있습니다.</p>
-      </details>
-      <details>
-        <summary>난카이 해곡 지진이 뭔가요?</summary>
-        <p>시즈오카부터 규슈 동쪽 바다까지 이어지는 해곡에서 100~150년 주기로 발생해 온 거대지진입니다. 일본 정부는 30년 내 발생 확률을 70~80%로 보고 있으며, 발생 시 도쿄 서쪽부터 나고야, 오사카, 시코쿠, 미야자키까지 넓은 지역에 강한 흔들림과 쓰나미가 예상됩니다. 이 서비스의 장기 위험 등급에 이 점이 반영되어 있습니다.</p>
-      </details>
-      <details>
-        <summary>안심 지수가 높으면 안전하다는 뜻인가요?</summary>
-        <p>아닙니다. 상대적으로 장기 위험이 낮고 최근 활동이 적다는 뜻일 뿐, 어디서든 지진은 일어날 수 있습니다. 안심 지수는 여행지를 고를 때 참고하는 정보 중 하나로만 활용하세요.</p>
-      </details>
-      <details>
-        <summary>여행 중 지진이 났을 때 한국어로 정보를 얻으려면?</summary>
-        <p>일본 관광청의 'Safety tips' 앱(한국어 지원)과 NHK WORLD-JAPAN 앱을 미리 설치하세요. 외교부 영사콜센터(+82-2-3210-0404)는 24시간 한국어로 연결됩니다. 이 페이지도 계속 갱신됩니다.</p>
-      </details>
+      <details><summary>지진 때문에 일본 여행을 취소해야 하나요?</summary>
+        <p>대부분은 그럴 필요가 없습니다. 일본은 건물 내진 기준과 대응 체계가 세계 최고 수준입니다. 다만 쓰나미 경보나 난카이 해곡 지진 임시 정보가 발표된 지역은 일정을 조정하세요.</p></details>
+      <details><summary>진도와 규모(M)는 무엇이 다른가요?</summary>
+        <p>규모는 지진 자체의 크기, 진도는 그 장소에서 느끼는 흔들림의 세기입니다. 여행자에게는 진도가 중요합니다. 진도 4까지는 대부분 피해가 없고, 5약부터 물건이 떨어지거나 교통이 멈출 수 있습니다.</p></details>
+      <details><summary>난카이 해곡 지진이 뭔가요?</summary>
+        <p>시즈오카부터 규슈 동쪽 바다까지 이어지는 해곡에서 100~150년 주기로 일어난 거대지진입니다. 일본 정부는 30년 내 발생 확률을 70~80%로 봅니다. 도쿄 서쪽부터 나고야, 오사카, 시코쿠, 미야자키까지 강한 흔들림과 쓰나미가 예상되며, 장기 위험 등급에 반영되어 있습니다.</p></details>
+      <details><summary>안심 지수가 높으면 안전하다는 뜻인가요?</summary>
+        <p>아닙니다. 상대적으로 장기 위험이 낮고 최근 활동이 적다는 뜻일 뿐, 어디서든 지진은 일어날 수 있습니다. 여행지를 고를 때 참고하는 정보 중 하나로만 활용하세요.</p></details>
     </div>
   </section>
 
   <section>
-    <div class="card subscribe">
+    <div class="subscribe">
       <h3>큰 지진이 나면 알려드릴게요</h3>
-      <p>진도 5약 이상 지진이나 쓰나미 경보가 발표되면 이메일로 알려드리는 안심 알림을 준비하고 있습니다. 이메일을 남겨 두시면 시작할 때 가장 먼저 안내해 드립니다.</p>
+      <p>진도 5약 이상 지진이나 쓰나미 경보를 이메일로 알려드리는 안심 알림을 준비하고 있습니다. 이메일을 남겨 두시면 시작할 때 가장 먼저 안내합니다.</p>
       <form id="subForm">
         <input type="email" id="subEmail" placeholder="이메일 주소" required autocomplete="email">
-        <button class="btn primary" type="submit">알림 신청</button>
+        <button class="btn" type="submit">알림 신청</button>
       </form>
     </div>
   </section>
@@ -379,26 +434,26 @@ footer .links button{background:none;border:0;color:var(--accent);cursor:pointer
       <button type="button" data-legal="terms">이용약관</button>
       <button type="button" data-legal="privacy">개인정보처리방침</button>
       <button type="button" data-legal="disclaimer">면책 고지</button>
+      <button type="button" id="creditsBtn">사진 출처</button>
       <button type="button" id="shareBtn">링크 복사</button>
     </div>
-    <p><b>안심재팬</b> · 더 안전하고 더 재미있는 일본여행 (베타)</p>
+    <p>안심재팬 · 더 안전하고 더 재미있는 일본여행 (베타)</p>
     <p>지진 데이터: 일본 기상청 발표 정보(P2P지진정보 API 경유). 이 서비스는 지진을 예보하지 않으며, 긴급 상황에서는 일본 정부와 현지 당국의 안내를 우선 따르세요.</p>
     <p>일부 링크는 제휴 링크로, 예약 시 서비스 운영에 필요한 수수료를 받을 수 있습니다. 이용자에게 추가 비용은 없습니다.</p>
   </div>
 </footer>
 
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="sheet" role="dialog" aria-modal="true" id="sheet"></div>
-</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true"></div>
+<div class="modal" id="modal" aria-hidden="true"><div class="dialog" id="dialog" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-/* ========== 설정: 제휴 ID (가입 후 채워 넣으면 됩니다) ========== */
+/* 제휴 ID: 가입 후 아래 값만 채우면 모든 예약 링크에 자동으로 붙습니다. */
 const AFF = {
   agodaCid: '',        // 아고다 파트너스 CID
   klookAid: '',        // 클룩 제휴 AID
-  tripAllianceId: '',  // 트립닷컴 얼라이언스 ID
-  esimUrl: '',         // eSIM 제휴 링크 (비우면 기본 링크)
+  tripAllianceId: '',  // 트립닷컴 얼라이언스 ID (예약 링크 연결 시 사용)
+  esimUrl: '',         // eSIM 제휴 링크 (비우면 클룩 eSIM 검색으로 연결)
 };
 function hotelUrl(r){
   const u = new URL('https://www.agoda.com/ko-kr/search');
@@ -414,9 +469,8 @@ function tourUrl(r, q){
 }
 function esimUrl(){ return AFF.esimUrl || 'https://www.klook.com/ko/search/result/?query=%EC%9D%BC%EB%B3%B8%20eSIM' + (AFF.klookAid?'&aid='+AFF.klookAid:''); }
 const INSURANCE_URL = 'https://www.e-insmarket.or.kr/'; // 보험다모아(금융감독원·보험협회 공식 비교 사이트)
-
-/* ========== 지역 데이터 ========== */
-// tier: 장기 위험 등급 1(낮음)~5(높음). J-SHIS 30년 내 진도 6약 이상 확률을 5단계로 나눈 베타 등급.
+function mapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+/* 지역 데이터 (베타). tier 는 현(県) 기준 장기 위험 등급을 init 에서 채웁니다. */
 const TIER_LABEL = {1:'낮음',2:'다소 낮음',3:'보통',4:'다소 높음',5:'높음'};
 const TIER_BASE  = {1:92,2:84,3:74,4:64,5:54};
 
@@ -536,376 +590,18 @@ const REGION_META = {
   osaka:{pf:'osaka',ll:[34.69,135.50],lab:'b'}, tokyo:{pf:'tokyo',ll:[35.68,139.69],lab:'r'},
   nagoya:{pf:'aichi',ll:[35.18,136.91],lab:'b'},
 };
+/* 일본 47개 현 지도 경로(단순화), 중심점, 장기 위험 등급(베타) */
 const PREFS = [{"id":"aichi","jp":"愛知県","ko":"아이치","tier":5,"d":"M260.2,277.9 260.3,271.5 258.0,271.2 256.7,268.4 258.6,263.3 261.6,262.9 263.0,261.8 264.8,264.9 266.9,265.9 269.3,265.0 271.8,266.6 274.3,265.1 274.6,267.3 276.8,266.5 279.4,266.9 279.6,268.4 275.9,274.6 273.1,276.2 272.8,279.7 264.0,282.0 264.5,280.1 265.2,280.7 269.5,278.3 269.2,276.5 267.5,276.2 266.7,277.5 263.8,277.2 262.2,274.6 261.5,277.4 262.7,279.2 260.2,277.9Z","c":[266.9,272.3]},{"id":"akita","jp":"秋田県","ko":"아키타","tier":2,"d":"M323.5,155.4 321.4,151.0 321.9,150.2 323.3,151.3 323.4,146.4 321.9,146.4 320.8,149.2 321.2,150.9 319.6,150.8 319.6,151.9 317.5,151.8 316.3,148.6 316.4,147.9 319.0,149.0 321.4,146.0 322.8,138.9 321.1,137.1 322.7,137.4 323.8,136.1 324.5,137.0 329.0,136.9 330.8,135.8 333.0,137.8 334.0,137.0 335.3,137.8 339.7,135.1 339.6,137.4 341.7,137.2 342.0,139.0 341.2,141.8 339.4,143.7 339.7,151.4 337.8,151.6 339.0,153.3 337.8,154.9 338.6,157.1 336.8,159.3 335.3,163.8 338.3,169.0 337.3,170.2 338.4,172.1 337.7,174.7 333.6,176.8 331.5,175.6 330.9,173.8 325.4,172.3 323.7,170.2 319.8,170.5 320.6,166.8 322.6,163.7 323.5,155.4Z","c":[328.9,152.1]},{"id":"aomori","jp":"青森県","ko":"아오모리","tier":3,"d":"M344.6,125.6 346.1,123.8 347.5,118.3 345.9,115.2 343.2,117.6 341.6,117.1 338.3,119.0 337.4,118.5 340.3,108.0 347.3,113.0 351.2,111.1 349.7,118.0 350.2,128.6 351.5,133.5 355.5,136.6 352.7,139.3 351.4,138.5 349.0,139.7 348.3,138.6 341.7,142.5 341.1,140.5 342.0,139.0 341.7,137.2 339.6,137.4 339.7,135.1 335.3,137.8 334.0,137.0 333.0,137.8 330.8,135.8 326.8,137.1 323.8,136.2 322.7,137.4 321.1,137.1 321.2,133.9 319.7,133.1 322.4,129.1 323.7,128.4 324.9,129.1 327.5,127.3 328.6,119.9 327.2,119.0 328.7,118.5 329.1,115.5 331.5,117.5 333.1,116.3 334.9,117.4 335.2,122.2 336.8,126.7 339.3,125.3 339.7,122.1 344.6,125.6Z","c":[337.5,127.8]},{"id":"chiba","jp":"千葉県","ko":"지바","tier":5,"d":"M319.1,263.1 320.2,263.3 320.4,261.6 324.5,258.9 322.0,255.5 321.3,255.8 318.0,245.6 321.3,249.4 325.4,251.7 331.5,249.9 335.8,251.6 339.5,254.6 339.3,255.3 335.5,255.2 332.8,257.3 330.3,261.0 329.9,267.4 328.5,268.7 324.8,269.1 322.0,271.5 321.2,273.9 318.9,274.2 317.4,272.8 319.5,272.0 318.7,270.4 318.7,267.4 319.7,266.2 318.6,264.6 319.1,263.1Z","c":[324.6,261.8]},{"id":"ehime","jp":"愛媛県","ko":"에히메","tier":4,"d":"M174.1,312.8 175.0,311.9 172.0,311.8 172.9,308.4 171.6,307.8 167.2,310.7 166.5,310.2 164.9,311.2 177.4,303.0 178.5,301.4 178.7,298.0 181.7,294.4 182.8,294.2 183.2,292.4 186.7,297.6 190.7,295.9 194.5,296.4 196.1,294.8 198.0,295.5 197.4,298.6 188.2,300.7 185.9,304.0 184.7,308.1 180.6,308.6 182.4,311.8 180.4,312.9 178.4,316.1 177.0,315.1 178.2,319.3 177.7,321.1 176.4,321.3 176.0,320.5 174.0,321.5 174.6,320.3 173.9,320.0 174.7,319.8 174.2,318.1 172.1,318.8 172.6,317.6 174.1,317.8 174.5,316.4 173.4,316.0 173.0,314.4 174.8,315.3 174.5,314.5 175.7,314.1 175.4,312.9 174.1,312.8Z","c":[178.4,309.9]},{"id":"fukui","jp":"福井県","ko":"후쿠이","tier":2,"d":"M238.3,258.2 239.8,259.2 239.6,258.2 240.7,257.8 239.8,256.5 240.9,257.3 243.0,256.9 242.6,254.5 243.8,253.5 244.0,255.6 245.0,256.0 245.5,253.2 242.7,248.2 245.9,241.7 248.3,240.6 250.7,243.9 254.4,244.1 256.5,246.2 258.4,245.7 257.9,248.0 259.9,251.4 259.1,252.6 256.2,252.6 253.4,253.9 250.9,253.0 249.0,256.0 246.5,255.2 246.9,258.4 245.8,258.1 243.7,260.2 242.5,259.5 241.4,262.3 239.8,262.1 239.0,263.5 234.4,263.0 232.7,259.5 233.1,258.6 234.0,258.7 233.9,260.1 238.3,260.1 238.6,259.2 237.3,258.9 238.3,258.2Z","c":[244.5,255.1]},{"id":"fukuoka","jp":"福岡県","ko":"후쿠오카","tier":1,"d":"M133.1,303.1 135.6,298.3 137.7,298.5 139.0,297.1 142.8,298.2 145.4,296.7 144.1,299.7 148.7,306.3 148.5,307.3 144.6,307.4 143.0,308.8 141.8,311.2 142.4,312.4 141.6,313.6 142.8,315.2 141.9,316.8 138.8,315.3 138.2,316.8 136.7,316.6 135.1,318.1 135.3,319.1 133.1,319.1 133.6,318.0 132.4,314.6 135.9,311.3 135.9,309.0 133.7,310.0 130.6,308.1 126.0,308.3 128.3,306.6 127.0,305.6 129.3,303.6 130.8,305.6 133.1,304.8 133.8,303.7 133.1,303.1Z","c":[137.1,308.6]},{"id":"fukushima","jp":"福島県","ko":"후쿠시마","tier":3,"d":"M341.4,223.7 338.3,225.7 337.9,226.9 334.5,225.8 333.9,224.8 334.1,226.6 331.5,228.5 327.1,224.7 327.3,222.8 326.4,222.9 325.2,221.0 320.4,219.7 310.2,225.6 307.4,225.1 307.7,219.5 305.9,217.6 307.1,215.1 306.6,213.3 307.1,212.4 310.5,212.1 311.2,210.8 314.2,210.8 313.5,207.4 317.2,203.1 321.2,203.0 322.1,204.7 326.9,205.0 328.2,203.4 327.9,199.3 329.3,200.0 330.4,199.4 331.9,201.2 335.4,201.2 336.1,203.5 337.9,204.3 337.6,203.7 339.3,203.6 339.3,201.4 340.7,201.3 342.3,205.1 342.8,211.1 341.4,223.7Z","c":[326.4,212.9]},{"id":"gifu","jp":"岐阜県","ko":"기후","tier":3,"d":"M251.7,266.8 251.0,266.1 252.3,262.6 251.8,260.8 250.9,258.5 249.8,258.7 249.0,256.0 250.9,252.9 253.4,253.8 256.2,252.6 259.1,252.6 259.6,250.2 257.9,248.0 258.7,243.9 260.2,242.0 259.2,240.6 260.8,238.9 262.3,239.6 262.8,241.2 266.5,236.8 268.7,236.6 269.4,237.5 270.9,236.7 271.2,237.5 273.0,237.5 276.0,239.6 274.2,244.5 275.3,246.0 275.0,247.6 272.6,250.4 270.7,250.5 269.7,252.4 272.3,253.7 273.9,256.2 273.8,259.0 275.7,259.8 275.1,261.4 275.8,262.3 274.9,262.6 274.3,265.1 271.8,266.6 269.3,265.0 266.9,265.9 264.8,264.9 263.0,261.8 258.6,263.3 256.7,268.4 255.6,268.3 253.9,265.8Z","c":[264.2,253.3]},{"id":"gunma","jp":"群馬県","ko":"군마","tier":2,"d":"M315.7,242.5 311.8,243.3 310.0,241.9 305.2,241.1 303.5,244.8 302.0,244.8 297.1,248.1 295.8,247.4 295.7,245.3 294.3,243.8 295.4,243.5 294.8,241.1 295.8,240.4 295.6,237.8 292.5,238.1 290.9,237.3 291.4,233.4 293.3,232.0 293.3,230.9 297.3,229.3 298.5,229.7 299.2,228.1 301.3,227.5 301.3,226.1 302.3,225.9 302.0,224.0 303.6,223.7 304.6,222.0 307.4,225.1 310.2,225.6 309.6,227.2 310.6,227.6 309.1,232.5 312.2,233.8 309.9,238.9 312.0,241.3 315.2,241.7Z","c":[302.2,235.3]},{"id":"hiroshima","jp":"広島県","ko":"히로시마","tier":3,"d":"M177.2,290.9 176.4,290.2 174.9,292.0 176.2,293.2 173.7,293.7 175.1,290.0 174.6,287.3 173.3,286.6 171.0,287.7 169.3,290.3 167.7,290.2 165.5,283.9 167.0,282.4 167.4,279.2 169.4,276.7 175.3,276.9 178.5,275.7 177.5,274.1 181.9,269.6 189.3,270.1 190.8,271.8 190.3,274.6 191.9,276.6 192.0,281.0 193.3,284.4 191.6,287.0 189.2,286.4 189.2,285.2 186.2,286.5 185.9,287.5 181.4,288.8 180.4,288.3 179.6,290.0 177.2,290.9Z","c":[179.4,284.1]},{"id":"hokkaido","jp":"北海道","ko":"홋카이도","tier":3,"d":"M330.0,71.6 332.8,68.8 328.7,63.5 329.1,60.5 330.8,60.6 332.1,59.4 337.9,64.3 342.3,63.1 342.2,64.2 345.2,65.6 347.4,64.4 350.4,60.7 348.5,49.9 349.5,47.8 353.8,45.5 354.7,43.6 354.8,33.8 356.9,30.1 357.6,24.8 356.6,17.7 353.3,8.2 354.9,5.0 354.7,2.3 356.0,3.8 357.7,3.5 360.5,0.3 372.2,14.1 376.1,21.3 381.1,27.0 389.9,34.2 393.6,36.1 405.9,39.3 407.6,43.4 410.8,44.4 416.8,44.3 424.6,37.1 427.6,33.1 428.1,35.3 423.6,43.3 422.0,48.3 428.1,61.1 425.6,59.8 425.6,61.4 426.4,60.8 427.0,62.1 429.9,62.4 433.7,58.9 436.8,59.6 432.0,61.9 431.2,64.8 429.2,64.4 423.7,65.6 420.3,70.0 418.4,69.9 417.4,67.9 415.4,69.7 416.6,71.3 409.8,70.8 407.6,69.3 404.5,69.9 398.7,73.6 393.4,78.9 389.3,84.7 387.8,88.0 388.1,91.1 386.3,98.1 382.6,94.4 369.7,87.9 365.5,84.2 362.3,83.3 358.2,80.0 354.0,79.4 350.8,80.5 344.5,84.9 342.0,88.1 340.6,87.2 341.6,87.5 341.7,86.7 340.4,86.3 339.5,83.9 336.3,80.6 331.6,80.5 328.5,85.1 328.0,89.5 333.1,93.1 337.3,93.0 341.2,98.3 345.7,101.2 341.4,103.7 337.7,102.0 336.1,102.9 336.4,101.2 335.0,100.9 334.1,102.9 331.0,104.4 330.7,108.3 327.4,109.7 326.1,111.9 323.1,110.6 321.9,107.1 323.7,101.2 324.7,100.7 324.6,96.0 322.7,93.1 320.8,92.6 318.3,90.0 317.7,87.9 319.3,84.8 318.8,79.9 319.7,78.4 323.1,77.8 326.0,74.2 327.4,75.7 328.2,75.5 330.0,71.6ZM344.7,10.1 344.6,8.9 345.9,7.7 348.0,8.9 348.5,10.7 346.7,12.2 344.7,10.1ZM312.8,91.3 311.5,94.7 310.5,91.4 313.6,89.4 312.8,91.3ZM343.2,4.5 342.5,7.2 341.4,1.9 342.0,2.7 343.0,2.3 343.2,4.5Z","c":[360.8,63.2]},{"id":"hyogo","jp":"兵庫県","ko":"효고","tier":3,"d":"M213.2,277.5 210.9,278.2 209.1,275.4 209.8,274.1 209.1,273.3 209.4,271.4 212.2,268.4 212.0,266.2 214.3,265.3 211.3,257.1 214.7,255.7 216.3,256.5 221.2,256.0 222.3,259.5 224.4,259.0 224.7,262.2 222.6,262.1 222.3,264.4 225.1,266.1 226.9,265.7 227.5,267.8 231.4,268.9 231.7,270.1 230.4,271.1 230.6,272.7 233.0,273.7 232.1,274.2 232.0,276.5 232.9,279.1 232.4,280.3 231.8,279.0 229.5,278.6 224.9,280.9 220.6,279.1 218.9,277.5 213.2,277.5ZM222.6,288.6 222.8,289.4 218.5,291.2 216.9,288.8 223.8,281.2 224.3,282.1 221.7,285.9 222.6,288.6Z","c":[221.8,273.1]},{"id":"ibaraki","jp":"茨城県","ko":"이바라키","tier":4,"d":"M333.5,240.3 334.3,245.7 339.5,254.6 335.9,251.5 331.5,249.8 325.4,251.6 321.3,249.4 318.4,245.6 317.2,245.8 316.5,242.9 318.9,242.0 319.4,240.3 320.6,240.6 321.8,238.8 326.2,238.0 327.3,235.0 326.7,231.2 328.0,230.3 327.4,225.0 331.5,228.5 334.0,226.6 333.9,224.8 334.5,225.9 338.0,226.9 333.5,240.3Z","c":[327.8,238.9]},{"id":"ishikawa","jp":"石川県","ko":"이시카와","tier":2,"d":"M257.7,221.1 257.7,219.9 256.7,219.8 257.7,215.4 259.5,213.9 261.7,213.6 268.6,210.2 269.7,210.4 270.3,212.3 268.2,212.9 267.8,216.1 265.1,216.6 263.4,218.9 262.2,217.7 260.7,219.9 260.4,221.6 261.6,221.2 262.7,222.3 264.2,220.9 264.2,224.4 262.3,224.6 260.9,226.0 259.7,230.1 258.9,237.4 259.2,240.6 260.3,242.0 258.4,245.8 256.5,246.2 254.4,244.2 250.7,243.9 248.3,240.7 251.8,237.6 257.3,229.6 258.7,225.8 257.7,221.1Z","c":[260.4,225.3]},{"id":"iwate","jp":"岩手県","ko":"이와테","tier":3,"d":"M359.9,166.2 360.9,168.0 359.1,168.4 360.2,169.1 358.5,169.9 360.2,170.9 358.0,170.7 359.3,171.9 358.1,172.1 358.5,173.0 357.0,173.1 356.2,171.9 356.7,173.8 355.9,175.1 355.2,173.5 354.3,173.5 354.5,174.3 351.9,173.7 350.6,179.1 348.2,178.1 346.6,179.9 344.8,178.9 344.7,176.7 341.8,176.8 337.6,174.7 338.3,172.2 337.2,170.2 338.3,169.1 335.3,163.8 336.7,159.3 338.5,157.2 337.8,154.9 339.0,153.3 337.8,151.6 339.6,151.5 339.3,143.8 341.2,141.9 342.6,142.6 348.3,138.7 349.0,139.8 351.4,138.6 352.6,139.3 355.5,136.7 358.4,142.2 357.4,143.2 359.2,144.5 358.4,146.3 360.8,148.6 361.2,151.4 361.5,156.2 360.6,158.7 362.2,156.9 362.2,159.0 363.1,159.7 360.8,161.6 361.2,162.5 362.9,161.7 362.4,163.0 359.6,165.0 361.2,165.5 359.9,166.2Z","c":[352.5,161.8]},{"id":"kagawa","jp":"香川県","ko":"가가와","tier":4,"d":"M199.7,288.8 202.0,286.6 205.7,287.4 206.8,286.2 207.3,287.9 209.3,287.7 209.1,288.9 212.8,290.8 212.2,292.0 207.5,291.6 204.1,294.0 201.4,293.3 198.0,295.5 196.2,294.7 197.2,291.1 195.7,289.6 197.6,290.3 199.7,288.8Z","c":[203.5,290.3]},{"id":"kagoshima","jp":"鹿児島県","ko":"가고시마","tier":3,"d":"M130.4,355.8 131.8,351.6 128.5,347.3 129.7,344.6 128.6,340.5 129.7,339.5 131.9,339.9 132.4,338.9 134.3,340.0 137.2,338.2 139.6,340.2 139.2,341.2 142.9,344.9 142.7,347.1 144.8,347.7 146.1,351.0 146.6,350.4 148.7,351.2 148.2,355.0 147.0,354.6 145.4,356.5 145.3,357.3 147.0,357.9 146.4,359.0 147.5,359.2 145.2,360.3 144.2,362.3 138.3,365.6 138.1,363.8 139.9,362.5 141.1,357.8 139.0,354.9 139.1,352.9 136.9,352.1 138.6,351.0 139.3,352.5 140.3,352.6 141.5,350.5 141.0,349.4 138.3,348.6 137.5,349.3 135.5,353.8 136.4,358.2 138.4,359.4 136.8,361.9 135.5,361.7 134.3,359.7 129.5,359.8 128.7,358.1 129.4,357.5 127.8,356.0 128.4,355.4 129.7,356.4 130.4,355.8ZM135.1,377.8 138.5,379.7 136.8,382.8 133.8,382.8 132.7,379.3 135.1,377.8ZM143.9,375.1 143.7,373.0 146.1,369.1 146.5,372.4 144.2,377.3 144.6,379.2 142.4,380.5 142.1,379.9 142.0,377.6 143.9,375.1ZM119.8,350.8 119.0,351.2 118.5,350.4 121.4,347.5 119.8,350.8ZM122.0,346.3 122.5,345.3 123.8,345.6 123.8,346.6 122.0,346.3ZM129.8,377.6 130.5,378.4 129.4,378.7 128.1,377.1 129.8,377.6Z","c":[136.0,358.3]},{"id":"kanagawa","jp":"神奈川県","ko":"가나가와","tier":5,"d":"M301.0,262.3 301.4,261.2 304.9,259.1 305.2,255.8 307.5,257.4 310.5,258.0 311.9,259.9 312.4,257.8 311.6,257.2 313.1,256.5 317.3,258.9 317.7,259.6 315.0,260.8 316.2,261.4 315.0,262.1 315.3,264.8 317.3,265.8 315.5,267.5 316.0,268.6 314.6,268.5 313.9,264.9 311.3,264.3 306.8,265.3 305.6,266.2 305.4,268.3 303.3,268.4 302.2,265.7 302.7,262.6 301.0,262.3Z","c":[310.1,262.5]},{"id":"kochi","jp":"高知県","ko":"고치","tier":5,"d":"M186.5,317.7 186.3,318.7 184.7,318.8 184.6,322.0 183.4,322.5 184.8,325.7 182.0,324.2 180.4,325.2 178.7,324.0 177.1,324.9 178.8,321.4 177.7,321.1 177.9,317.1 176.8,315.4 178.4,316.1 180.3,312.9 182.4,311.8 180.6,308.5 184.7,308.0 186.0,304.0 188.2,300.7 189.3,300.8 189.9,299.8 194.2,299.8 195.2,298.6 201.0,299.5 202.4,300.7 203.8,299.6 204.8,299.9 205.4,303.1 207.4,303.2 208.0,306.2 210.1,306.4 207.6,313.6 202.8,307.8 199.1,306.7 195.9,307.2 190.6,310.9 189.5,310.7 188.8,315.7 188.0,315.4 186.5,317.7Z","c":[190.0,311.5]},{"id":"kumamoto","jp":"熊本県","ko":"구마모토","tier":3,"d":"M139.6,340.2 137.1,338.2 134.3,339.9 132.4,338.9 136.5,332.4 135.9,331.0 136.7,330.8 135.8,330.2 138.3,327.8 134.3,328.2 137.0,325.9 137.2,324.1 134.0,321.3 133.1,319.1 135.3,319.2 135.1,318.1 136.7,316.6 138.2,316.8 138.7,315.3 144.8,318.8 145.5,317.3 144.8,315.3 147.2,315.0 149.3,318.1 150.1,322.0 151.5,323.2 150.2,323.4 147.3,328.8 145.4,329.8 145.4,332.3 147.2,334.9 145.8,336.6 147.1,338.8 145.1,338.6 144.0,339.9 139.6,340.2ZM133.6,330.4 133.0,333.3 129.1,333.1 129.3,335.0 126.1,337.9 126.2,338.8 124.6,336.8 124.7,334.1 126.1,330.6 127.5,329.9 129.2,330.1 129.3,332.0 131.5,330.5 133.6,330.4ZM128.4,337.6 128.9,336.3 129.4,338.9 128.4,340.4 127.2,338.5 127.3,337.6 128.4,337.6ZM134.1,329.6 133.0,328.8 134.0,328.0 134.1,329.6Z","c":[136.3,330.1]},{"id":"kyoto","jp":"京都府","ko":"교토","tier":3,"d":"M231.1,270.9 231.4,268.9 227.5,267.9 226.9,265.7 225.1,266.2 222.3,264.4 222.6,262.1 224.7,262.2 224.7,259.5 222.3,259.5 221.2,256.1 222.5,256.3 228.1,253.4 229.9,255.2 227.6,258.9 228.5,257.9 229.2,258.4 228.6,259.0 230.2,259.3 230.3,260.7 231.6,260.4 230.4,259.1 232.7,257.7 232.9,260.8 234.4,262.9 239.0,263.4 240.6,265.3 240.0,270.8 240.9,274.6 242.3,274.7 244.1,276.3 244.1,278.9 242.1,277.8 241.4,278.9 238.7,278.5 235.9,272.7 234.5,274.0 233.5,272.2 231.3,271.6Z","c":[231.9,265.5]},{"id":"mie","jp":"三重県","ko":"미에","tier":5,"d":"M257.2,288.9 257.1,287.5 255.4,289.6 253.4,289.1 253.5,290.3 249.5,291.4 249.4,293.7 247.5,293.9 249.0,295.2 248.9,296.4 245.5,298.4 243.7,302.3 240.7,300.1 241.9,296.5 243.9,294.9 245.5,295.2 246.1,289.8 245.4,288.7 246.1,288.3 244.9,286.4 248.0,284.2 246.6,282.5 244.5,281.9 245.3,279.8 244.0,277.0 245.3,276.4 245.7,274.3 248.4,275.4 250.8,274.2 252.5,268.3 251.7,266.8 253.9,265.8 255.6,268.3 256.7,268.4 258.0,271.2 256.3,272.1 256.2,274.2 254.3,277.2 254.1,281.1 261.7,285.2 260.7,286.6 261.4,287.1 260.6,289.5 258.3,289.3 259.9,289.4 259.5,288.6 257.2,288.9Z","c":[251.3,284.7]},{"id":"miyagi","jp":"宮城県","ko":"미야기","tier":4,"d":"M343.3,189.9 343.7,191.3 342.5,192.1 340.7,195.7 340.7,201.4 339.3,201.5 339.2,203.8 336.7,204.1 335.4,201.2 331.9,201.2 330.4,199.4 329.3,200.0 327.9,199.3 327.8,197.4 330.5,196.8 331.8,194.2 331.8,191.9 334.4,187.3 333.0,182.7 334.2,182.7 335.1,179.5 333.2,176.6 338.6,174.6 341.8,176.8 344.7,176.7 344.8,178.9 346.6,179.9 348.2,178.1 350.6,179.1 351.9,173.7 354.5,174.3 355.3,177.2 353.7,176.4 353.6,178.1 352.1,179.5 353.1,181.4 352.4,180.7 350.8,181.9 350.8,182.6 352.5,182.8 351.2,184.2 352.9,185.6 352.6,186.5 351.8,186.0 351.8,187.6 350.8,187.6 351.3,188.9 352.7,188.7 352.4,191.9 350.2,190.1 351.1,189.4 350.5,188.7 349.4,189.1 349.0,188.4 346.4,188.7 344.8,190.7 344.7,189.3 343.3,189.9Z","c":[344.2,187.5]},{"id":"miyazaki","jp":"宮崎県","ko":"미야자키","tier":5,"d":"M154.9,341.5 153.8,346.3 154.6,347.5 154.1,351.0 151.3,357.2 148.2,355.0 148.7,351.2 146.6,350.4 146.1,351.0 144.7,347.7 142.7,347.1 142.9,344.9 139.1,341.2 139.6,340.2 144.0,339.9 145.1,338.6 147.1,338.8 145.8,336.6 147.2,334.9 145.4,332.3 145.4,329.8 147.3,328.8 150.2,323.4 154.4,323.1 156.1,325.0 158.8,324.6 160.3,323.2 161.9,323.8 162.2,325.3 158.4,329.9 159.3,331.1 157.8,331.8 158.5,332.7 156.5,335.8 154.9,341.5Z","c":[151.0,337.8]},{"id":"nagano","jp":"長野県","ko":"나가노","tier":3,"d":"M274.3,265.1 274.9,262.6 275.8,262.3 275.1,261.4 275.7,259.8 273.8,259.0 273.9,256.2 272.3,253.7 269.7,252.4 270.7,250.5 272.6,250.4 275.0,247.6 275.3,246.0 274.2,244.5 276.1,240.1 274.8,238.4 277.1,235.3 276.9,234.1 278.1,233.4 278.3,229.2 280.4,226.8 280.4,225.5 283.2,225.8 283.0,227.7 284.0,228.4 287.2,226.6 288.6,227.3 288.8,225.6 290.7,223.5 294.1,223.0 294.6,225.4 296.6,227.0 296.7,229.7 293.3,230.9 293.3,232.0 291.4,233.4 290.9,237.3 292.5,238.1 295.6,237.8 295.8,240.4 294.8,241.1 295.4,243.5 294.3,243.8 297.5,249.6 295.2,251.0 294.7,249.9 292.2,250.4 290.3,248.6 286.7,252.8 287.5,253.6 286.5,254.7 287.3,256.5 285.8,258.6 285.8,263.1 280.4,266.7 276.8,266.4 274.6,267.2 274.0,265.9Z","c":[284.1,244.1]},{"id":"nagasaki","jp":"長崎県","ko":"나가사키","tier":1,"d":"M130.4,322.2 131.8,322.5 132.7,324.2 132.1,326.9 128.5,328.8 127.9,326.7 129.3,325.0 128.8,324.1 126.9,324.0 124.3,324.6 123.2,327.1 120.1,329.3 121.9,325.4 120.8,323.5 119.2,322.9 117.9,320.3 118.6,317.5 119.5,317.2 119.9,319.1 121.6,319.4 121.1,322.4 122.2,323.2 123.2,322.1 125.4,322.8 123.9,321.0 123.9,318.6 120.1,317.4 119.8,315.4 118.7,316.9 118.9,315.4 116.5,314.2 117.3,310.3 117.9,310.8 118.8,309.9 119.7,311.1 121.0,310.5 120.6,312.4 121.7,315.0 124.1,315.5 123.8,317.2 126.5,319.6 129.3,320.3 127.8,322.2 128.6,322.9 130.4,322.2ZM112.0,287.9 112.4,286.8 111.8,287.5 110.0,287.2 112.0,283.1 111.2,282.2 111.9,280.3 113.3,280.2 114.4,278.9 115.4,279.8 114.9,282.5 112.8,284.9 113.7,287.4 113.3,288.7 112.0,289.2 111.1,292.6 109.7,293.7 108.8,293.3 109.5,287.9 109.9,288.8 112.0,287.9ZM102.4,325.3 103.4,327.6 101.0,327.5 101.0,329.2 97.6,328.3 99.0,327.4 98.7,324.3 99.8,325.1 101.8,323.9 102.4,325.3ZM107.6,318.1 107.3,319.6 108.8,319.0 109.1,319.7 106.4,323.4 106.2,320.5 105.4,320.6 106.5,319.8 107.8,315.4 107.6,318.1ZM115.9,310.3 116.5,309.7 116.7,310.9 114.7,314.3 112.4,315.0 113.3,314.9 113.5,312.9 115.9,310.3ZM102.7,322.9 103.6,323.4 103.1,324.8 102.4,324.3 102.7,322.9ZM105.7,322.5 104.8,321.6 105.5,321.7 105.3,320.8 106.2,321.6 105.7,322.5ZM108.3,312.3 108.1,313.4 106.9,312.9 108.3,312.3ZM104.3,323.9 103.0,322.5 104.2,323.0 104.7,322.3 104.3,323.9ZM116.9,307.9 115.3,308.2 116.5,307.2 116.9,307.9ZM106.7,314.8 106.4,314.1 107.5,314.2 106.7,314.8Z","c":[113.9,313.7]},{"id":"nara","jp":"奈良県","ko":"나라","tier":4,"d":"M244.4,278.2 245.2,279.7 244.5,281.9 247.7,283.2 248.0,284.2 244.9,286.4 246.1,288.3 245.4,288.6 246.1,289.8 245.5,295.2 243.9,294.9 240.8,298.2 236.3,298.8 235.7,298.1 236.4,296.2 234.5,294.0 236.5,290.7 238.2,290.2 236.5,286.7 237.9,277.2 238.7,278.5 241.4,278.9 242.1,277.8 244.1,278.9Z","c":[241.7,287.3]},{"id":"niigata","jp":"新潟県","ko":"니가타","tier":3,"d":"M287.1,219.3 293.8,214.1 297.6,208.5 299.9,202.8 308.1,198.1 309.8,196.2 311.5,192.6 311.6,188.8 313.4,185.0 316.7,186.3 317.4,189.7 320.4,191.4 319.6,193.0 316.1,194.5 316.3,197.3 315.0,201.0 317.2,203.1 313.5,207.4 314.2,210.8 311.2,210.8 310.5,212.1 307.1,212.4 306.6,213.4 307.1,215.1 305.9,217.7 307.7,219.6 307.4,224.8 304.6,222.0 303.6,223.7 302.0,224.0 302.3,225.9 301.3,226.1 301.3,227.5 296.9,229.9 296.2,229.0 296.6,227.0 294.6,225.5 294.1,223.0 293.3,222.7 290.8,223.6 288.8,225.6 288.6,227.3 287.2,226.6 284.0,228.4 283.1,227.7 283.2,225.8 280.4,225.5 280.4,226.8 278.3,229.2 277.3,225.0 275.8,223.9 281.2,221.9 284.8,219.2 287.1,219.3ZM292.1,194.5 291.7,196.8 294.2,196.7 292.8,200.6 287.9,203.5 287.0,202.9 288.3,202.4 289.9,198.8 287.5,199.3 287.7,196.6 292.0,190.6 293.1,190.4 292.1,194.5Z","c":[298.2,211.3]},{"id":"oita","jp":"大分県","ko":"오이타","tier":2,"d":"M141.9,316.8 142.7,315.2 141.6,313.7 142.3,312.4 141.8,311.3 143.0,308.8 144.6,307.4 148.4,307.3 148.9,304.8 153.2,305.8 154.8,303.5 156.5,303.0 159.3,305.5 159.5,308.3 158.8,309.7 157.4,309.3 157.7,310.2 156.5,311.1 154.8,310.8 155.0,313.0 156.5,313.5 158.4,312.7 159.8,313.6 162.7,313.0 160.9,316.3 162.6,316.1 161.9,317.4 162.9,317.7 164.7,317.0 162.6,319.7 166.2,320.5 164.2,321.1 164.8,323.3 163.4,324.3 162.5,323.8 162.2,325.4 161.9,323.8 160.3,323.2 158.8,324.6 156.1,325.1 154.3,323.1 151.9,323.8 150.1,322.0 149.3,318.1 147.2,315.1 144.7,315.4 145.4,317.3 144.8,318.8 141.9,316.8Z","c":[154.7,315.3]},{"id":"okayama","jp":"岡山県","ko":"오카야마","tier":2,"d":"M204.7,282.2 202.8,285.0 197.8,283.7 194.0,285.3 192.0,281.0 191.9,276.6 190.3,274.6 190.7,271.8 189.7,270.6 190.3,269.5 192.5,269.1 192.5,267.5 194.4,267.4 196.2,263.7 199.2,264.4 200.7,266.0 204.3,263.6 204.3,264.6 206.8,265.3 207.7,267.9 212.1,266.2 212.2,268.5 209.5,271.5 209.2,273.3 209.8,274.2 209.1,275.5 210.9,278.3 209.6,278.3 207.4,281.2 204.7,282.2ZM209.9,285.0 210.2,284.4 209.4,284.6 208.7,285.9 208.7,284.6 206.9,284.5 211.0,282.3 210.8,285.4 209.9,285.0Z","c":[203.2,275.7]},{"id":"okinawa","jp":"沖縄県","ko":"오키나와","tier":2,"d":"M82.2,467.0 85.5,464.5 83.7,463.8 83.4,461.5 85.8,461.9 86.0,463.3 86.9,463.2 91.0,457.9 92.3,460.7 90.5,463.3 88.7,463.3 88.8,464.7 86.5,465.0 86.8,465.7 84.8,467.5 82.5,467.7 84.3,470.3 82.6,469.9 81.2,472.7 82.5,473.5 79.4,475.5 78.6,472.8 81.0,470.6 80.2,467.6 82.2,467.0ZM117.2,424.9 116.1,426.3 114.6,426.5 114.7,428.4 112.8,429.7 113.0,430.7 111.3,429.8 110.9,428.4 108.2,427.5 112.2,424.9 115.5,424.2 116.2,422.8 117.8,422.5 118.1,423.9 119.1,421.3 119.7,423.5 117.2,424.9ZM5.8,512.6 4.6,514.9 0.3,513.8 1.1,512.9 1.9,513.5 2.6,511.0 5.8,512.6ZM105.0,436.3 106.3,438.4 105.3,440.4 104.3,440.6 103.2,439.2 103.1,436.8 103.6,435.4 105.0,435.5 105.0,436.3ZM10.3,510.7 11.4,510.6 13.7,507.3 11.9,510.4 11.7,512.9 10.0,513.2 9.2,512.5 9.8,511.5 8.6,511.4 8.4,510.6 9.3,510.7 9.3,509.9 10.3,510.7ZM31.7,504.1 32.3,504.2 31.9,500.6 33.3,503.2 35.6,504.6 32.8,505.1 31.7,504.1ZM98.2,447.2 96.8,448.0 96.1,446.6 99.8,445.5 98.2,447.2ZM109.9,429.6 110.6,429.2 112.5,430.8 111.9,431.6 109.8,431.4 109.0,428.9 109.6,428.6 109.9,429.6ZM61.6,470.0 60.4,469.0 61.9,468.6 62.4,470.7 61.6,470.0ZM125.9,424.9 124.7,426.8 123.6,426.6 125.9,424.9ZM29.4,502.7 29.9,501.7 31.1,502.8 29.4,502.7Z","c":[74.0,464.8]},{"id":"osaka","jp":"大阪府","ko":"오사카","tier":4,"d":"M232.1,283.3 231.8,281.5 233.0,279.1 232.1,274.2 233.0,273.7 230.7,272.7 230.7,270.8 233.5,272.2 234.5,274.0 235.9,272.7 238.5,276.7 236.7,281.4 237.1,286.3 227.5,289.2 226.0,289.3 225.6,288.3 228.2,287.5 232.1,283.3Z","c":[232.2,279.8]},{"id":"saga","jp":"佐賀県","ko":"사가","tier":2,"d":"M121.4,311.5 122.1,312.5 122.7,310.0 120.9,308.7 121.4,307.8 122.5,308.6 122.2,306.2 123.9,306.3 124.6,308.5 130.6,308.0 133.7,310.0 135.9,309.0 135.8,311.2 133.0,313.5 132.2,315.8 129.8,314.7 127.8,316.8 129.7,320.2 126.4,319.6 123.7,317.2 124.1,315.4 121.7,314.9 120.6,312.3 121.4,311.5ZM119.8,302.6 118.2,301.2 119.4,299.0 120.8,299.5 120.5,301.0 121.2,301.3 119.8,302.6ZM120.0,309.2 120.4,308.2 121.2,309.2 120.0,309.2Z","c":[124.3,309.5]},{"id":"saitama","jp":"埼玉県","ko":"사이타마","tier":4,"d":"M297.3,250.1 297.8,247.0 303.5,244.8 305.2,241.1 310.0,241.9 311.8,243.3 315.7,242.5 318.7,246.9 320.4,251.2 319.8,252.8 317.8,252.3 314.9,253.5 313.5,253.6 313.2,252.7 310.3,253.5 308.6,251.9 303.1,250.4 300.5,251.7 298.3,250.3Z","c":[309.5,249.0]},{"id":"shiga","jp":"滋賀県","ko":"시가","tier":3,"d":"M251.7,266.8 252.5,268.3 250.7,274.2 248.4,275.4 245.7,274.3 245.3,276.4 244.0,277.0 242.3,274.7 240.9,274.6 240.0,270.8 240.6,265.3 239.0,263.4 239.8,262.1 241.4,262.2 242.5,259.5 243.7,260.1 245.8,258.1 246.9,258.4 246.5,255.2 249.0,256.0 249.8,258.7 251.4,259.2 252.3,262.6 251.0,266.1Z","c":[245.9,265.8]},{"id":"shimane","jp":"島根県","ko":"시마네","tier":1,"d":"M170.8,270.6 172.8,267.5 177.3,264.6 177.9,262.3 177.0,261.5 183.8,259.5 186.2,257.4 187.1,258.4 190.8,258.3 189.2,259.1 190.8,260.7 190.5,265.4 187.4,266.8 188.2,267.9 187.2,270.2 181.9,269.6 177.4,274.1 178.5,275.7 175.3,276.9 169.4,276.7 167.3,279.2 167.0,282.4 165.7,283.2 165.9,284.5 163.8,288.4 163.1,287.8 161.1,288.6 160.1,287.0 160.6,285.4 158.8,285.5 158.1,283.8 159.3,282.2 158.4,279.7 161.1,279.2 166.3,273.6 170.8,270.6ZM188.9,243.2 188.0,242.7 187.9,240.8 189.9,239.5 192.0,241.3 191.7,242.8 190.4,243.0 190.8,243.7 188.9,243.2ZM142.8,210.0 143.2,211.4 142.5,212.2 140.9,210.7 142.8,210.0ZM185.9,244.3 185.3,246.4 184.1,245.6 184.3,246.9 183.3,246.3 183.9,245.0 185.9,244.3ZM187.0,245.7 185.7,247.0 185.6,245.4 186.6,244.9 187.0,245.7Z","c":[175.7,258.5]},{"id":"shizuoka","jp":"静岡県","ko":"시즈오카","tier":5,"d":"M304.8,275.0 302.5,278.1 302.4,280.1 299.2,281.3 297.5,279.3 298.5,274.1 297.9,272.6 298.4,271.3 300.5,271.5 300.7,270.8 299.0,269.2 296.6,268.7 293.9,269.5 293.2,272.2 290.1,273.8 286.7,279.9 287.4,281.6 282.9,280.0 272.8,279.7 273.1,276.1 275.8,274.6 279.6,268.3 279.4,266.8 285.8,263.1 285.8,258.6 287.3,256.5 288.2,259.7 287.9,264.1 290.1,264.5 291.5,267.7 293.5,267.2 293.4,262.2 294.4,261.3 296.5,263.4 302.5,262.3 302.4,267.2 303.3,268.4 304.8,268.6 304.0,270.6 305.5,273.0 305.4,274.5Z","c":[293.5,270.4]},{"id":"tochigi","jp":"栃木県","ko":"도치기","tier":2,"d":"M327.5,225.0 328.0,230.3 326.7,231.2 327.3,235.0 326.2,238.0 321.8,238.8 317.2,242.9 315.7,242.5 314.9,241.2 312.0,241.3 310.9,240.3 310.1,238.0 312.2,233.8 309.1,232.5 310.6,227.6 309.6,227.2 310.2,225.6 320.4,219.7 325.2,221.0 326.4,222.9 327.3,222.8 327.1,224.7Z","c":[318.9,231.9]},{"id":"tokushima","jp":"徳島県","ko":"도쿠시마","tier":5,"d":"M218.4,299.9 211.9,303.8 210.1,306.4 208.0,306.2 207.3,303.2 205.4,303.1 204.8,299.9 203.4,299.7 202.4,300.7 197.4,298.6 198.0,295.5 199.8,293.9 202.8,293.1 204.1,294.0 207.5,291.6 212.2,292.0 212.8,290.8 215.6,290.0 216.3,291.5 215.7,295.5 218.0,297.5 216.4,299.2 218.4,299.9Z","c":[209.0,297.7]},{"id":"tokyo","jp":"東京都","ko":"도쿄","tier":5,"d":"M310.4,279.4 309.5,278.6 309.7,276.7 311.4,278.1 311.3,279.6 310.4,279.4ZM308.2,285.6 307.9,287.8 307.4,286.9 308.2,285.6ZM319.1,256.7 317.6,256.1 317.3,257.7 318.3,259.0 316.5,259.1 313.0,256.5 312.3,257.4 311.8,257.0 311.9,259.9 310.5,258.0 307.5,257.4 303.1,254.6 301.8,251.0 303.1,250.4 308.6,251.9 310.4,253.5 313.2,252.8 313.5,253.6 314.9,253.5 317.8,252.3 319.9,252.8 321.3,255.8 320.3,257.1 319.1,256.7ZM313.5,294.3 313.8,293.3 312.3,292.9 312.1,294.5 313.5,294.3ZM318.0,317.6 319.0,318.2 319.3,316.5 317.4,315.6 318.0,317.6ZM318.0,317.6 319.0,318.2 319.3,316.5 317.4,315.6 318.0,317.6Z","c":[313.6,277.3]},{"id":"tottori","jp":"鳥取県","ko":"돗토리","tier":2,"d":"M190.8,260.7 192.3,261.0 196.0,259.1 199.2,259.9 206.5,259.2 211.4,257.2 214.3,265.3 207.7,267.9 206.7,265.2 204.3,264.6 204.3,263.6 200.7,266.0 199.1,264.3 196.2,263.7 194.4,267.4 192.4,267.5 192.5,269.1 190.3,269.5 189.7,270.6 187.2,270.4 188.3,267.9 187.4,266.8 190.5,265.4 190.8,260.7Z","c":[197.2,264.7]},{"id":"toyama","jp":"富山県","ko":"도야마","tier":2,"d":"M265.5,228.7 269.8,229.2 271.6,225.2 275.8,223.9 277.3,224.9 278.1,233.4 276.9,234.1 277.1,235.3 274.8,238.4 271.2,237.5 270.9,236.7 269.6,237.5 269.3,236.6 266.5,236.8 262.8,241.2 262.3,239.6 260.8,238.9 259.2,240.6 259.6,234.4 259.0,232.7 260.8,225.9 262.2,224.6 264.2,224.4 262.9,226.7 265.0,228.8Z","c":[267.7,232.6]},{"id":"wakayama","jp":"和歌山県","ko":"와카야마","tier":5,"d":"M240.0,307.2 238.8,309.0 238.9,307.9 233.8,306.9 230.3,303.5 231.5,302.4 227.5,300.0 226.8,298.6 224.9,298.5 225.1,296.2 227.2,294.9 225.3,293.9 227.4,292.2 225.2,288.4 226.4,289.3 236.5,286.7 238.2,290.2 236.4,290.7 234.6,293.5 236.4,296.2 235.7,298.0 236.3,298.7 240.7,298.1 240.7,300.1 243.7,302.3 242.2,304.1 242.6,305.6 240.0,307.2Z","c":[234.0,298.6]},{"id":"yamagata","jp":"山形県","ko":"야마가타","tier":2,"d":"M327.9,199.3 328.2,203.4 326.9,205.1 324.8,205.4 323.3,204.2 322.1,204.7 321.1,203.0 317.2,203.1 315.0,201.0 316.3,197.3 316.1,194.4 319.6,193.0 320.4,191.4 317.4,189.7 316.7,186.3 313.4,185.0 314.6,181.9 317.5,178.9 319.8,170.6 323.6,170.3 325.3,172.3 330.9,173.8 331.5,175.6 333.0,176.2 335.1,179.5 334.2,182.7 333.0,182.7 334.4,187.3 331.8,191.9 331.8,194.2 330.5,196.8 327.8,197.3 327.9,199.3Z","c":[324.5,190.2]},{"id":"yamaguchi","jp":"山口県","ko":"야마구치","tier":2,"d":"M155.0,295.2 154.4,294.7 153.3,296.0 152.7,295.0 150.2,297.5 145.9,294.7 143.0,297.7 143.3,294.6 142.2,293.1 143.6,291.2 142.3,288.8 143.0,287.3 145.6,286.9 144.1,286.0 144.4,285.2 148.0,286.9 152.6,285.8 156.7,280.1 158.4,279.6 159.3,282.2 158.2,283.8 158.8,285.5 160.6,285.4 160.1,287.0 161.1,288.6 163.1,287.8 163.8,288.4 165.9,284.5 167.6,290.2 169.5,290.8 168.6,292.7 168.8,295.7 167.2,296.7 167.4,299.7 161.5,295.3 161.0,296.4 160.1,296.2 161.2,295.1 160.0,294.3 155.6,295.8 155.0,295.2ZM170.1,298.8 168.7,299.1 168.1,298.2 169.3,296.5 170.6,297.6 174.0,296.9 172.0,297.8 172.0,299.0 170.6,298.2 170.1,298.8Z","c":[158.8,292.2]},{"id":"yamanashi","jp":"山梨県","ko":"야마나시","tier":4,"d":"M305.2,255.8 304.9,259.1 300.4,262.7 296.5,263.4 294.4,261.3 293.4,262.2 293.5,267.2 291.5,267.7 290.1,264.5 288.6,264.7 287.6,262.8 288.2,259.7 286.5,254.7 287.5,253.6 286.7,252.8 287.6,250.8 288.5,251.3 290.3,248.6 292.2,250.4 294.7,249.9 295.2,251.0 298.3,250.3 300.5,251.7 301.6,251.4 303.1,254.6Z","c":[293.9,256.9]}];
 
 const PROJ = {x:[20.0781,11.0433,-2494.6329], y:[1.921,-1218.677,809.0015]};
 const mercY = la => Math.log(Math.tan(Math.PI/4 + la*Math.PI/360));
 const proj = (la,lo) => ({x:PROJ.x[0]*lo+PROJ.x[1]*mercY(la)+PROJ.x[2], y:PROJ.y[0]*lo+PROJ.y[1]*mercY(la)+PROJ.y[2]});
-
-const PREF_BY_ID = Object.fromEntries(PREFS.map(p=>[p.id,p]));
-REGIONS.forEach(r=>{ Object.assign(r,REGION_META[r.id]); r.tier = PREF_BY_ID[r.pf].tier; });
-
-/* 백업 데이터: build.py 가 최신 자료로 갱신합니다. 실시간 API 에 접근할 수 없을 때 사용됩니다. */
-const SNAPSHOT = {"at":"2026/11/17 12:08","list":[{"t":"2026/11/17 10:40:00","n":"熊本県天草・芦北地方","m":2.6,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/17 08:27:00","n":"島根県東部","m":2.8,"d":10,"s":10,"ts":"None","la":35.3,"lo":133.3,"p":[["鳥取県",10]]},{"t":"2026/11/17 01:45:00","n":"宮古島近海","m":3.9,"d":30,"s":10,"ts":"None","la":24.3,"lo":125.2,"p":[["沖縄県",10]]},{"t":"2026/11/16 13:28:00","n":"静岡県東部","m":2.8,"d":0,"s":10,"ts":"None","la":35.3,"lo":139,"p":[["神奈川県",10],["静岡県",10]]},{"t":"2026/11/16 13:24:00","n":"石川県能登地方","m":5.1,"d":280,"s":10,"ts":"None","la":37.3,"lo":137,"p":[["青森県",10],["岩手県",10],["宮城県",10],["福島県",10],["茨城県",10],["東京都",10]]},{"t":"2026/11/16 06:08:00","n":"愛知県東部","m":3.4,"d":40,"s":10,"ts":"None","la":35,"lo":137.7,"p":[["長野県",10],["岐阜県",10],["静岡県",10],["愛知県",10]]},{"t":"2026/11/16 04:34:00","n":"愛知県東部","m":2.6,"d":40,"s":10,"ts":"None","la":35,"lo":137.6,"p":[["愛知県",10]]},{"t":"2026/11/16 02:43:00","n":"薩摩半島西方沖","m":2.5,"d":10,"s":10,"ts":"None","la":31.9,"lo":130.1,"p":[["鹿児島県",10]]},{"t":"2026/11/16 00:57:00","n":"大阪府北部","m":2.7,"d":10,"s":10,"ts":"None","la":34.9,"lo":135.6,"p":[["大阪府",10]]},{"t":"2026/11/15 16:23:00","n":"熊本県熊本地方","m":3.1,"d":10,"s":20,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",20]]},{"t":"2026/11/15 14:00:00","n":"茨城県沖","m":3.6,"d":40,"s":10,"ts":"None","la":36.6,"lo":141.1,"p":[["茨城県",10]]},{"t":"2026/11/15 13:16:00","n":"渡島地方東部","m":2.6,"d":0,"s":10,"ts":"None","la":41.9,"lo":140.9,"p":[["函館",10]]},{"t":"2026/11/15 06:31:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.4,"p":[["熊本県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":30,"ts":"None","la":32.4,"lo":130.5,"p":[["熊本県",30],["鹿児島県",20],["長崎県",10],["宮崎県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":-1,"ts":"None","la":32.4,"lo":130.5,"p":[]},{"t":"2026/11/15 01:50:00","n":"茨城県沖","m":3.7,"d":90,"s":10,"ts":"None","la":36.7,"lo":140.8,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":30,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",30],["宮崎県",20],["福岡県",10],["長崎県",10],["大分県",10],["鹿児島県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":-1,"ts":"None","la":32.5,"lo":130.6,"p":[]},{"t":"2026/11/14 22:02:00","n":"和歌山県北部","m":2.9,"d":10,"s":20,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",20]]},{"t":"2026/11/14 15:39:00","n":"根室半島南東沖","m":4.2,"d":30,"s":10,"ts":"None","la":43,"lo":146.3,"p":[["北海道",10]]},{"t":"2026/11/14 11:16:00","n":"富山県西部","m":3,"d":10,"s":20,"ts":"None","la":36.3,"lo":137,"p":[["岐阜県",20]]},{"t":"2026/11/14 09:02:00","n":"浦河沖","m":3.3,"d":60,"s":10,"ts":"None","la":41.6,"lo":142,"p":[["函館",10]]},{"t":"2026/11/14 00:03:00","n":"島根県西部","m":3.5,"d":10,"s":20,"ts":"None","la":35.2,"lo":132.6,"p":[["島根県",20]]},{"t":"2026/11/13 19:42:00","n":"和歌山県北部","m":2.4,"d":10,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/13 15:26:00","n":"熊本県熊本地方","m":2.2,"d":0,"s":10,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":30,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",30],["長崎県",20],["宮崎県",20],["鹿児島県",20],["福岡県",10],["佐賀県",10],["大分県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":-1,"ts":"None","la":32.5,"lo":130.6,"p":[]},{"t":"2026/11/13 03:48:00","n":"茨城県沖","m":3.6,"d":50,"s":10,"ts":"None","la":36.8,"lo":140.9,"p":[["茨城県",10]]},{"t":"2026/11/12 22:27:00","n":"千葉県北東部","m":3.9,"d":50,"s":20,"ts":"None","la":35.7,"lo":140.7,"p":[["千葉県",20],["茨城県",10]]},{"t":"2026/11/12 21:43:00","n":"熊本県熊本地方","m":2.1,"d":10,"s":10,"ts":"None","la":32.7,"lo":130.7,"p":[["熊本県",10]]},{"t":"2026/11/12 21:34:00","n":"大分県中部","m":2,"d":10,"s":10,"ts":"None","la":33.3,"lo":131.5,"p":[["大分県",10]]},{"t":"2026/11/12 13:46:00","n":"トカラ列島近海","m":2.6,"d":0,"s":10,"ts":"None","la":29.7,"lo":129.8,"p":[["鹿児島県",10]]},{"t":"2026/11/12 13:07:00","n":"三陸沖","m":4.7,"d":10,"s":10,"ts":"None","la":40.3,"lo":143.7,"p":[["岩手県",10]]},{"t":"2026/11/12 02:15:00","n":"青森県東方沖","m":3.6,"d":60,"s":20,"ts":"None","la":41,"lo":142,"p":[["青森県",20],["函館",10]]},{"t":"2026/11/11 21:13:00","n":"橘湾","m":2.3,"d":10,"s":10,"ts":"None","la":32.7,"lo":130.1,"p":[["長崎県",10]]},{"t":"2026/11/11 15:21:00","n":"熊本県阿蘇地方","m":2.4,"d":10,"s":10,"ts":"None","la":33,"lo":131.1,"p":[["熊本県",10]]},{"t":"2026/11/11 12:57:00","n":"茨城県沖","m":4.6,"d":20,"s":10,"ts":"None","la":36.3,"lo":141.7,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/11 08:33:00","n":"熊本県熊本地方","m":2.7,"d":0,"s":10,"ts":"None","la":32.8,"lo":130.8,"p":[["熊本県",10]]},{"t":"2026/11/11 07:36:00","n":"岩手県内陸南部","m":2.9,"d":10,"s":10,"ts":"None","la":39.1,"lo":140.9,"p":[["宮城県",10]]},{"t":"2026/11/10 22:23:00","n":"熊本県天草・芦北地方","m":2.5,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/10 16:53:00","n":"愛媛県南予","m":3,"d":40,"s":10,"ts":"None","la":33.4,"lo":132.4,"p":[["愛媛県",10]]},{"t":"2026/11/10 16:14:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","la":32.2,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/10 15:36:00","n":"房総半島南方沖","m":4.5,"d":20,"s":20,"ts":"None","la":34.3,"lo":140.2,"p":[["千葉県",20],["東京都",10],["静岡県",10]]},{"t":"2026/11/10 14:20:00","n":"茨城県沖","m":4.5,"d":30,"s":10,"ts":"None","la":36.3,"lo":141.6,"p":[["宮城県",10],["福島県",10],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10]]},{"t":"2026/11/10 06:16:00","n":"橘湾","m":3.3,"d":10,"s":20,"ts":"None","la":32.7,"lo":130.1,"p":[["長崎県",20],["熊本県",10]]},{"t":"2026/11/10 00:09:00","n":"瀬戸内海中部","m":2.8,"d":10,"s":10,"ts":"None","la":34.2,"lo":133,"p":[["広島県",10],["愛媛県",10]]},{"t":"2026/11/09 18:35:00","n":"長野県南部","m":2.3,"d":10,"s":10,"ts":"None","la":35.8,"lo":137.5,"p":[["長野県",10]]},{"t":"2026/11/09 14:01:00","n":"茨城県沖","m":4.5,"d":40,"s":10,"ts":"None","la":36.3,"lo":141.7,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":30,"ts":"None","la":36.2,"lo":142.2,"p":[["宮城県",30],["福島県",30],["茨城県",30],["栃木県",30],["岩手県",20],["山形県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":-1,"ts":"None","la":36.2,"lo":142.2,"p":[]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":30,"ts":"None","la":38.3,"lo":141.9,"p":[["岩手県",30],["宮城県",30],["福島県",20],["青森県",10],["秋田県",10]]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":-1,"ts":"None","la":38.3,"lo":141.9,"p":[]},{"t":"2026/11/09 03:15:00","n":"茨城県北部","m":3.5,"d":10,"s":20,"ts":"None","la":36.7,"lo":140.7,"p":[["茨城県",20],["福島県",10]]},{"t":"2026/11/08 20:47:00","n":"熊本県熊本地方","m":2,"d":0,"s":20,"ts":"None","la":32.6,"lo":130.7,"p":[["熊本県",20]]},{"t":"2026/11/08 19:39:00","n":"日向灘","m":3,"d":30,"s":10,"ts":"None","la":32.1,"lo":131.8,"p":[["宮崎県",10]]},{"t":"2026/11/08 11:21:00","n":"熊本県天草・芦北地方","m":2.8,"d":10,"s":10,"ts":"None","la":32.6,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":40,"ts":"None","la":32.6,"lo":130.6,"p":[["熊本県",40],["長崎県",30],["福岡県",20],["佐賀県",20],["大分県",20],["宮崎県",20],["鹿児島県",20],["山口県",10],["高知県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":-1,"ts":"None","la":32.6,"lo":130.6,"p":[]},{"t":"2026/11/08 08:23:00","n":"熊本県熊本地方","m":3,"d":10,"s":10,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/08 07:38:00","n":"福島県沖","m":3.9,"d":60,"s":20,"ts":"None","la":37.6,"lo":141.8,"p":[["福島県",20],["宮城県",10]]},{"t":"2026/11/08 02:31:00","n":"渡島地方東部","m":2.9,"d":0,"s":20,"ts":"None","la":41.9,"lo":140.7,"p":[["北海道",20]]},{"t":"2026/11/08 02:30:00","n":"茨城県南部","m":3.2,"d":60,"s":10,"ts":"None","la":36.2,"lo":139.8,"p":[["栃木県",10]]},{"t":"2026/11/08 02:03:00","n":"愛知県東部","m":3.3,"d":40,"s":20,"ts":"None","la":34.9,"lo":137.6,"p":[["愛知県",20],["長野県",10],["岐阜県",10],["静岡県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","la":34.9,"lo":137.7,"p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","la":34.9,"lo":137.7,"p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":-1,"ts":"None","la":34.9,"lo":137.7,"p":[]},{"t":"2026/11/08 00:42:00","n":"岩手県沖","m":4.1,"d":20,"s":10,"ts":"None","la":40.3,"lo":142.7,"p":[["岩手県",10]]},{"t":"2026/11/07 22:48:00","n":"福島県沖","m":3.6,"d":60,"s":10,"ts":"None","la":37.3,"lo":141.4,"p":[["福島県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":30,"ts":"None","la":36.2,"lo":141.6,"p":[["福島県",30],["宮城県",20],["山形県",20],["茨城県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["岩手県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10],["静岡県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":-1,"ts":"None","la":36.2,"lo":141.6,"p":[]},{"t":"2026/11/07 06:30:00","n":"山口県中部","m":2.9,"d":10,"s":20,"ts":"None","la":34.2,"lo":131.6,"p":[["山口県",20]]},{"t":"2026/11/07 03:54:00","n":"和歌山県北部","m":2.3,"d":0,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/07 03:51:00","n":"和歌山県北部","m":2.1,"d":0,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/07 03:02:00","n":"和歌山県北部","m":3.5,"d":10,"s":20,"ts":"None","la":34.2,"lo":135.2,"p":[["大阪府",20],["和歌山県",20]]},{"t":"2026/11/06 22:43:00","n":"淡路島付近","m":3.1,"d":10,"s":10,"ts":"None","la":34.2,"lo":134.8,"p":[["兵庫県",10]]},{"t":"2026/11/06 22:04:00","n":"北海道北西沖","m":3.3,"d":10,"s":20,"ts":"None","la":44.7,"lo":141.6,"p":[["北海道",20]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":30,"ts":"NonEffective","la":35,"lo":142.2,"p":[["宮城県",30],["福島県",30],["茨城県",30],["青森県",20],["岩手県",20],["山形県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["神奈川県",20],["山梨県",20],["静岡県",20],["北海道",10],["秋田県",10],["新潟県",10],["長野県",10]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":30,"ts":"NonEffective","la":35,"lo":142.2,"p":[["宮城県",30],["福島県",30],["茨城県",30],["青森県",20],["岩手県",20],["山形県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["神奈川県",20],["山梨県",20],["静岡県",20],["北海道",10],["秋田県",10],["新潟県",10],["長野県",10]]},{"t":"2026/11/06 19:39:00","n":"関東東方沖","m":6.1,"d":10,"s":-1,"ts":"NonEffective","la":35,"lo":142.2,"p":[]},{"t":"2026/11/06 09:06:00","n":"相模湾","m":3.7,"d":140,"s":10,"ts":"None","la":35.2,"lo":139.5,"p":[["埼玉県",10],["千葉県",10],["東京都",10]]},{"t":"2026/11/06 03:05:00","n":"福島県沖","m":4.3,"d":80,"s":20,"ts":"None","la":37.8,"lo":141.5,"p":[["岩手県",20],["宮城県",20],["山形県",20],["福島県",20]]},{"t":"2026/11/05 14:16:00","n":"鹿児島県薩摩地方","m":2.8,"d":10,"s":20,"ts":"None","la":32.2,"lo":130.2,"p":[["鹿児島県",20],["熊本県",10]]},{"t":"2026/11/05 11:35:00","n":"千葉県南東沖","m":3.4,"d":70,"s":10,"ts":"None","la":34.9,"lo":140,"p":[["東京都",10]]},{"t":"2026/11/05 04:28:00","n":"鹿児島県薩摩地方","m":3.1,"d":10,"s":20,"ts":"None","la":32.2,"lo":130.2,"p":[["鹿児島県",20],["熊本県",10]]},{"t":"2026/11/05 04:21:00","n":"宮城県沖","m":4.1,"d":50,"s":10,"ts":"None","la":38.3,"lo":141.8,"p":[["岩手県",10],["宮城県",10]]},{"t":"2026/11/04 07:28:00","n":"熊本県熊本地方","m":2.5,"d":10,"s":10,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/04 05:34:00","n":"千葉県東方沖","m":3.4,"d":60,"s":20,"ts":"None","la":35.4,"lo":140.4,"p":[["千葉県",20]]},{"t":"2026/11/04 05:11:00","n":"和歌山県北部","m":1.9,"d":10,"s":10,"ts":"None","la":34.2,"lo":135.3,"p":[["和歌山県",10]]}]};//END-SNAPSHOT
-
-/* ========== 진도 표기 ========== */
-const SCALE = {10:'1',20:'2',30:'3',40:'4',45:'5약',50:'5강',55:'6약',60:'6강',70:'7'};
-function scaleColor(s){
-  if(s>=55) return '#7f1d1d';
-  if(s>=45) return '#dc2626';
-  if(s>=40) return '#ea580c';
-  if(s>=30) return '#ca8a04';
-  if(s>=20) return '#2563eb';
-  return '#64748b';
-}
-document.getElementById('legend').innerHTML =
-  [[10,'진도1'],[20,'2'],[30,'3'],[40,'4'],[45,'5약~5강'],[55,'6약 이상']]
-  .map(([s,l])=>`<span><i style="background:${scaleColor(s)}"></i>${l}</span>`).join('');
-
-const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-/* 진원지 한국어 표기 */
+/* 지진 발표 지명을 한국어로 */
 const JP_KO = [['北海道','홋카이도'],['青森県','아오모리'],['岩手県','이와테'],['宮城県','미야기'],['秋田県','아키타'],['山形県','야마가타'],['福島県','후쿠시마'],['茨城県','이바라키'],['栃木県','도치기'],['群馬県','군마'],['埼玉県','사이타마'],['千葉県','지바'],['東京都','도쿄'],['東京湾','도쿄만'],['神奈川県','가나가와'],['新潟県','니가타'],['富山県','도야마'],['石川県','이시카와'],['福井県','후쿠이'],['山梨県','야마나시'],['長野県','나가노'],['岐阜県','기후'],['静岡県','시즈오카'],['愛知県','아이치'],['三重県','미에'],['滋賀県','시가'],['京都府','교토'],['大阪府','오사카'],['兵庫県','효고'],['奈良県','나라'],['和歌山県','와카야마'],['鳥取県','돗토리'],['島根県','시마네'],['岡山県','오카야마'],['広島県','히로시마'],['山口県','야마구치'],['徳島県','도쿠시마'],['香川県','가가와'],['愛媛県','에히메'],['高知県','고치'],['福岡県','후쿠오카'],['佐賀県','사가'],['長崎県','나가사키'],['熊本県','구마모토'],['大分県','오이타'],['宮崎県','미야자키'],['鹿児島県','가고시마'],['沖縄県','오키나와'],['能登','노토'],['日向灘','휴가나다'],['伊予灘','이요나다'],['周防灘','스오나다'],['豊後水道','분고수도'],['紀伊水道','기이수도'],['相模湾','사가미만'],['駿河湾','스루가만'],['伊豆','이즈'],['十勝','도카치'],['釧路','구시로'],['根室','네무로'],['宮古島','미야코지마'],['石垣島','이시가키지마'],['奄美','아마미'],['トカラ','도카라'],['種子島','다네가시마'],['小笠原','오가사와라'],['父島','지치지마'],['択捉島','이투루프'],['国後島','구나시르'],['地方','지방'],['近海','근해'],['沖','앞바다'],['南部','남부'],['北部','북부'],['東部','동부'],['西部','서부'],['中部','중부'],['南東','남동'],['北東','북동'],['南西','남서'],['北西','북서'],['東方','동쪽'],['西方','서쪽'],['北方','북쪽'],['南方','남쪽'],['中南部','중남부'],['中西部','중서부'],['内陸','내륙'],['半島','반도'],['湾','만'],['島','섬']];
 const JP_KO_X = [['列島','열도'],['三陸','산리쿠'],['南予','난요'],['房総','보소'],['橘','다치바나'],['浦河','우라카와'],['淡路','아와지'],['付近','부근'],['渡島','오시마'],['瀬戸内海','세토 내해'],['天草','아마쿠사'],['芦北','아시키타'],['阿蘇','아소'],['薩摩','사쓰마'],['関東','간토'],['北東部','북동부'],['南東部','남동부'],['北西部','북서부'],['南西部','남서부'],['北東','북동'],['東方','동쪽'],['・','·']];
 const KO_TABLE = (()=>{ const t=[...JP_KO,...JP_KO_X]; for(const [j,k] of JP_KO) if(/[県府都]$/.test(j) && j!=='東京湾') t.push([j.slice(0,-1),k]); return t.sort((a,b)=>b[0].length-a[0].length); })();
 function ko(name){ let s=name; for(const [j,k] of KO_TABLE) s=s.split(j).join(j==='・'?'·':k+' '); return s.replace(/\s+/g,' ').replace(/ ?· ?/g,'·').trim(); }
-
-/* ========== 데이터 불러오기 ========== */
-let QUAKES = null, SOURCE = 'live';
-const norm = q => q; // API 원형
-const fromSnap = x => ({earthquake:{time:x.t,hypocenter:{name:x.n,magnitude:x.m,depth:x.d,latitude:x.la,longitude:x.lo},maxScale:x.s,domesticTsunami:x.ts},points:x.p.map(([k,scale])=>({pref:(k==='函館'||k==='札幌')?'北海道':k,addr:k,scale}))});
-/* 같은 지진의 중복 발표를 합치고, 진도 정보가 없는 항목은 뺍니다 */
-function cleanQuakes(list){
-  const best = new Map();
-  for(const q of list){
-    const e=q.earthquake, h=e.hypocenter; if(!h||!h.name||!(e.maxScale>=10)) continue;
-    const k=e.time+'|'+h.name+'|'+h.magnitude, old=best.get(k);
-    if(!old || (q.points||[]).length>(old.points||[]).length) best.set(k,q);
-  }
-  return [...best.values()];
-}
-
-async function loadQuakes(){
-  const st = document.getElementById('statusTitle'), ss = document.getElementById('statusSub'), dot = document.getElementById('statusDot');
-  st.textContent='지진 정보를 불러오는 중…'; ss.textContent='잠시만 기다려 주세요.'; dot.className='dot';
-  try{
-    const ctrl = new AbortController(); const t = setTimeout(()=>ctrl.abort(), 10000);
-    const res = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=100',{signal:ctrl.signal});
-    clearTimeout(t);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
-    QUAKES = cleanQuakes(data.filter(d=>d.earthquake));
-    SOURCE='live';
-  }catch(e){
-    if(SNAPSHOT.list.length){ QUAKES = cleanQuakes(SNAPSHOT.list.map(fromSnap)); SOURCE='snapshot'; }
-    else { QUAKES = null; SOURCE='none'; }
-  }
-  computeAct(); renderQuakes(); renderRanking(); renderMapData();
-}
-
-function fmtTime(s){
-  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(s||''); if(!m) return s||'';
-  return `${+m[2]}월 ${+m[3]}일 ${m[4]}:${m[5]}`;
-}
-function ageHours(s){
-  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+):?(\d+)?/.exec(s||''); if(!m) return Infinity;
-  const base = SOURCE==='snapshot' && SNAPSHOT.at ? snapNow() : Date.now();
-  const t = Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5],+(m[6]||0));
-  return (base-t)/36e5;
-}
-function snapNow(){ const m=/(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(SNAPSHOT.at); return Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5]); }
-const TSUNAMI = {None:'쓰나미 걱정 없음',Unknown:'쓰나미 정보 확인 중',Checking:'쓰나미 정보 확인 중',NonEffective:'해수면 소폭 변동 가능',Watch:'쓰나미 주의보',Warning:'쓰나미 경보'};
-
-function renderQuakes(){
-  const list = document.getElementById('quakeList');
-  const st = document.getElementById('statusTitle'), ss = document.getElementById('statusSub'), dot = document.getElementById('statusDot');
-  const src = document.getElementById('srcNote'), stats = document.getElementById('stats');
-  if(!QUAKES){
-    st.textContent='지금은 지진 정보를 불러오지 못했습니다';
-    ss.innerHTML='잠시 후 새로고침해 주세요. 급하실 때는 <a href="https://www.jma.go.jp/bosai/map.html#contents=earthquake_map" target="_blank" rel="noopener">일본 기상청 지진 정보</a>를 직접 확인하세요.';
-    list.innerHTML='<div class="empty">지진 목록을 표시할 수 없습니다.</div>'; src.textContent=''; stats.innerHTML=''; return;
-  }
-  const now = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  src.textContent = SOURCE==='live' ? `실시간 · ${now} 갱신 · 출처: 일본 기상청(P2P지진정보)` : `${SNAPSHOT.at} (일본시간) 기준 자료 · 실시간 연결이 막혀 있어 최근 저장 자료를 보여드립니다`;
-
-  const recent = QUAKES.slice(0,10);
-  const tsunamiAlert = QUAKES.find(q=>ageHours(q.earthquake.time)<24 && ['Watch','Warning'].includes(q.earthquake.domesticTsunami));
-  const strong24 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24 && q.earthquake.maxScale>=45);
-  const felt7 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7 && q.earthquake.maxScale>=30).length;
-  const all7 = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7).length;
-  const maxQ = QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7).reduce((a,q)=>!a||q.earthquake.maxScale>a.earthquake.maxScale?q:a,null);
-  stats.innerHTML = `
-    <div class="card stat"><small>최근 7일 지진 발표</small><b>${all7}건</b></div>
-    <div class="card stat"><small>그중 진도 3 이상</small><b>${felt7}건</b></div>
-    <div class="card stat"><small>7일 내 최대 진도</small><b>${maxQ?SCALE[maxQ.earthquake.maxScale]||'-':'-'}</b></div>`;
-
-  if(tsunamiAlert){
-    dot.className='dot warn'; st.textContent='쓰나미 '+(tsunamiAlert.earthquake.domesticTsunami==='Warning'?'경보':'주의보')+' 관련 발표가 있습니다';
-    ss.textContent=`${ko(tsunamiAlert.earthquake.hypocenter.name)} · 해안가에 계신 분은 즉시 높은 곳으로 이동하세요.`;
-  }else if(strong24.length){
-    dot.className='dot warn'; st.textContent=`최근 24시간 내 진도 5약 이상 지진 ${strong24.length}건`;
-    ss.textContent=ko(strong24[0].earthquake.hypocenter.name)+' · 해당 지역 여행 중이라면 여진에 대비하고 현지 안내를 따르세요.';
-  }else{
-    dot.className='dot ok'; st.textContent='최근 24시간 동안 큰 지진은 없었습니다';
-    ss.textContent='진도 5약 이상 지진과 쓰나미 경보·주의보 없음';
-  }
-  if(!recent.length){ list.innerHTML='<div class="empty">최근 지진 기록이 없습니다.</div>'; return; }
-  list.innerHTML = recent.map(q=>{
-    const e=q.earthquake, h=e.hypocenter, s=e.maxScale;
-    const lbl = SCALE[s]||'-';
-    const mag = h.magnitude>0 ? 'M'+Number(h.magnitude).toFixed(1) : '규모 미정';
-    const depth = h.depth>0 ? `깊이 ${h.depth}km` : (h.depth===0?'매우 얕음':'');
-    return `<div class="q">
-      <div class="shindo" style="background:${scaleColor(s)}">${esc(lbl)}<small>진도</small></div>
-      <div><div class="place">${esc(ko(h.name))}<span>${esc(h.name)}</span></div><div class="meta">${esc(fmtTime(e.time))} 일본시간 · ${esc(TSUNAMI[e.domesticTsunami]||'')}</div></div>
-      <div class="mag">${esc(mag)}<small>${esc(depth)}</small></div>
-    </div>`;
-  }).join('');
-}
-
-/* ========== 안심 지수 (현 단위) ========== */
-let ACT = null;
-const ZERO = {felt:0,strong:0,maxS:0,recentStrong:false};
-function computeAct(){
-  if(!QUAKES){ ACT = null; return; }
-  ACT = {};
-  for(const q of QUAKES){
-    const age = ageHours(q.earthquake.time);
-    if(age > 24*30) continue;
-    const per = {};
-    for(const pt of q.points||[]) per[pt.pref] = Math.max(per[pt.pref]||0, pt.scale||0);
-    for(const [jp,s] of Object.entries(per)){
-      const a = ACT[jp] || (ACT[jp] = {felt:0,strong:0,maxS:0,recentStrong:false});
-      if(s>=30) a.felt++;
-      if(s>=45) a.strong++;
-      if(s>=50 && age<48) a.recentStrong = true;
-      a.maxS = Math.max(a.maxS, s);
-    }
-  }
-}
-const actOf = p => ACT ? (ACT[p.jp] || ZERO) : null;
-function prefScore(p){
-  const a = actOf(p), base = TIER_BASE[p.tier];
-  if(!a) return base;
-  return Math.max(0, base - Math.min(20, a.felt*2 + a.strong*8));
-}
-function scoreOf(r){ const p = PREF_BY_ID[r.pf]; return {score:prefScore(p), a:actOf(p)}; }
-function scoreColor(s){ return s>=85?'var(--ok)':s>=70?'var(--mid)':s>=60?'var(--warn)':'var(--bad)'; }
-const SUF = {'都':'도','府':'부','県':'현'};
-const prefName = p => p.ko + (SUF[p.jp.slice(-1)]||'');
-
-/* ========== 지도 ========== */
-const MAP_STOPS = {
-  light:[[40,'#991b1b'],[55,'#e58a89'],[70,'#dfe3ea'],[82,'#86b3f0'],[92,'#1e40af']],
-  dark: [[40,'#b91c1c'],[55,'#9c4a50'],[70,'#3a4353'],[82,'#3f6fbd'],[92,'#5aa2f5']],
-};
-function isDark(){
-  const t = document.documentElement.dataset.theme;
-  return t==='dark' || (t!=='light' && matchMedia('(prefers-color-scheme: dark)').matches);
-}
-const hex = c => [1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
-function mapColor(s){
-  const st = MAP_STOPS[isDark()?'dark':'light'];
-  if(s<=st[0][0]) return st[0][1];
-  if(s>=st[st.length-1][0]) return st[st.length-1][1];
-  for(let i=1;i<st.length;i++){
-    if(s<=st[i][0]){
-      const [s0,c0]=st[i-1], [s1,c1]=st[i], t=(s-s0)/(s1-s0), A=hex(c0), B=hex(c1);
-      return '#'+A.map((v,k)=>Math.round(v+(B[k]-v)*t).toString(16).padStart(2,'0')).join('');
-    }
-  }
-}
-function bboxOf(d){
-  const n = d.match(/-?\d+\.?\d*/g).map(Number);
-  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
-  for(let i=0;i+1<n.length;i+=2){ x0=Math.min(x0,n[i]); x1=Math.max(x1,n[i]); y0=Math.min(y0,n[i+1]); y1=Math.max(y1,n[i+1]); }
-  return {x0,y0,x1,y1};
-}
-function nudgeInside(el,pos,c){
-  try{
-    if(!el.isPointInFill) return pos;
-    let p = {...pos};
-    for(let i=0;i<60;i++){
-      if(el.isPointInFill(new DOMPoint(p.x,p.y))) return p;
-      p = {x:p.x+(c[0]-p.x)*0.04, y:p.y+(c[1]-p.y)*0.04};
-    }
-  }catch(e){}
-  return pos;
-}
-const CITY_POS = {};
-let OKI = null; // 오키나와 박스 중심
-function buildMap(){
-  const svg = document.getElementById('jpmap');
-  svg.innerHTML = '<g id="pfs">'+PREFS.map(p=>`<path class="pf" data-id="${p.id}" d="${p.d}" tabindex="0" role="button" aria-label="${esc(prefName(p))}"></path>`).join('')+'</g><rect class="inset" id="okinset"></rect><g id="qk"></g><g id="cities"></g>';
-  const ob = bboxOf(PREF_BY_ID.okinawa.d), inset = svg.querySelector('#okinset');
-  inset.setAttribute('x',ob.x0-6); inset.setAttribute('y',ob.y0-6); inset.setAttribute('width',ob.x1-ob.x0+12); inset.setAttribute('height',ob.y1-ob.y0+12);
-  OKI = {x:(ob.x0+ob.x1)/2, y:(ob.y0+ob.y1)/2};
-  let html = '';
-  for(const r of REGIONS){
-    const p = PREF_BY_ID[r.pf], el = svg.querySelector(`[data-id="${r.pf}"]`);
-    let pos;
-    if(r.ll) pos = nudgeInside(el, proj(r.ll[0],r.ll[1]), p.c);
-    else { // 오키나와: 가장 큰 섬 조각의 중심
-      const big = p.d.split('M').filter(Boolean).map(s=>bboxOf('M'+s)).sort((a,b)=>(b.x1-b.x0)*(b.y1-b.y0)-(a.x1-a.x0)*(a.y1-a.y0))[0];
-      pos = nudgeInside(el, {x:(big.x0+big.x1)/2, y:(big.y0+big.y1)/2}, [(big.x0+big.x1)/2,(big.y0+big.y1)/2]);
-    }
-    CITY_POS[r.id] = pos;
-    const L = {r:[6,3.8,'start'], l:[-6,3.8,'end'], t:[0,-6,'middle'], b:[0,13,'middle']}[r.lab||'r'];
-    html += `<g class="city" data-city="${r.id}" tabindex="0" role="button" aria-label="${esc(r.name)}"><circle class="hit" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="10"/><circle class="dotc" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="3.2"/><text x="${(pos.x+L[0]).toFixed(1)}" y="${(pos.y+L[1]).toFixed(1)}" text-anchor="${L[2]}">${esc(r.name)}</text></g>`;
-  }
-  svg.querySelector('#cities').innerHTML = html;
-  setupMapEvents(svg);
-  try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',renderMapData); }catch(e){}
-  new MutationObserver(renderMapData).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-}
-function renderMapData(){
-  const svg = document.getElementById('jpmap'); if(!svg) return;
-  for(const p of PREFS) svg.querySelector(`[data-id="${p.id}"]`).style.fill = mapColor(prefScore(p));
-  const st = MAP_STOPS[isDark()?'dark':'light'];
-  const bar = document.querySelector('.lg-bar');
-  if(bar) bar.style.background = 'linear-gradient(90deg,'+st.map(([s,c])=>`${c} ${Math.round((s-40)/52*100)}%`).join(',')+')';
-  let html = '';
-  if(QUAKES){
-    for(const q of QUAKES.slice().reverse()){ // 오래된 지진부터 그려 최신 지진이 위에 보이게
-      const e=q.earthquake, h=e.hypocenter;
-      if(ageHours(e.time) > 24*7) continue;
-      const la=h.latitude, lo=h.longitude;
-      if(!(la>20 && la<50 && lo>120 && lo<155)) continue;
-      const pos = (la<27.5 && lo<130 && OKI) ? OKI : proj(la,lo);
-      const s=e.maxScale, big=s>=45, r = big?6.5 : s>=30?4.2 : 2.4;
-      html += `<circle class="qk${big?' big':''}" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="${r}"/>`;
-    }
-  }
-  svg.querySelector('#qk').innerHTML = html;
-}
-function setupMapEvents(svg){
-  const tip = document.getElementById('maptip');
-  const pick = e => {
-    const c = e.target.closest('[data-city]'); if(c) return {city:c.dataset.city};
-    const t = e.target.closest('[data-id]'); return t ? {pref:t.dataset.id} : null;
-  };
-  svg.addEventListener('pointermove',e=>{
-    if(e.pointerType==='touch') return;
-    const k = pick(e); if(!k){ tip.hidden = true; return; }
-    let txt;
-    if(k.city){ const r = REGIONS.find(x=>x.id===k.city); txt = `${r.name} · 안심 지수 ${scoreOf(r).score}`; }
-    else { const p = PREF_BY_ID[k.pref]; txt = `${prefName(p)} · 안심 지수 ${prefScore(p)}`; }
-    const wr = svg.parentElement.getBoundingClientRect();
-    tip.textContent = txt; tip.hidden = false;
-    tip.style.left = (e.clientX-wr.left)+'px'; tip.style.top = (e.clientY-wr.top)+'px';
-  });
-  svg.addEventListener('pointerleave',()=>{ tip.hidden = true; });
-  const go = e => { tip.hidden = true; const k = pick(e); if(!k) return; if(k.city) openRegion(k.city); else openPref(k.pref); };
-  svg.addEventListener('click',go);
-  svg.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); go(e); } });
-}
-
-/* ========== 랭킹 ========== */
-function renderRanking(){
-  const rows = REGIONS.map(r=>({r,...scoreOf(r)})).sort((x,y)=>y.score-x.score);
-  document.getElementById('rankList').innerHTML = rows.map((x,i)=>{
-    let act;
-    if(x.a===null) act='<span class="tag">최근 활동 정보 대기</span>';
-    else if(x.a.recentStrong) act='<span class="tag alert">48시간 내 강한 지진</span>';
-    else if(x.a.felt) act=`<span class="tag hot">최근 30일 진도3+ ${x.a.felt}회</span>`;
-    else act='<span class="tag">최근 30일 진도3+ 없음</span>';
-    return `<button class="card r" data-id="${x.r.id}" type="button">
-      <div class="no">${i+1}</div>
-      <div>
-        <div class="name">${esc(x.r.name)}<small>${esc(x.r.jp)}</small></div>
-        <div class="tags"><span class="tag">장기 위험 ${TIER_LABEL[x.r.tier]}</span>${act}${x.r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-      </div>
-      <div class="score"><b style="color:${scoreColor(x.score)}">${x.score}</b><small>안심 지수</small><div class="bar"><i style="width:${x.score}%;background:${scoreColor(x.score)}"></i></div></div>
-    </button>`;
-  }).join('');
-  document.querySelectorAll('.r').forEach(el=>{ el.onclick=()=>openRegion(el.dataset.id); });
-}
-
-/* ========== 현 상세(여행 안내가 없는 지역, 또는 안내 도시가 둘 이상인 지역) ========== */
-function recentList(p){
-  if(!QUAKES) return '';
-  const rows = [];
-  for(const q of QUAKES){
-    if(ageHours(q.earthquake.time) > 24*7) continue;
-    let s = 0; for(const pt of q.points||[]) if(pt.pref===p.jp) s = Math.max(s, pt.scale||0);
-    if(s) rows.push([q,s]);
-  }
-  const head = '<h3>최근 7일 이 지역에서 느껴진 지진</h3>';
-  if(!rows.length) return head+'<p>느껴진 지진이 없습니다.</p>';
-  return head+`<ul class="plist">${rows.slice(0,5).map(([q,s])=>{
-    const e=q.earthquake, h=e.hypocenter;
-    return `<li><div>${esc(fmtTime(e.time))} · ${esc(ko(h.name))}</div><span>진도 ${esc(SCALE[s]||'-')} · ${h.magnitude>0?'M'+Number(h.magnitude).toFixed(1):'규모 미정'}</span></li>`;
-  }).join('')}</ul>`+(rows.length>5?`<p>외 ${rows.length-5}건</p>`:'');
-}
-function openPref(id){
-  const p = PREF_BY_ID[id], guides = REGIONS.filter(r=>r.pf===id);
-  if(guides.length===1){ openRegion(guides[0].id); return; }
-  const score = prefScore(p), a = actOf(p), quiet = a && a.recentStrong;
-  const btn = r => `<button class="deal" data-go="${r.id}" type="button"><b>${esc(r.name)} 여행 안내</b><small>${esc(r.tags.join(' · '))}</small></button>`;
-  let pick;
-  if(guides.length){
-    pick = `<h3>여행 안내 보기</h3><div class="pick">${guides.map(btn).join('')}</div>`;
-  }else{
-    const near = REGIONS.filter(r=>CITY_POS[r.id]).map(r=>({r,d:Math.hypot(CITY_POS[r.id].x-p.c[0],CITY_POS[r.id].y-p.c[1])})).sort((x,y)=>x.d-y.d).slice(0,3).map(x=>x.r);
-    pick = `<h3>가까운 여행 안내 지역</h3><p>이 지역의 여행 안내는 준비 중입니다.</p><div class="pick">${near.map(btn).join('')}</div>`;
-  }
-  const sheet = document.getElementById('sheet');
-  sheet.innerHTML = `
-    <button class="close" aria-label="닫기" id="closeBtn" type="button">✕</button>
-    <h2>${esc(prefName(p))} <span style="color:var(--sub);font-weight:500;font-size:16px">${esc(p.jp)}</span></h2>
-    <p class="lead">${a ? `최근 30일 동안 진도 3 이상이 ${a.felt}회 관측되었습니다.` : '최근 지진 정보를 불러오지 못했습니다.'}</p>
-    <div class="risk">
-      <div><small>안심 지수</small><b style="color:${scoreColor(score)}">${score}</b></div>
-      <div><small>장기 위험 등급</small><b>${TIER_LABEL[p.tier]}</b></div>
-      <div><small>최근 30일 진도3+</small><b>${a?a.felt+'회':'-'}</b></div>
-    </div>
-    ${quiet ? `<div class="alertbox"><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b> 여진에 대비하고 현지 당국의 안내를 따르세요.</div>` : ''}
-    ${recentList(p)}
-    ${quiet ? '' : pick}`;
-  sheet.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>openRegion(b.dataset.go));
-  document.getElementById('closeBtn').onclick = closeModal;
-  openModal();
-}
-
-/* ========== 지역 상세 ========== */
-const TABS = [['sights','볼거리'],['stay','숙박 추천 지역'],['shop','쇼핑'],['food','먹거리']];
-function openRegion(id){
-  const r = REGIONS.find(x=>x.id===id); const p = PREF_BY_ID[r.pf]; const {score,a} = scoreOf(r);
-  const quiet = a && a.recentStrong; // 48시간 내 강한 지진: 판촉 중단
-  const sheet = document.getElementById('sheet');
-  sheet.innerHTML = `
-    <button class="close" aria-label="닫기" id="closeBtn" type="button">✕</button>
-    <h2>${esc(r.name)} <span style="color:var(--sub);font-weight:500;font-size:16px">${esc(r.jp)}</span></h2>
-    <p class="lead">${esc(r.note)}</p>
-    <div class="risk">
-      <div><small>안심 지수</small><b style="color:${scoreColor(score)}">${score}</b></div>
-      <div><small>장기 위험 등급</small><b>${TIER_LABEL[r.tier]}</b></div>
-      <div><small>최근 30일 진도3+</small><b>${a?a.felt+'회':'-'}</b></div>
-    </div>
-    ${quiet ? `<div class="alertbox"><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b> 여진에 대비하고 현지 당국의 안내를 따르세요. 안전을 위해 이 지역의 여행 상품 안내는 잠시 중단합니다.</div>` : ''}
-    <div class="safety"><b>안전 팁</b> · ${esc(r.safety)}</div>
-    <div class="tabs" id="tabs">${TABS.map(([k,l],i)=>`<button data-k="${k}" class="${i?'':'on'}" type="button">${l}</button>`).join('')}</div>
-    <ul class="items" id="items"></ul>
-    ${recentList(p)}
-    ${quiet ? '' : `
-    <div class="deals">
-      <a class="deal" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored"><b>🏨 ${esc(r.name)} 숙소 찾기</b><small>숙박 추천 지역을 참고해 고르세요</small></a>
-      <a class="deal" href="${tourUrl(r)}" target="_blank" rel="noopener sponsored"><b>🎟️ 투어·입장권</b><small>현지 투어, 교통 패스</small></a>
-      <a class="deal" href="${INSURANCE_URL}" target="_blank" rel="noopener"><b>🛡️ 여행자보험 비교</b><small>지진·자연재해 보장 확인</small></a>
-      <a class="deal" href="${esimUrl()}" target="_blank" rel="noopener sponsored"><b>📶 일본 eSIM</b><small>재난 시에도 연락 유지</small></a>
-    </div>
-    <p class="adnote">일부 링크는 제휴 링크입니다. 이용자에게 추가 비용은 없습니다. 보험 비교는 금융당국 공식 사이트(보험다모아)로 연결됩니다.</p>`}`;
-  const items = document.getElementById('items');
-  const show = k => { items.innerHTML = r[k].map(([t,d,q])=>`<li><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${(!quiet&&k==='sights')?`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`:''}${(!quiet&&k==='stay')?`<a class="go" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">숙소</a>`:''}</li>`).join(''); };
-  show('sights');
-  sheet.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
-    sheet.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); show(b.dataset.k);
-  });
-  document.getElementById('closeBtn').onclick=closeModal;
-  openModal();
-}
-
-/* ========== 법적 고지 ========== */
+/* 이용약관, 개인정보처리방침, 면책 고지 (베타 초안) */
 const LEGAL = {
   terms:['이용약관',`<h3>1. 서비스의 성격</h3><p>안심재팬(이하 '서비스')은 일본 기상청 등 공공기관이 발표한 지진 정보를 정리해 제공하고, 이를 바탕으로 여행 정보를 안내하는 정보 제공 서비스입니다. 서비스는 지진을 예측하거나 예보하지 않습니다.</p>
   <h3>2. 정보의 한계</h3><p>서비스가 제공하는 정보는 참고용이며, 정확성·완전성·적시성을 보장하지 않습니다. 긴급 상황에서는 일본 정부, 현지 당국, 대한민국 외교부의 안내를 우선 따라야 합니다.</p>
@@ -920,39 +616,449 @@ const LEGAL = {
   <p>지진 정보는 일본 기상청 발표를 P2P지진정보 API를 통해 전달받으며, 전달 지연이나 누락이 있을 수 있습니다. 긴급 상황에서는 일본 기상청, 현지 당국, 숙소·시설 직원의 안내를 우선 따르세요.</p>
   <p>여행 정보(볼거리, 숙박, 쇼핑, 먹거리)는 일반적인 안내이며 운영 시간, 요금, 휴무 등은 변경될 수 있습니다.</p>`]
 };
-function openLegal(k){
-  const [t,b] = LEGAL[k];
-  document.getElementById('sheet').innerHTML = `<button class="close" aria-label="닫기" id="closeBtn" type="button">✕</button><h2>${t}</h2><p class="lead">베타 버전 · 2026년 11월</p>${b}`;
-  document.getElementById('closeBtn').onclick=closeModal; openModal();
+const IMGMAP = {}; const IMGCRED = {};
+/* 최근 지진 저장 자료: build.py 가 갱신합니다. 실시간 연결이 막힌 환경에서 사용됩니다. */
+const SNAPSHOT = {"at":"2026/11/18 22:33","list":[{"t":"2026/11/18 18:37:00","n":"日本海中部","m":5,"d":10,"s":30,"ts":"None","la":38.8,"lo":137.9,"p":[["新潟県",30],["秋田県",10],["山形県",10],["福島県",10],["石川県",10]]},{"t":"2026/11/18 18:37:00","n":"日本海中部","m":5,"d":10,"s":-1,"ts":"None","la":38.8,"lo":137.9,"p":[]},{"t":"2026/11/18 10:52:00","n":"岐阜県飛騨地方","m":2.1,"d":10,"s":10,"ts":"None","la":36.2,"lo":137.5,"p":[["岐阜県",10]]},{"t":"2026/11/18 09:41:00","n":"茨城県南部","m":3.5,"d":50,"s":20,"ts":"None","la":36,"lo":139.9,"p":[["茨城県",20],["栃木県",20],["千葉県",20],["群馬県",10],["埼玉県",10]]},{"t":"2026/11/18 02:54:00","n":"熊本県天草・芦北地方","m":3.3,"d":0,"s":30,"ts":"None","la":32.4,"lo":130.5,"p":[["熊本県",30]]},{"t":"2026/11/18 02:54:00","n":"熊本県天草・芦北地方","m":3.3,"d":0,"s":-1,"ts":"None","la":32.4,"lo":130.5,"p":[]},{"t":"2026/11/18 02:35:00","n":"島根県西部","m":3.2,"d":10,"s":10,"ts":"None","la":34.8,"lo":132.1,"p":[["島根県",10],["広島県",10]]},{"t":"2026/11/18 01:29:00","n":"熊本県阿蘇地方","m":2.4,"d":0,"s":10,"ts":"None","la":32.9,"lo":131,"p":[["熊本県",10]]},{"t":"2026/11/17 21:22:00","n":"熊本県熊本地方","m":2.8,"d":10,"s":20,"ts":"None","la":32.6,"lo":130.7,"p":[["熊本県",20]]},{"t":"2026/11/17 19:33:00","n":"三陸沖","m":4.5,"d":10,"s":10,"ts":"None","la":40.6,"lo":143.7,"p":[["岩手県",10]]},{"t":"2026/11/17 17:00:00","n":"千葉県北東部","m":3.1,"d":50,"s":10,"ts":"None","la":35.7,"lo":140.7,"p":[["千葉県",10]]},{"t":"2026/11/17 10:40:00","n":"熊本県天草・芦北地方","m":2.6,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/17 08:27:00","n":"島根県東部","m":2.8,"d":10,"s":10,"ts":"None","la":35.3,"lo":133.3,"p":[["鳥取県",10]]},{"t":"2026/11/17 01:45:00","n":"宮古島近海","m":3.9,"d":30,"s":10,"ts":"None","la":24.3,"lo":125.2,"p":[["沖縄県",10]]},{"t":"2026/11/16 13:28:00","n":"静岡県東部","m":2.8,"d":0,"s":10,"ts":"None","la":35.3,"lo":139,"p":[["神奈川県",10],["静岡県",10]]},{"t":"2026/11/16 13:24:00","n":"石川県能登地方","m":5.1,"d":280,"s":10,"ts":"None","la":37.3,"lo":137,"p":[["青森県",10],["岩手県",10],["宮城県",10],["福島県",10],["茨城県",10],["東京都",10]]},{"t":"2026/11/16 06:08:00","n":"愛知県東部","m":3.4,"d":40,"s":10,"ts":"None","la":35,"lo":137.7,"p":[["長野県",10],["岐阜県",10],["静岡県",10],["愛知県",10]]},{"t":"2026/11/16 04:34:00","n":"愛知県東部","m":2.6,"d":40,"s":10,"ts":"None","la":35,"lo":137.6,"p":[["愛知県",10]]},{"t":"2026/11/16 02:43:00","n":"薩摩半島西方沖","m":2.5,"d":10,"s":10,"ts":"None","la":31.9,"lo":130.1,"p":[["鹿児島県",10]]},{"t":"2026/11/16 00:57:00","n":"大阪府北部","m":2.7,"d":10,"s":10,"ts":"None","la":34.9,"lo":135.6,"p":[["大阪府",10]]},{"t":"2026/11/15 16:23:00","n":"熊本県熊本地方","m":3.1,"d":10,"s":20,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",20]]},{"t":"2026/11/15 14:00:00","n":"茨城県沖","m":3.6,"d":40,"s":10,"ts":"None","la":36.6,"lo":141.1,"p":[["茨城県",10]]},{"t":"2026/11/15 13:16:00","n":"渡島地方東部","m":2.6,"d":0,"s":10,"ts":"None","la":41.9,"lo":140.9,"p":[["函館",10]]},{"t":"2026/11/15 06:31:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.4,"p":[["熊本県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":30,"ts":"None","la":32.4,"lo":130.5,"p":[["熊本県",30],["鹿児島県",20],["長崎県",10],["宮崎県",10]]},{"t":"2026/11/15 06:17:00","n":"熊本県天草・芦北地方","m":3.8,"d":10,"s":-1,"ts":"None","la":32.4,"lo":130.5,"p":[]},{"t":"2026/11/15 01:50:00","n":"茨城県沖","m":3.7,"d":90,"s":10,"ts":"None","la":36.7,"lo":140.8,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":30,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",30],["宮崎県",20],["福岡県",10],["長崎県",10],["大分県",10],["鹿児島県",10]]},{"t":"2026/11/15 00:05:00","n":"熊本県熊本地方","m":3.9,"d":10,"s":-1,"ts":"None","la":32.5,"lo":130.6,"p":[]},{"t":"2026/11/14 22:02:00","n":"和歌山県北部","m":2.9,"d":10,"s":20,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",20]]},{"t":"2026/11/14 15:39:00","n":"根室半島南東沖","m":4.2,"d":30,"s":10,"ts":"None","la":43,"lo":146.3,"p":[["北海道",10]]},{"t":"2026/11/14 11:16:00","n":"富山県西部","m":3,"d":10,"s":20,"ts":"None","la":36.3,"lo":137,"p":[["岐阜県",20]]},{"t":"2026/11/14 09:02:00","n":"浦河沖","m":3.3,"d":60,"s":10,"ts":"None","la":41.6,"lo":142,"p":[["函館",10]]},{"t":"2026/11/14 00:03:00","n":"島根県西部","m":3.5,"d":10,"s":20,"ts":"None","la":35.2,"lo":132.6,"p":[["島根県",20]]},{"t":"2026/11/13 19:42:00","n":"和歌山県北部","m":2.4,"d":10,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/13 15:26:00","n":"熊本県熊本地方","m":2.2,"d":0,"s":10,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":30,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",30],["長崎県",20],["宮崎県",20],["鹿児島県",20],["福岡県",10],["佐賀県",10],["大分県",10]]},{"t":"2026/11/13 10:52:00","n":"熊本県熊本地方","m":4,"d":10,"s":-1,"ts":"None","la":32.5,"lo":130.6,"p":[]},{"t":"2026/11/13 03:48:00","n":"茨城県沖","m":3.6,"d":50,"s":10,"ts":"None","la":36.8,"lo":140.9,"p":[["茨城県",10]]},{"t":"2026/11/12 22:27:00","n":"千葉県北東部","m":3.9,"d":50,"s":20,"ts":"None","la":35.7,"lo":140.7,"p":[["千葉県",20],["茨城県",10]]},{"t":"2026/11/12 21:43:00","n":"熊本県熊本地方","m":2.1,"d":10,"s":10,"ts":"None","la":32.7,"lo":130.7,"p":[["熊本県",10]]},{"t":"2026/11/12 21:34:00","n":"大分県中部","m":2,"d":10,"s":10,"ts":"None","la":33.3,"lo":131.5,"p":[["大分県",10]]},{"t":"2026/11/12 13:46:00","n":"トカラ列島近海","m":2.6,"d":0,"s":10,"ts":"None","la":29.7,"lo":129.8,"p":[["鹿児島県",10]]},{"t":"2026/11/12 13:07:00","n":"三陸沖","m":4.7,"d":10,"s":10,"ts":"None","la":40.3,"lo":143.7,"p":[["岩手県",10]]},{"t":"2026/11/12 02:15:00","n":"青森県東方沖","m":3.6,"d":60,"s":20,"ts":"None","la":41,"lo":142,"p":[["青森県",20],["函館",10]]},{"t":"2026/11/11 21:13:00","n":"橘湾","m":2.3,"d":10,"s":10,"ts":"None","la":32.7,"lo":130.1,"p":[["長崎県",10]]},{"t":"2026/11/11 15:21:00","n":"熊本県阿蘇地方","m":2.4,"d":10,"s":10,"ts":"None","la":33,"lo":131.1,"p":[["熊本県",10]]},{"t":"2026/11/11 12:57:00","n":"茨城県沖","m":4.6,"d":20,"s":10,"ts":"None","la":36.3,"lo":141.7,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/11 08:33:00","n":"熊本県熊本地方","m":2.7,"d":0,"s":10,"ts":"None","la":32.8,"lo":130.8,"p":[["熊本県",10]]},{"t":"2026/11/11 07:36:00","n":"岩手県内陸南部","m":2.9,"d":10,"s":10,"ts":"None","la":39.1,"lo":140.9,"p":[["宮城県",10]]},{"t":"2026/11/10 22:23:00","n":"熊本県天草・芦北地方","m":2.5,"d":10,"s":10,"ts":"None","la":32.3,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/10 16:53:00","n":"愛媛県南予","m":3,"d":40,"s":10,"ts":"None","la":33.4,"lo":132.4,"p":[["愛媛県",10]]},{"t":"2026/11/10 16:14:00","n":"熊本県天草・芦北地方","m":2.3,"d":10,"s":10,"ts":"None","la":32.2,"lo":130.5,"p":[["熊本県",10]]},{"t":"2026/11/10 15:36:00","n":"房総半島南方沖","m":4.5,"d":20,"s":20,"ts":"None","la":34.3,"lo":140.2,"p":[["千葉県",20],["東京都",10],["静岡県",10]]},{"t":"2026/11/10 14:20:00","n":"茨城県沖","m":4.5,"d":30,"s":10,"ts":"None","la":36.3,"lo":141.6,"p":[["宮城県",10],["福島県",10],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10]]},{"t":"2026/11/10 06:16:00","n":"橘湾","m":3.3,"d":10,"s":20,"ts":"None","la":32.7,"lo":130.1,"p":[["長崎県",20],["熊本県",10]]},{"t":"2026/11/10 00:09:00","n":"瀬戸内海中部","m":2.8,"d":10,"s":10,"ts":"None","la":34.2,"lo":133,"p":[["広島県",10],["愛媛県",10]]},{"t":"2026/11/09 18:35:00","n":"長野県南部","m":2.3,"d":10,"s":10,"ts":"None","la":35.8,"lo":137.5,"p":[["長野県",10]]},{"t":"2026/11/09 14:01:00","n":"茨城県沖","m":4.5,"d":40,"s":10,"ts":"None","la":36.3,"lo":141.7,"p":[["福島県",10],["茨城県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":30,"ts":"None","la":36.2,"lo":142.2,"p":[["宮城県",30],["福島県",30],["茨城県",30],["栃木県",30],["岩手県",20],["山形県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10]]},{"t":"2026/11/09 13:52:00","n":"茨城県沖","m":5.9,"d":10,"s":-1,"ts":"None","la":36.2,"lo":142.2,"p":[]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":30,"ts":"None","la":38.3,"lo":141.9,"p":[["岩手県",30],["宮城県",30],["福島県",20],["青森県",10],["秋田県",10]]},{"t":"2026/11/09 05:16:00","n":"宮城県沖","m":4.5,"d":50,"s":-1,"ts":"None","la":38.3,"lo":141.9,"p":[]},{"t":"2026/11/09 03:15:00","n":"茨城県北部","m":3.5,"d":10,"s":20,"ts":"None","la":36.7,"lo":140.7,"p":[["茨城県",20],["福島県",10]]},{"t":"2026/11/08 20:47:00","n":"熊本県熊本地方","m":2,"d":0,"s":20,"ts":"None","la":32.6,"lo":130.7,"p":[["熊本県",20]]},{"t":"2026/11/08 19:39:00","n":"日向灘","m":3,"d":30,"s":10,"ts":"None","la":32.1,"lo":131.8,"p":[["宮崎県",10]]},{"t":"2026/11/08 11:21:00","n":"熊本県天草・芦北地方","m":2.8,"d":10,"s":10,"ts":"None","la":32.6,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":40,"ts":"None","la":32.6,"lo":130.6,"p":[["熊本県",40],["長崎県",30],["福岡県",20],["佐賀県",20],["大分県",20],["宮崎県",20],["鹿児島県",20],["山口県",10],["高知県",10]]},{"t":"2026/11/08 10:53:00","n":"熊本県天草・芦北地方","m":4.3,"d":10,"s":-1,"ts":"None","la":32.6,"lo":130.6,"p":[]},{"t":"2026/11/08 08:23:00","n":"熊本県熊本地方","m":3,"d":10,"s":10,"ts":"None","la":32.5,"lo":130.6,"p":[["熊本県",10]]},{"t":"2026/11/08 07:38:00","n":"福島県沖","m":3.9,"d":60,"s":20,"ts":"None","la":37.6,"lo":141.8,"p":[["福島県",20],["宮城県",10]]},{"t":"2026/11/08 02:31:00","n":"渡島地方東部","m":2.9,"d":0,"s":20,"ts":"None","la":41.9,"lo":140.7,"p":[["北海道",20]]},{"t":"2026/11/08 02:30:00","n":"茨城県南部","m":3.2,"d":60,"s":10,"ts":"None","la":36.2,"lo":139.8,"p":[["栃木県",10]]},{"t":"2026/11/08 02:03:00","n":"愛知県東部","m":3.3,"d":40,"s":20,"ts":"None","la":34.9,"lo":137.6,"p":[["愛知県",20],["長野県",10],["岐阜県",10],["静岡県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","la":34.9,"lo":137.7,"p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":50,"ts":"None","la":34.9,"lo":137.7,"p":[["愛知県",50],["長野県",45],["岐阜県",45],["静岡県",45],["三重県",40],["福井県",30],["山梨県",30],["滋賀県",30],["京都府",30],["大阪府",30],["兵庫県",30],["奈良県",30],["埼玉県",20],["東京都",20],["神奈川県",20],["富山県",20],["石川県",20],["鳥取県",20],["茨城県",10],["栃木県",10],["群馬県",10],["千葉県",10],["新潟県",10],["和歌山県",10],["島根県",10],["岡山県",10],["広島県",10],["徳島県",10],["香川県",10]]},{"t":"2026/11/08 01:04:00","n":"静岡県西部","m":5.7,"d":40,"s":-1,"ts":"None","la":34.9,"lo":137.7,"p":[]},{"t":"2026/11/08 00:42:00","n":"岩手県沖","m":4.1,"d":20,"s":10,"ts":"None","la":40.3,"lo":142.7,"p":[["岩手県",10]]},{"t":"2026/11/07 22:48:00","n":"福島県沖","m":3.6,"d":60,"s":10,"ts":"None","la":37.3,"lo":141.4,"p":[["福島県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":30,"ts":"None","la":36.2,"lo":141.6,"p":[["福島県",30],["宮城県",20],["山形県",20],["茨城県",20],["栃木県",20],["群馬県",20],["埼玉県",20],["千葉県",20],["東京都",20],["青森県",10],["岩手県",10],["秋田県",10],["神奈川県",10],["新潟県",10],["山梨県",10],["長野県",10],["静岡県",10]]},{"t":"2026/11/07 20:07:00","n":"茨城県沖","m":5.6,"d":20,"s":-1,"ts":"None","la":36.2,"lo":141.6,"p":[]},{"t":"2026/11/07 06:30:00","n":"山口県中部","m":2.9,"d":10,"s":20,"ts":"None","la":34.2,"lo":131.6,"p":[["山口県",20]]},{"t":"2026/11/07 03:54:00","n":"和歌山県北部","m":2.3,"d":0,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/07 03:51:00","n":"和歌山県北部","m":2.1,"d":0,"s":10,"ts":"None","la":34.2,"lo":135.2,"p":[["和歌山県",10]]},{"t":"2026/11/07 03:02:00","n":"和歌山県北部","m":3.5,"d":10,"s":20,"ts":"None","la":34.2,"lo":135.2,"p":[["大阪府",20],["和歌山県",20]]},{"t":"2026/11/06 22:43:00","n":"淡路島付近","m":3.1,"d":10,"s":10,"ts":"None","la":34.2,"lo":134.8,"p":[["兵庫県",10]]},{"t":"2026/11/06 22:04:00","n":"北海道北西沖","m":3.3,"d":10,"s":20,"ts":"None","la":44.7,"lo":141.6,"p":[["北海道",20]]}]};
+/* ========== 포스터 일러스트 ==========
+   사진이 없거나 아직 도착하지 않은 자리에 쓰는, 코드로 그리는 일러스트입니다(저작권 문제 없음).
+   지역 색조 + 모티프 + 시드로 카드마다 다른 그림이 나옵니다. 사진이 있으면 그 위에 사진이 덮입니다. */
+const REGION_HUE = {fukuoka:14, sapporo:205, nagasaki:268, hakodate:226, okinawa:174, beppu:6, kanazawa:42, kyoto:342, hiroshima:196, kobe:292, osaka:24, tokyo:252, nagoya:152};
+function rng(seed){ let h=1779033703^seed.length; for(let i=0;i<seed.length;i++){ h=Math.imul(h^seed.charCodeAt(i),3432918353); h=h<<13|h>>>19; } let a=h>>>0;
+  return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const f1 = n => (Math.round(n*10)/10);
+function ridge(fill,base,amp,r,steps=12){
+  let d=`M0 400 L0 ${f1(base-r()*amp)}`; const w=300/steps;
+  for(let i=1;i<=steps;i++) d+=` L${f1(i*w)} ${f1(base-r()*amp)}`;
+  return `<path d="${d} L300 400Z" fill="${fill}"/>`;
 }
-document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>openLegal(b.dataset.legal));
+function wave(fill,y,amp,ph){
+  let d=`M0 ${y}`; for(let x=0;x<=300;x+=50) d+=` Q${x+25} ${y+(((x/50+ph)%2)?-amp:amp)} ${x+50} ${y}`;
+  return `<path d="${d} V400H0Z" fill="${fill}"/>`;
+}
+const steam=(x,y,c,r)=>`<path d="M${x} ${y} c-12 -22 12 -34 0 -58 s12 -30 0 -50" fill="none" stroke="${c.hi}" stroke-width="6" stroke-linecap="round" opacity="${f1(.28+r()*.2)}"/>`;
+function windows(c,r,x0,y0,w,h){ let s=''; for(let y=y0+8;y<y0+h-6;y+=12) for(let x=x0+5;x<x0+w-5;x+=9) if(r()<.28) s+=`<rect x="${x}" y="${y}" width="4" height="6" fill="${c.hi}" opacity=".85"/>`; return s; }
 
-function openModal(){ const m=document.getElementById('modal'); m.classList.add('open'); m.setAttribute('aria-hidden','false'); m.querySelector('.sheet').scrollTop=0; }
-function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
-document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+const MOTIF = {
+  mountain:(c,r)=>ridge(c.far,250,80,r)+ridge(c.mid,300,60,r)+ridge(c.near,350,34,r),
+  snow:(c,r)=>ridge('#e9f1fb',250,80,r)+ridge('#bfd0e6',305,55,r)+ridge(c.near,355,30,r)+Array.from({length:34},()=>`<circle cx="${f1(r()*300)}" cy="${f1(r()*330)}" r="${f1(1+r()*2.2)}" fill="#fff" opacity="${f1(.5+r()*.5)}"/>`).join(''),
+  torii:(c,r)=>ridge(c.far,300,40,r)+`<g fill="${c.acc}"><rect x="96" y="186" width="14" height="170"/><rect x="190" y="186" width="14" height="170"/><path d="M68 186 Q150 164 232 186 L228 204 Q150 186 72 204Z"/><rect x="100" y="224" width="100" height="10"/></g>`+wave(c.near,352,5,0),
+  castle:(c,r)=>ridge(c.far,320,36,r)+`<g fill="${c.near}"><rect x="72" y="300" width="156" height="50"/><path d="M58 302 L242 302 L226 284 L74 284Z"/><rect x="96" y="256" width="108" height="30"/><path d="M82 258 L218 258 L204 240 L96 240Z"/><rect x="120" y="214" width="60" height="26"/><path d="M106 216 L194 216 L178 196 L122 196Z"/><path d="M150 196 L150 172" stroke="${c.near}" stroke-width="3"/></g>`+windows(c,r,96,256,108,30)+`<rect y="348" width="300" height="52" fill="${c.near}"/>`,
+  pagoda:(c,r)=>ridge(c.far,310,40,r)+`<g fill="${c.near}">`+[0,1,2,3,4].map(i=>{const w=108-i*16,y=330-i*46;return `<path d="M${150-w/2-14} ${y} L${150+w/2+14} ${y} L${150+w/2} ${y-14} L${150-w/2} ${y-14}Z"/><rect x="${150-w/2+10}" y="${y-30}" width="${w-20}" height="18"/>`;}).join('')+`<rect x="148" y="70" width="4" height="40"/></g><rect y="338" width="300" height="62" fill="${c.near}"/>`,
+  tower:(c,r)=>ridge(c.far,330,40,r)+`<g fill="${c.near}"><path d="M150 76 L172 350 L128 350Z"/><rect x="138" y="168" width="24" height="9"/><rect x="141" y="228" width="18" height="7"/><rect x="149" y="36" width="2" height="44"/></g><g stroke="${c.hi}" stroke-width="1" opacity=".5"><path d="M138 300 L162 250 M162 300 L138 250"/></g><rect y="350" width="300" height="50" fill="${c.near}"/>`,
+  skyline:(c,r)=>{ let s=ridge(c.far,300,50,r,16), x=-6; while(x<300){ const w=20+r()*18,h=70+r()*150,y=350-h; s+=`<rect x="${f1(x)}" y="${f1(y)}" width="${f1(w)}" height="${f1(h)}" fill="${c.near}"/>`+windows(c,r,x,y,w,h); x+=w+3; } return s+`<rect y="348" width="300" height="52" fill="${c.near}"/>`; },
+  bridge:(c,r)=>ridge(c.far,290,40,r)+`<path d="M-10 292 Q150 196 310 292" fill="none" stroke="${c.near}" stroke-width="10"/><rect x="-10" y="288" width="320" height="8" fill="${c.near}"/>`+[40,80,120,160,200,240].map(x=>`<path d="M${x} ${f1(292-Math.sin((x+10)/320*Math.PI)*70)} V288" stroke="${c.near}" stroke-width="2"/>`).join('')+wave(c.mid,320,6,0)+wave(c.near,352,5,1),
+  waves:(c,r)=>wave(c.far,250,12,0)+wave(c.mid,290,14,1)+wave(c.near,330,12,0)+`<path d="M0 360 Q75 345 150 360 T300 360 V400H0Z" fill="${c.hi}" opacity=".16"/>`,
+  steam:(c,r)=>ridge(c.far,300,50,r)+`<ellipse cx="150" cy="330" rx="120" ry="26" fill="${c.near}"/><ellipse cx="150" cy="324" rx="104" ry="18" fill="${c.hi}" opacity=".5"/>`+[90,130,170,210].map(x=>steam(x,320,c,r)).join(''),
+  lanterns:(c,r)=>ridge(c.far,320,36,r)+`<path d="M-10 90 Q150 130 310 90 M-10 150 Q150 190 310 150" fill="none" stroke="${c.near}" stroke-width="2"/>`+[0,1].map(row=>Array.from({length:7},(_,i)=>{const x=20+i*43+(row?20:0),y=(row?160:100)+Math.sin(x/300*Math.PI)*22;return `<g><rect x="${f1(x-1)}" y="${f1(y-8)}" width="2" height="8" fill="${c.near}"/><ellipse cx="${f1(x)}" cy="${f1(y+12)}" rx="11" ry="15" fill="${(i+row)%3?c.acc:c.hi}"/><path d="M${f1(x-9)} ${f1(y+8)}h18M${f1(x-10)} ${f1(y+14)}h20" stroke="${c.near}" stroke-width="1" opacity=".5"/></g>`;}).join('')).join('')+`<rect y="300" width="300" height="100" fill="${c.near}"/>`+windows(c,r,0,300,300,40),
+  trees:(c,r)=>ridge(c.far,290,40,r)+`<ellipse cx="150" cy="352" rx="150" ry="34" fill="${c.mid}"/><ellipse cx="150" cy="352" rx="120" ry="20" fill="${c.hi}" opacity=".25"/>`+Array.from({length:6},(_,i)=>{const x=30+i*48+r()*16,h=50+r()*46;return `<rect x="${f1(x-2)}" y="${f1(320-h/2)}" width="4" height="${f1(h/2+10)}" fill="${c.near}"/><circle cx="${f1(x)}" cy="${f1(320-h)}" r="${f1(18+r()*12)}" fill="${c.near}"/>`;}).join(''),
+  ferris:(c,r)=>ridge(c.far,320,36,r)+`<circle cx="150" cy="190" r="88" fill="none" stroke="${c.near}" stroke-width="4"/><circle cx="150" cy="190" r="6" fill="${c.near}"/>`+Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,x=150+Math.cos(a)*88,y=190+Math.sin(a)*88;return `<path d="M150 190L${f1(x)} ${f1(y)}" stroke="${c.near}" stroke-width="1.5"/><circle cx="${f1(x)}" cy="${f1(y)}" r="7" fill="${i%2?c.acc:c.hi}"/>`;}).join('')+`<path d="M150 190 L112 350 M150 190 L188 350" stroke="${c.near}" stroke-width="5"/><rect y="348" width="300" height="52" fill="${c.near}"/>`,
+  fish:(c,r)=>wave(c.far,70,8,0)+`<g fill="${c.near}"><ellipse cx="150" cy="210" rx="108" ry="34"/><path d="M252 210 L292 170 L284 210 L292 250Z"/><path d="M110 184 L150 140 L170 186Z"/></g>`+Array.from({length:18},()=>`<circle cx="${f1(70+r()*150)}" cy="${f1(196+r()*28)}" r="${f1(1.5+r()*2)}" fill="${c.hi}" opacity=".7"/>`).join('')+wave(c.mid,345,10,1),
+  bamboo:(c,r)=>Array.from({length:9},(_,i)=>{const x=20+i*33+r()*10,w=10+r()*6;return `<rect x="${f1(x)}" y="0" width="${f1(w)}" height="400" fill="${i%2?c.near:c.mid}"/>`+[70,150,230,310].map(y=>`<rect x="${f1(x-1)}" y="${y+r()*12}" width="${f1(w+2)}" height="3" fill="${c.far}"/>`).join('');}).join(''),
+  bowl:(c,r)=>`<ellipse cx="150" cy="300" rx="104" ry="14" fill="${c.near}" opacity=".5"/><path d="M52 232 Q150 390 248 232Z" fill="${c.acc}"/><path d="M70 262 Q150 300 230 262" fill="none" stroke="${c.hi}" stroke-width="3" opacity=".6"/><ellipse cx="150" cy="232" rx="98" ry="22" fill="${c.hi}"/><ellipse cx="150" cy="232" rx="82" ry="16" fill="${c.sun}"/>`+Array.from({length:6},(_,i)=>`<path d="M${70+i*10} 232 q20 -10 40 0 t40 0" fill="none" stroke="${c.far}" stroke-width="2.5" opacity=".6"/>`).join('')+`<circle cx="170" cy="228" r="9" fill="${c.acc}"/><path d="M210 150 L168 232 M222 152 L180 234" stroke="${c.near}" stroke-width="4" stroke-linecap="round"/>`+[110,150,190].map(x=>steam(x,200,c,r)).join(''),
+  plate:(c,r)=>`<ellipse cx="150" cy="268" rx="124" ry="48" fill="${c.hi}"/><ellipse cx="150" cy="262" rx="100" ry="36" fill="${c.sun}" opacity=".8"/>`+Array.from({length:5},(_,i)=>{const x=96+i*27,y=258+(i%2?10:-4);return `<circle cx="${x}" cy="${y}" r="17" fill="${i%2?c.acc:c.far}"/><circle cx="${x-5}" cy="${y-5}" r="4" fill="${c.hi}" opacity=".6"/>`;}).join('')+[120,170].map(x=>steam(x,230,c,r)).join(''),
+  sushi:(c,r)=>`<rect x="0" y="300" width="300" height="100" fill="${c.near}"/>`+[0,1].map(i=>{const x=62+i*100,y=244+i*12;return `<rect x="${x}" y="${y}" width="90" height="42" rx="18" fill="#f4efe6"/><path d="M${x-6} ${y-4} Q${x+45} ${y-30} ${x+96} ${y-4} L${x+90} ${y+16} Q${x+45} ${y+6} ${x+6} ${y+16}Z" fill="${i?c.acc:c.sun}"/>`;}).join(''),
+  skewer:(c,r)=>`<rect y="320" width="300" height="80" fill="${c.near}"/>`+[70,130,190,250].map((x,i)=>`<path d="M${x} 60 L${x-8} 330" stroke="${c.sun}" stroke-width="4" stroke-linecap="round"/>`+[150,205,260].map((y,j)=>`<rect x="${x-20-(y-150)*0.07}" y="${y}" width="36" height="42" rx="14" fill="${(i+j)%2?c.acc:c.far}"/>`).join('')).join(''),
+  icecream:(c,r)=>`<path d="M104 210 L196 210 L150 360Z" fill="${c.sun}"/><path d="M118 232 L182 262 M112 258 L170 290" stroke="${c.far}" stroke-width="2.5" opacity=".6"/><circle cx="150" cy="190" r="50" fill="${c.hi}"/><circle cx="128" cy="150" r="42" fill="${c.acc}"/><circle cx="176" cy="156" r="36" fill="${c.sun}"/>`,
+  cake:(c,r)=>`<rect y="320" width="300" height="80" fill="${c.near}"/><rect x="60" y="240" width="180" height="80" rx="8" fill="${c.sun}"/><rect x="60" y="240" width="180" height="22" rx="8" fill="${c.far}"/>`+[100,140,180].map(x=>`<path d="M${x} 262 V320" stroke="${c.hi}" stroke-width="2" opacity=".6"/>`).join('')+steam(110,230,c,r),
+  tofu:(c,r)=>`<ellipse cx="150" cy="300" rx="120" ry="28" fill="${c.near}"/>`+[[96,252],[148,262],[200,252],[122,222]].map(([x,y])=>`<rect x="${x}" y="${y}" width="52" height="46" rx="6" fill="#f6f1e7"/><rect x="${x}" y="${y}" width="52" height="12" rx="6" fill="${c.hi}"/>`).join('')+[110,160,200].map(x=>steam(x,210,c,r)).join(''),
+  cup:(c,r)=>`<rect y="318" width="300" height="82" fill="${c.near}"/><path d="M72 220 Q150 360 228 220Z" fill="${c.near}"/><ellipse cx="150" cy="220" rx="78" ry="16" fill="#9fc27a"/><ellipse cx="150" cy="218" rx="62" ry="10" fill="#7ea85c"/><path d="M178 150 L158 218" stroke="${c.hi}" stroke-width="5" stroke-linecap="round"/>`+steam(130,196,c,r),
+};
+const MOTIF_ALIAS = {city:'skyline',station:'skyline',park:'trees',sea:'waves',onsen:'steam',market:'lanterns',shrine:'torii',noodle:'bowl',dish:'plate'};
+const MOTIF_RULES = [
+  [/라멘|면|소바|우동|짬뽕|카레|나베|수프/,'bowl'],[/초밥|스시/,'sushi'],[/쿠시|꼬치|야타이|튀김|도리텐|데바사키/,'skewer'],[/아이스|소프트|블루실/,'icecream'],
+  [/카스텔라|만주|케이크|떡|디저트|파르페|단고/,'cake'],[/두부|유도후/,'tofu'],[/말차|차/,'cup'],[/야키|타코|덮밥|굴|규|스테이크|카츠|마부시|가이세키|메시|찜|구로|짬/,'plate'],
+  [/신사|이나리|도리이|텐만구|이쓰쿠시마|메이지|아쓰타|센소지|궁/,'torii'],[/성$|성 |고료카쿠|오사카성|나고야성|슈리/,'castle'],[/기요미즈|킨카쿠|탑|아라시야마/,'pagoda'],
+  [/타워|스카이트리|공중정원|스카이/,'tower'],[/수족관/,'fish'],[/해변|바다|고우리|만좌모|모모치/,'waves'],[/온천|지옥|간나와|유노카와|아리마/,'steam'],
+  [/공원|정원|오호리|겐로쿠엔|슈케이엔|긴린코|호수/,'trees'],[/다리|운하|뱃놀이|야나가와/,'bridge'],[/하버랜드|유니버설|지브리|테마/,'ferris'],
+  [/시장|상점|아케이드|거리|도톤보리|캐널|스스키노|가도|국제거리|가와라마치|모토마치|지하상가|오스|고린보|센터가이|모자이크|창고|쇼핑/,'lanterns'],
+  [/야경|스크램블|역|난바|우메다|신주쿠|긴자|우에노|사카에|하라주쿠|아키하바라|산노미야|핫초보리|하코다테산|이나사야마|롯코산|모이와/,'skyline'],
+];
+const CAT_DEFAULT = {s:'mountain',t:'skyline',p:'lanterns',f:'plate',h:'skyline'};
+const HERO_MOTIF = {fukuoka:'tower',sapporo:'snow',nagasaki:'skyline',hakodate:'skyline',okinawa:'waves',beppu:'steam',kanazawa:'castle',kyoto:'pagoda',hiroshima:'torii',kobe:'ferris',osaka:'castle',tokyo:'tower',nagoya:'castle'};
+function motifFor(cat,title){ for(const [re,m] of MOTIF_RULES) if(re.test(title||'')) return m; return CAT_DEFAULT[cat]||'mountain'; }
 
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+/* 포스터 SVG: motif 이름, 기준 색조, 시드 */
+let POSTER_N = 0;
+function poster(motif,h,seed){
+  const r=rng(seed), id='pg'+(POSTER_N++);
+  motif = MOTIF[motif]?motif:(MOTIF_ALIAS[motif]||'mountain');
+  const dusk = r()<.5;
+  const c={sky1:`hsl(${h} 46% ${dusk?18:24}%)`,sky2:`hsl(${(h+26)%360} 78% ${dusk?56:64}%)`,sun:`hsl(${(h+44)%360} 96% 80%)`,far:`hsl(${(h+8)%360} 36% 34%)`,mid:`hsl(${(h+8)%360} 40% 24%)`,near:`hsl(${(h+8)%360} 44% 13%)`,hi:`hsl(${(h+48)%360} 100% 88%)`,acc:'#ee4a50'};
+  const sx=f1(50+r()*200), sy=f1(90+r()*90), sr=f1(30+r()*22);
+  const food=/^(bowl|plate|sushi|skewer|icecream|cake|tofu|cup)$/.test(motif);
+  const sun=food?'':`<circle cx="${sx}" cy="${sy}" r="${f1(sr*2.2)}" fill="${c.sun}" opacity=".16"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${c.sun}" opacity=".95"/>`;
+  return `<svg class="art" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky1}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient></defs><rect width="300" height="400" fill="url(#${id})"/>${sun}${MOTIF[motif](c,r)}</svg>`;
+}
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* 알림 신청: 정식 출시 전까지는 기기에만 저장 */
-document.getElementById('subForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const v = document.getElementById('subEmail').value.trim();
-  try{ localStorage.setItem('anshin_sub', v); }catch(_){}
-  toast('신청이 접수되었습니다. 알림 서비스가 시작되면 안내해 드릴게요.');
-  document.getElementById('subEmail').value='';
-});
-document.getElementById('shareBtn').onclick=()=>{
-  const url = location.href.split('#')[0];
-  navigator.clipboard.writeText(url).then(()=>toast('링크를 복사했습니다.')).catch(()=>toast(url));
+/* ========== 데이터 연결 ========== */
+const REGION_BY_ID = Object.fromEntries(REGIONS.map(r=>[r.id,r]));
+const PREF_BY_ID = Object.fromEntries(PREFS.map(p=>[p.id,p]));
+REGIONS.forEach(r=>{ Object.assign(r,REGION_META[r.id]); r.tier = PREF_BY_ID[r.pf].tier; });
+
+/* ========== 아이콘 ========== */
+const IC = {
+  close:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  alert:'<svg viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg>',
+  bed:'<svg viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.5"/></svg>',
+  ticket:'<svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
+  sim:'<svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><rect x="10" y="11" width="5" height="6" rx="1"/></svg>',
+  shield:'<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
 };
 
-document.getElementById('refresh').onclick=loadQuakes;
+/* ========== 사진 ========== */
+const hue = id => { let h=0; for(const c of id) h=(h*31+c.charCodeAt(0))%360; return h; };
+const imgFile = k => (k && IMGCRED[k]) ? `img/${k}.webp` : null;
+const itemKey = (rid,cat,i) => IMGMAP[`${rid}-${cat}${i}`];
+function img(k,alt,eager){
+  const f = imgFile(k); if(!f) return '';
+  return `<img src="${f}" alt="${esc(alt)}" loading="${eager?'eager':'lazy'}" decoding="async">`;
+}
+const rh = (rid,i=0) => ((REGION_HUE[rid]||200) + ((i*17)%50) - 20 + 360) % 360;
+const vis = (k,alt,motif,h,seed,eager) => poster(motif,h,seed) + img(k,alt,eager);
+document.addEventListener('error',e=>{ if(e.target && e.target.tagName==='IMG') e.target.remove(); },true);
+
+/* ========== 진도, 시간, 지명 ========== */
+const SCALE = {10:'1',20:'2',30:'3',40:'4',45:'5약',50:'5강',55:'6약',60:'6강',70:'7'};
+function scaleColor(s){
+  if(s>=55) return '#7f1d1d'; if(s>=45) return '#dc2626'; if(s>=40) return '#ea580c';
+  if(s>=30) return '#b8860b'; if(s>=20) return '#3b6fd4'; return '#64748b';
+}
+const TSUNAMI = {None:'쓰나미 걱정 없음',Unknown:'쓰나미 정보 확인 중',Checking:'쓰나미 정보 확인 중',NonEffective:'해수면 소폭 변동 가능',Watch:'쓰나미 주의보',Warning:'쓰나미 경보'};
+function fmtTime(s){
+  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(s||''); if(!m) return s||'';
+  return `${+m[2]}월 ${+m[3]}일 ${m[4]}:${m[5]}`;
+}
+let QUAKES = null, SOURCE = 'live';
+function snapNow(){ const m=/(\d+)\/(\d+)\/(\d+) (\d+):(\d+)/.exec(SNAPSHOT.at); return Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5]); }
+function ageHours(s){
+  const m = /(\d+)\/(\d+)\/(\d+) (\d+):(\d+):?(\d+)?/.exec(s||''); if(!m) return Infinity;
+  const base = SOURCE==='snapshot' && SNAPSHOT.at ? snapNow() : Date.now();
+  return (base - Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5],+(m[6]||0)))/36e5;
+}
+const fromSnap = x => ({earthquake:{time:x.t,hypocenter:{name:x.n,magnitude:x.m,depth:x.d,latitude:x.la,longitude:x.lo},maxScale:x.s,domesticTsunami:x.ts},
+  points:x.p.map(([k,scale])=>({pref:(k==='函館'||k==='札幌')?'北海道':k,addr:k,scale}))});
+/* 같은 지진의 중복 발표를 합치고, 진도 정보가 없는 항목은 뺍니다 */
+function cleanQuakes(list){
+  const best = new Map();
+  for(const q of list){
+    const e=q.earthquake, h=e.hypocenter; if(!h||!h.name||!(e.maxScale>=10)) continue;
+    const k=e.time+'|'+h.name+'|'+h.magnitude, old=best.get(k);
+    if(!old || (q.points||[]).length>(old.points||[]).length) best.set(k,q);
+  }
+  return [...best.values()];
+}
+async function loadQuakes(){
+  const st=$('#statusTitle'), ss=$('#statusSub'), dot=$('#statusDot');
+  st.textContent='지진 정보를 불러오는 중…'; ss.textContent='잠시만 기다려 주세요.'; dot.className='dot';
+  try{
+    const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=100',{signal:ctrl.signal});
+    clearTimeout(t);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    QUAKES = cleanQuakes((await res.json()).filter(d=>d.earthquake)); SOURCE='live';
+  }catch(e){
+    if(SNAPSHOT.list.length){ QUAKES=cleanQuakes(SNAPSHOT.list.map(fromSnap)); SOURCE='snapshot'; }
+    else { QUAKES=null; SOURCE='none'; }
+  }
+  computeAct(); renderQuakes(); renderRanking(); renderMapData();
+}
+
+/* ========== 안심 지수(현 단위) ========== */
+let ACT = null;
+const ZERO = {felt:0,strong:0,maxS:0,recentStrong:false};
+function computeAct(){
+  if(!QUAKES){ ACT=null; return; }
+  ACT = {};
+  for(const q of QUAKES){
+    const age = ageHours(q.earthquake.time); if(age > 24*30) continue;
+    const per = {};
+    for(const pt of q.points||[]) per[pt.pref] = Math.max(per[pt.pref]||0, pt.scale||0);
+    for(const [jp,s] of Object.entries(per)){
+      const a = ACT[jp] || (ACT[jp]={felt:0,strong:0,maxS:0,recentStrong:false});
+      if(s>=30) a.felt++; if(s>=45) a.strong++;
+      if(s>=50 && age<48) a.recentStrong=true;
+      a.maxS=Math.max(a.maxS,s);
+    }
+  }
+}
+const actOf = p => ACT ? (ACT[p.jp]||ZERO) : null;
+function prefScore(p){
+  const a=actOf(p), base=TIER_BASE[p.tier]; if(!a) return base;
+  return Math.max(0, base - Math.min(20, a.felt*2 + a.strong*8));
+}
+const scoreOf = r => { const p=PREF_BY_ID[r.pf]; return {score:prefScore(p), a:actOf(p)}; };
+const SUF = {'都':'도','府':'부','県':'현'};
+const prefName = p => p.ko + (SUF[p.jp.slice(-1)]||'');
+
+/* 점수 → 색 (어두운 지도 배경용). 붉을수록 위험, 푸를수록 안심 */
+const MAP_STOPS = [[40,'#ef3347'],[55,'#a23b4d'],[70,'#44506a'],[82,'#3b79de'],[92,'#7ab4ff']];
+const RING_STOPS = [[40,'#ff4d57'],[55,'#ff8a8f'],[70,'#dbe4f4'],[82,'#7fb0ff'],[92,'#4c8dff']];
+const hex = c => [1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+function lerpStops(st,s){
+  if(s<=st[0][0]) return st[0][1]; if(s>=st[st.length-1][0]) return st[st.length-1][1];
+  for(let i=1;i<st.length;i++){
+    if(s<=st[i][0]){
+      const [s0,c0]=st[i-1],[s1,c1]=st[i],t=(s-s0)/(s1-s0),A=hex(c0),B=hex(c1);
+      return '#'+A.map((v,k)=>Math.round(v+(B[k]-v)*t).toString(16).padStart(2,'0')).join('');
+    }
+  }
+}
+const mapColor = s => lerpStops(MAP_STOPS,s);
+const ringColor = s => lerpStops(RING_STOPS,s);
+function ringSvg(score){
+  const r=18, c=2*Math.PI*r;
+  return `<svg class="ring" viewBox="0 0 46 46" aria-label="안심 지수 ${score}"><circle class="tr" cx="23" cy="23" r="${r}"/><circle cx="23" cy="23" r="${r}" stroke="${ringColor(score)}" stroke-linecap="round" stroke-dasharray="${(c*score/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 23 23)"/><text x="23" y="24">${score}</text></svg>`;
+}
+
+/* ========== 지도 ========== */
+function bboxOf(d){
+  const n=d.match(/-?\d+\.?\d*/g).map(Number); let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(let i=0;i+1<n.length;i+=2){ x0=Math.min(x0,n[i]); x1=Math.max(x1,n[i]); y0=Math.min(y0,n[i+1]); y1=Math.max(y1,n[i+1]); }
+  return {x0,y0,x1,y1};
+}
+function nudgeInside(el,pos,c){
+  try{
+    if(!el.isPointInFill) return pos;
+    let p={...pos};
+    for(let i=0;i<60;i++){
+      if(el.isPointInFill(new DOMPoint(p.x,p.y))) return p;
+      p={x:p.x+(c[0]-p.x)*0.04,y:p.y+(c[1]-p.y)*0.04};
+    }
+  }catch(e){}
+  return pos;
+}
+const CITY_POS = {}; let OKI = null;
+function buildMap(){
+  const svg=$('#jpmap');
+  svg.innerHTML='<g id="pfs">'+PREFS.map(p=>`<path class="pf" data-id="${p.id}" d="${p.d}" tabindex="0" role="button" aria-label="${esc(prefName(p))}"></path>`).join('')+'</g><rect class="inset" id="okinset"></rect><g id="qk"></g><g id="cities"></g>';
+  const ob=bboxOf(PREF_BY_ID.okinawa.d), inset=svg.querySelector('#okinset');
+  inset.setAttribute('x',ob.x0-6); inset.setAttribute('y',ob.y0-6); inset.setAttribute('width',ob.x1-ob.x0+12); inset.setAttribute('height',ob.y1-ob.y0+12);
+  OKI={x:(ob.x0+ob.x1)/2,y:(ob.y0+ob.y1)/2};
+  let html='';
+  for(const r of REGIONS){
+    const p=PREF_BY_ID[r.pf], el=svg.querySelector(`[data-id="${r.pf}"]`); let pos;
+    if(r.ll) pos=nudgeInside(el,proj(r.ll[0],r.ll[1]),p.c);
+    else{
+      const big=p.d.split('M').filter(Boolean).map(s=>bboxOf('M'+s)).sort((a,b)=>(b.x1-b.x0)*(b.y1-b.y0)-(a.x1-a.x0)*(a.y1-a.y0))[0];
+      const mid=[(big.x0+big.x1)/2,(big.y0+big.y1)/2]; pos=nudgeInside(el,{x:mid[0],y:mid[1]},mid);
+    }
+    CITY_POS[r.id]=pos;
+    const L={r:[7,4,'start'],l:[-7,4,'end'],t:[0,-8,'middle'],b:[0,15,'middle']}[r.lab||'r'];
+    html+=`<g class="city" data-city="${r.id}" tabindex="0" role="button" aria-label="${esc(r.name)}"><circle class="hit" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="11"/><circle class="dotc" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="2.6"/><text x="${(pos.x+L[0]).toFixed(1)}" y="${(pos.y+L[1]).toFixed(1)}" text-anchor="${L[2]}">${esc(r.name)}</text></g>`;
+  }
+  svg.querySelector('#cities').innerHTML=html;
+  setupMapEvents(svg);
+}
+function renderMapData(){
+  const svg=$('#jpmap'); if(!svg) return;
+  for(const p of PREFS) svg.querySelector(`[data-id="${p.id}"]`).style.fill=mapColor(prefScore(p));
+  let html='';
+  if(QUAKES){
+    for(const q of QUAKES.slice().reverse()){
+      const e=q.earthquake,h=e.hypocenter; if(ageHours(e.time)>24*7) continue;
+      const la=h.latitude,lo=h.longitude; if(!(la>20&&la<50&&lo>120&&lo<155)) continue;
+      const pos=(la<27.5&&lo<130&&OKI)?OKI:proj(la,lo);
+      const s=e.maxScale,big=s>=45,r=big?6.5:s>=30?4.2:2.4;
+      html+=`<circle class="qk${big?' big':''}" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="${r}"/>`;
+    }
+  }
+  svg.querySelector('#qk').innerHTML=html;
+}
+function setupMapEvents(svg){
+  const tip=$('#maptip');
+  const pick=e=>{ const c=e.target.closest('[data-city]'); if(c) return {city:c.dataset.city}; const t=e.target.closest('[data-id]'); return t?{pref:t.dataset.id}:null; };
+  svg.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch') return;
+    const k=pick(e); if(!k){ tip.hidden=true; return; }
+    const txt=k.city ? `${REGION_BY_ID[k.city].name} · 안심 ${scoreOf(REGION_BY_ID[k.city]).score}` : `${prefName(PREF_BY_ID[k.pref])} · 안심 ${prefScore(PREF_BY_ID[k.pref])}`;
+    const wr=svg.parentElement.getBoundingClientRect();
+    tip.textContent=txt; tip.hidden=false; tip.style.left=(e.clientX-wr.left)+'px'; tip.style.top=(e.clientY-wr.top)+'px';
+  });
+  svg.addEventListener('pointerleave',()=>{ tip.hidden=true; });
+  const go=e=>{ tip.hidden=true; const k=pick(e); if(!k) return; if(k.city) openRegion(k.city); else openPref(k.pref); };
+  svg.addEventListener('click',go);
+  svg.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(e); } });
+}
+
+/* ========== 지진 현황 ========== */
+let QSHOW = 6;
+function renderQuakes(){
+  const list=$('#quakeList'), st=$('#statusTitle'), ss=$('#statusSub'), dot=$('#statusDot'), src=$('#srcNote'), stats=$('#stats');
+  if(!QUAKES){
+    st.textContent='지진 정보를 불러오지 못했습니다';
+    ss.innerHTML='<a href="https://www.jma.go.jp/bosai/map.html#contents=earthquake_map" target="_blank" rel="noopener" style="color:inherit">일본 기상청에서 직접 확인하기</a>';
+    list.innerHTML='<div class="empty">지진 목록을 표시할 수 없습니다.</div>'; src.textContent=''; stats.innerHTML=''; $('#moreQ').hidden=true; return;
+  }
+  const now=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  src.textContent = SOURCE==='live' ? `실시간 · ${now} 갱신` : `${SNAPSHOT.at} (일본시간) 저장 자료 · 실시간 연결이 막혀 있어 최근 저장 자료를 보여드립니다`;
+  const tsunami=QUAKES.find(q=>ageHours(q.earthquake.time)<24&&['Watch','Warning'].includes(q.earthquake.domesticTsunami));
+  const strong24=QUAKES.filter(q=>ageHours(q.earthquake.time)<24&&q.earthquake.maxScale>=45);
+  const w7=QUAKES.filter(q=>ageHours(q.earthquake.time)<24*7);
+  const felt7=w7.filter(q=>q.earthquake.maxScale>=30).length;
+  const maxQ=w7.reduce((a,q)=>!a||q.earthquake.maxScale>a.earthquake.maxScale?q:a,null);
+  stats.innerHTML=`<div><b>${w7.length}</b><small>최근 7일 발표</small></div><div><b>${felt7}</b><small>진도 3 이상</small></div><div><b>${maxQ?SCALE[maxQ.earthquake.maxScale]||'-':'-'}</b><small>최대 진도</small></div>`;
+  if(tsunami){
+    dot.className='dot warn'; st.textContent='쓰나미 '+(tsunami.earthquake.domesticTsunami==='Warning'?'경보':'주의보')+' 발표';
+    ss.textContent=`${ko(tsunami.earthquake.hypocenter.name)} · 해안가는 즉시 높은 곳으로`;
+  }else if(strong24.length){
+    dot.className='dot warn'; st.textContent=`24시간 내 진도 5약 이상 ${strong24.length}건`;
+    ss.textContent=ko(strong24[0].earthquake.hypocenter.name)+' · 여진에 대비하세요';
+  }else{
+    dot.className='dot ok'; st.textContent='최근 24시간, 큰 지진 없음'; ss.textContent='진도 5약 이상 · 쓰나미 경보 없음';
+  }
+  const rows=QUAKES.slice(0,QSHOW);
+  list.innerHTML=rows.length?rows.map(q=>{
+    const e=q.earthquake,h=e.hypocenter,s=e.maxScale;
+    const mag=h.magnitude>0?'M'+Number(h.magnitude).toFixed(1):'규모 미정';
+    const depth=h.depth>0?`깊이 ${h.depth}km`:(h.depth===0?'매우 얕음':'');
+    return `<div class="q"><div class="shindo" style="background:${scaleColor(s)}">${esc(SCALE[s]||'-')}</div>
+      <div><div class="place">${esc(ko(h.name))}<span>${esc(h.name)}</span></div><div class="meta">${esc(fmtTime(e.time))} 일본시간 · ${esc(TSUNAMI[e.domesticTsunami]||'')}</div></div>
+      <div class="mag">${esc(mag)}<small>${esc(depth)}</small></div></div>`;
+  }).join(''):'<div class="empty">최근 지진 기록이 없습니다.</div>';
+  const more=$('#moreQ'); more.hidden=QUAKES.length<=6; more.textContent=QSHOW>6?'접기':'더 보기';
+}
+$('#moreQ').onclick=()=>{ QSHOW=QSHOW>6?6:14; renderQuakes(); };
+
+/* ========== 랭킹: 사진 타일 ========== */
+function renderSide(){
+  const rows=REGIONS.map(r=>({r,...scoreOf(r)})).sort((x,y)=>y.score-x.score);
+  const li=x=>`<button type="button" data-go="${x.r.id}"><b>${esc(x.r.name)}<small>${esc(x.r.jp)}</small></b><i>${x.score}</i></button>`;
+  $('#sideLists').innerHTML=`<div class="sl good"><h4>가장 안심 · 인기 여행지 중</h4>${rows.slice(0,3).map(li).join('')}</div><div class="sl bad"><h4>주의 필요</h4>${rows.slice(-3).reverse().map(li).join('')}</div>`;
+  document.querySelectorAll('#sideLists [data-go]').forEach(b=>b.onclick=()=>openRegion(b.dataset.go));
+}
+function renderRanking(){
+  renderSide();
+  const rows=REGIONS.map(r=>({r,...scoreOf(r)})).sort((x,y)=>y.score-x.score);
+  $('#rankList').innerHTML=rows.map((x,i)=>{
+    const tg=x.r.tags.slice(0,2).join(' · ');
+    return `<button class="tile" data-id="${x.r.id}" type="button" style="--hue:${hue(x.r.id)}">
+      ${vis(`${x.r.id}-hero`,x.r.name,HERO_MOTIF[x.r.id],rh(x.r.id),x.r.id+'-hero',i<2)}
+      <span class="rk">${String(i+1).padStart(2,'0')}</span>${ringSvg(x.score)}
+      ${x.a&&x.a.recentStrong?'<span class="al">48시간 내 강진</span>':''}
+      <span class="meta"><span class="nm">${esc(x.r.name)}</span><span class="jp">${esc(x.r.jp)}</span><span class="tg">${esc(tg)}</span></span>
+    </button>`;
+  }).join('');
+  document.querySelectorAll('#rankList .tile').forEach(el=>{ el.onclick=()=>openRegion(el.dataset.id); });
+}
+
+/* ========== 상세 화면 ========== */
+let lastFocus=null;
+function lockScroll(on){ document.documentElement.style.overflow=on?'hidden':''; }
+function openSheet(html){
+  const s=$('#sheet'); lastFocus=document.activeElement;
+  s.innerHTML=html; s.scrollTop=0; s.classList.add('open'); s.setAttribute('aria-hidden','false'); lockScroll(true);
+  const c=s.querySelector('.sx-close'); if(c){ c.onclick=closeSheet; c.focus({preventScroll:true}); }
+  s.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>openRegion(b.dataset.go));
+}
+function closeSheet(){
+  const s=$('#sheet'); s.classList.remove('open'); s.setAttribute('aria-hidden','true'); lockScroll(false);
+  if(lastFocus&&lastFocus.focus) lastFocus.focus({preventScroll:true});
+}
+function recentList(p){
+  if(!QUAKES) return '';
+  const rows=[];
+  for(const q of QUAKES){
+    if(ageHours(q.earthquake.time)>24*7) continue;
+    let s=0; for(const pt of q.points||[]) if(pt.pref===p.jp) s=Math.max(s,pt.scale||0);
+    if(s) rows.push([q,s]);
+  }
+  if(!rows.length) return `<details class="more"><summary>최근 7일 이 지역에서 느껴진 지진 없음</summary></details>`;
+  return `<details class="more"><summary>최근 7일 이 지역에서 느껴진 지진 ${rows.length}건</summary><ul class="plist">${rows.slice(0,8).map(([q,s])=>{
+    const e=q.earthquake,h=e.hypocenter;
+    return `<li><div>${esc(fmtTime(e.time))} · ${esc(ko(h.name))}</div><span>진도 ${esc(SCALE[s]||'-')} · ${h.magnitude>0?'M'+Number(h.magnitude).toFixed(1):'규모 미정'}</span></li>`;
+  }).join('')}</ul></details>`;
+}
+function statsBox(score,p,a){
+  return `<div class="sx-stats"><div><small>안심 지수</small><b style="color:${ringColor(score)==='#dbe4f4'?'inherit':''}">${score}</b></div><div><small>장기 위험</small><b>${TIER_LABEL[p.tier]}</b></div><div><small>30일 진도 3+</small><b>${a?a.felt+'회':'-'}</b></div></div>`;
+}
+const credLine = k => { const c=IMGCRED[k]; return c?`<p class="credit">사진 ${esc(c.artist)} · <a href="${esc(c.page)}" target="_blank" rel="noopener">${esc(c.license)}</a></p>`:''; };
+
+function openRegion(id){
+  const r=REGION_BY_ID[id], p=PREF_BY_ID[r.pf], {score,a}=scoreOf(r), quiet=a&&a.recentStrong, h=hue(id), hk=`${id}-hero`;
+  const sights=r.sights.map(([t,d,q],i)=>`<div class="pc" style="--hue:${hue(id+'s'+i)}">${vis(itemKey(id,'s',i),t,motifFor('s',t),rh(id,i),id+'-s'+i)}${quiet?'':`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const foods=r.food.map(([t,d],i)=>`<div class="pc sq" style="--hue:${hue(id+'f'+i)}">${vis(itemKey(id,'f',i),t,motifFor('f',t),rh(id,i+2),id+'-f'+i)}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const row=(cat,arr,chip)=>arr.map(([t,d],i)=>`<div class="row"><div class="th" style="--hue:${hue(id+cat+i)}">${vis(itemKey(id,cat,i),t,motifFor(cat,t),rh(id,i+1),id+cat+i)}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${chip(t)}</div>`).join('');
+  const stay=row('t',r.stay,t=>quiet?'':`<a class="chip" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">숙소</a>`);
+  const shop=row('p',r.shop,t=>`<a class="chip" href="${mapUrl(t+' '+r.name)}" target="_blank" rel="noopener">지도</a>`);
+  openSheet(`
+    <div class="sx-hero" style="--hue:${h}">${vis(hk,r.name,HERO_MOTIF[id],rh(id),id+'-hero',true)}
+      <button class="sx-close" type="button" aria-label="닫기">${IC.close}</button>
+      <div class="sx-title"><span class="jp">${esc(r.jp)} · ${esc(r.en.toUpperCase())}</span><h2>${esc(r.name)}</h2><p>${esc(r.tags.join(' · '))}</p></div>
+    </div>
+    <div class="sx-body">
+      ${statsBox(score,p,a)}
+      ${credLine(hk)}
+      ${quiet?`<div class="callout alert">${IC.alert}<div><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b><br>여진에 대비하고 현지 당국의 안내를 따르세요. 안전을 위해 여행 상품 안내를 잠시 중단합니다.</div></div>`:''}
+      <div class="callout">${IC.shield}<div>${esc(r.note)}<br><b style="color:var(--ink)">안전 팁</b> · ${esc(r.safety)}</div></div>
+      ${recentList(p)}
+      <div class="sx-sec"><h3>볼거리 <small>SIGHTS</small></h3><div class="rail">${sights}</div></div>
+      <div class="sx-sec"><h3>먹거리 <small>FOOD</small></h3><div class="rail">${foods}</div></div>
+      <div class="sx-sec"><h3>숙박 추천 지역 <small>STAY</small></h3><div class="rows">${stay}</div></div>
+      <div class="sx-sec"><h3>쇼핑 <small>SHOP</small></h3><div class="rows">${shop}</div></div>
+      ${quiet?'':`<div class="cta-bar">
+        <a href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">${IC.bed}숙소</a>
+        <a href="${tourUrl(r)}" target="_blank" rel="noopener sponsored">${IC.ticket}투어</a>
+        <a href="${esimUrl()}" target="_blank" rel="noopener sponsored">${IC.sim}eSIM</a>
+        <a href="${INSURANCE_URL}" target="_blank" rel="noopener">${IC.shield}보험</a></div>
+      <p class="adnote">일부 링크는 제휴 링크입니다. 이용자에게 추가 비용은 없습니다. 보험은 금융당국 공식 비교 사이트로 연결됩니다.</p>`}
+    </div>`);
+}
+function openPref(id){
+  const p=PREF_BY_ID[id], guides=REGIONS.filter(r=>r.pf===id);
+  if(guides.length===1){ openRegion(guides[0].id); return; }
+  const score=prefScore(p), a=actOf(p), quiet=a&&a.recentStrong;
+  let list=guides;
+  if(!guides.length) list=REGIONS.filter(r=>CITY_POS[r.id]).map(r=>({r,d:Math.hypot(CITY_POS[r.id].x-p.c[0],CITY_POS[r.id].y-p.c[1])})).sort((x,y)=>x.d-y.d).slice(0,3).map(x=>x.r);
+  const tiles=list.map(r=>{ const sc=scoreOf(r).score; return `<button class="tile" data-go="${r.id}" type="button" style="--hue:${hue(r.id)}">${vis(`${r.id}-hero`,r.name,HERO_MOTIF[r.id],rh(r.id),r.id+'-hero')}${ringSvg(sc)}<span class="meta"><span class="nm">${esc(r.name)}</span><span class="jp">${esc(r.jp)}</span></span></button>`; }).join('');
+  openSheet(`
+    <div class="sx-hero" style="--hue:${hue(id)};min-height:260px;height:auto;padding-bottom:0;background:linear-gradient(160deg,${mapColor(score)},#0b1220 85%)">
+      <button class="sx-close" type="button" aria-label="닫기">${IC.close}</button>
+      <div class="sx-title" style="position:relative;left:auto;right:auto;bottom:auto;padding:100px var(--gutr) 56px var(--gut)"><span class="jp">${esc(p.jp)}</span><h2>${esc(prefName(p))}</h2></div>
+    </div>
+    <div class="sx-body">
+      ${statsBox(score,p,a)}
+      ${quiet?`<div class="callout alert">${IC.alert}<div><b>최근 48시간 안에 이 지역에서 강한 지진이 있었습니다.</b><br>여진에 대비하고 현지 당국의 안내를 따르세요.</div></div>`:''}
+      ${recentList(p)}
+      <div class="sx-sec"><h3>${guides.length?'여행 안내 보기':'가까운 여행 안내 지역'} <small>${guides.length?'GUIDE':'NEARBY'}</small></h3>${guides.length?'':'<p style="color:var(--sub);font-size:14px;margin:-6px 0 14px">이 지역의 여행 안내는 준비 중입니다.</p>'}<div class="pgrid">${tiles}</div></div>
+    </div>`);
+}
+
+/* ========== 팝업: 약관, 사진 출처 ========== */
+function openModal(html){
+  const m=$('#modal'); $('#dialog').innerHTML=`<button class="x" type="button" aria-label="닫기">${IC.close}</button>`+html;
+  m.classList.add('open'); m.setAttribute('aria-hidden','false'); $('#dialog').scrollTop=0; $('#dialog .x').onclick=closeModal;
+}
+function closeModal(){ const m=$('#modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
+$('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if($('#modal').classList.contains('open')) closeModal(); else if($('#sheet').classList.contains('open')) closeSheet(); });
+document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>{ const [t,body]=LEGAL[b.dataset.legal]; openModal(`<h2>${t}</h2><p>베타 버전 · 2026년 11월</p>${body}`); });
+$('#creditsBtn').onclick=()=>{
+  const seen=new Set(), rows=[];
+  for(const [k,c] of Object.entries(IMGCRED)){
+    if(seen.has(c.title)) continue; seen.add(c.title);
+    rows.push(`<li><a href="${esc(c.page)}" target="_blank" rel="noopener">${esc(c.title.replace(/^File:/,'').replace(/\.[a-z]+$/i,''))}</a><br>${esc(c.artist)} · ${esc(c.license)}</li>`);
+  }
+  openModal(`<h2>사진 출처</h2><p>사진은 위키미디어 커먼즈의 공개 라이선스(CC BY, CC BY-SA, CC0, 퍼블릭 도메인) 사진입니다. 크기를 줄이고 일부를 잘라 사용했습니다.</p><ul>${rows.join('')}</ul>`);
+};
+
+/* ========== 기타 ========== */
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+$('#subForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  try{ localStorage.setItem('anshin_sub',$('#subEmail').value.trim()); }catch(_){}
+  toast('신청이 접수되었습니다. 알림 서비스가 시작되면 안내해 드릴게요.'); $('#subEmail').value='';
+});
+$('#shareBtn').onclick=()=>{ const url=location.href.split('#')[0]; navigator.clipboard.writeText(url).then(()=>toast('링크를 복사했습니다.')).catch(()=>toast(url)); };
+$('#refresh').onclick=loadQuakes;
+
 buildMap();
 renderRanking();
 renderMapData();
 loadQuakes();
-setInterval(loadQuakes, 5*60*1000);
+setInterval(loadQuakes,5*60*1000);
 </script>
 </body>
 </html>
