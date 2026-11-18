@@ -25,7 +25,7 @@ function img(k,alt,eager){
   const f = imgFile(k); if(!f) return '';
   return `<img src="${f}" alt="${esc(alt)}" loading="${eager?'eager':'lazy'}" decoding="async">`;
 }
-const rh = (rid,i=0) => ((REGION_HUE[rid]||200) + ((i*17)%50) - 20 + 360) % 360;
+const rh = (rid,i=0) => ((REGION_HUE[rid]||200) + ((i*41)%100) - 40 + 360) % 360;
 const vis = (k,alt,motif,h,seed,eager) => poster(motif,h,seed) + img(k,alt,eager);
 document.addEventListener('error',e=>{ if(e.target && e.target.tagName==='IMG') e.target.remove(); },true);
 
@@ -287,9 +287,10 @@ const credLine = k => { const c=IMGCRED[k]; return c?`<p class="credit">사진 $
 
 function openRegion(id){
   const r=REGION_BY_ID[id], p=PREF_BY_ID[r.pf], {score,a}=scoreOf(r), quiet=a&&a.recentStrong, h=hue(id), hk=`${id}-hero`;
-  const sights=r.sights.map(([t,d,q],i)=>`<div class="pc" style="--hue:${hue(id+'s'+i)}">${vis(itemKey(id,'s',i),t,motifFor('s',t),rh(id,i),id+'-s'+i)}${quiet?'':`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
-  const foods=r.food.map(([t,d],i)=>`<div class="pc sq" style="--hue:${hue(id+'f'+i)}">${vis(itemKey(id,'f',i),t,motifFor('f',t),rh(id,i+2),id+'-f'+i)}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
-  const row=(cat,arr,chip)=>arr.map(([t,d],i)=>`<div class="row"><div class="th" style="--hue:${hue(id+cat+i)}">${vis(itemKey(id,cat,i),t,motifFor(cat,t),rh(id,i+1),id+cat+i)}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${chip(t)}</div>`).join('');
+  const mS=motifsFor('s',r.sights.map(x=>x[0])), mF=motifsFor('f',r.food.map(x=>x[0]));
+  const sights=r.sights.map(([t,d,q],i)=>`<div class="pc" style="--hue:${hue(id+'s'+i)}">${vis(itemKey(id,'s',i),t,mS[i],rh(id,i),id+'-s'+i)}${quiet?'':`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const foods=r.food.map(([t,d],i)=>`<div class="pc sq" style="--hue:${hue(id+'f'+i)}">${vis(itemKey(id,'f',i),t,mF[i],rh(id,i+2),id+'-f'+i)}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const row=(cat,arr,chip)=>{ const m=motifsFor(cat,arr.map(x=>x[0])); return arr.map(([t,d],i)=>`<div class="row"><div class="th" style="--hue:${hue(id+cat+i)}">${vis(itemKey(id,cat,i),t,m[i],rh(id,i+1),id+cat+i)}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${chip(t)}</div>`).join(''); };
   const stay=row('t',r.stay,t=>quiet?'':`<a class="chip" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">숙소</a>`);
   const shop=row('p',r.shop,t=>`<a class="chip" href="${mapUrl(t+' '+r.name)}" target="_blank" rel="noopener">지도</a>`);
   openSheet(`
@@ -344,6 +345,7 @@ function closeModal(){ const m=$('#modal'); m.classList.remove('open'); m.setAtt
 $('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if($('#modal').classList.contains('open')) closeModal(); else if($('#sheet').classList.contains('open')) closeSheet(); });
 document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>{ const [t,body]=LEGAL[b.dataset.legal]; openModal(`<h2>${t}</h2><p>베타 버전 · 2026년 11월</p>${body}`); });
+if(!Object.keys(IMGCRED).length) $('#creditsBtn').hidden=true;
 $('#creditsBtn').onclick=()=>{
   const seen=new Set(), rows=[];
   for(const [k,c] of Object.entries(IMGCRED)){

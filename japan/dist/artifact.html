@@ -433,6 +433,7 @@ footer p{margin:4px 0;max-width:80ch}
     </div>
     <p>안심재팬 · 더 안전하고 더 재미있는 일본여행 (베타)</p>
     <p>지진 데이터: 일본 기상청 발표 정보(P2P지진정보 API 경유). 이 서비스는 지진을 예보하지 않으며, 긴급 상황에서는 일본 정부와 현지 당국의 안내를 우선 따르세요.</p>
+    <p>지도 및 일러스트는 안심재팬이 직접 제작했습니다.</p>
     <p>일부 링크는 제휴 링크로, 예약 시 서비스 운영에 필요한 수수료를 받을 수 있습니다. 이용자에게 추가 비용은 없습니다.</p>
   </div>
 </footer>
@@ -657,31 +658,78 @@ const MOTIF = {
   tofu:(c,r)=>`<ellipse cx="150" cy="300" rx="120" ry="28" fill="${c.near}"/>`+[[96,252],[148,262],[200,252],[122,222]].map(([x,y])=>`<rect x="${x}" y="${y}" width="52" height="46" rx="6" fill="#f6f1e7"/><rect x="${x}" y="${y}" width="52" height="12" rx="6" fill="${c.hi}"/>`).join('')+[110,160,200].map(x=>steam(x,210,c,r)).join(''),
   cup:(c,r)=>`<rect y="318" width="300" height="82" fill="${c.near}"/><path d="M72 220 Q150 360 228 220Z" fill="${c.near}"/><ellipse cx="150" cy="220" rx="78" ry="16" fill="#9fc27a"/><ellipse cx="150" cy="218" rx="62" ry="10" fill="#7ea85c"/><path d="M178 150 L158 218" stroke="${c.hi}" stroke-width="5" stroke-linecap="round"/>`+steam(130,196,c,r),
 };
-const MOTIF_ALIAS = {city:'skyline',station:'skyline',park:'trees',sea:'waves',onsen:'steam',market:'lanterns',shrine:'torii',noodle:'bowl',dish:'plate'};
-const MOTIF_RULES = [
-  [/라멘|면|소바|우동|짬뽕|카레|나베|수프/,'bowl'],[/초밥|스시/,'sushi'],[/쿠시|꼬치|야타이|튀김|도리텐|데바사키/,'skewer'],[/아이스|소프트|블루실/,'icecream'],
-  [/카스텔라|만주|케이크|떡|디저트|파르페|단고/,'cake'],[/두부|유도후/,'tofu'],[/말차|차/,'cup'],[/야키|타코|덮밥|굴|규|스테이크|카츠|마부시|가이세키|메시|찜|구로|짬/,'plate'],
-  [/신사|이나리|도리이|텐만구|이쓰쿠시마|메이지|아쓰타|센소지|궁/,'torii'],[/성$|성 |고료카쿠|오사카성|나고야성|슈리/,'castle'],[/기요미즈|킨카쿠|탑|아라시야마/,'pagoda'],
-  [/타워|스카이트리|공중정원|스카이/,'tower'],[/수족관/,'fish'],[/해변|바다|고우리|만좌모|모모치/,'waves'],[/온천|지옥|간나와|유노카와|아리마/,'steam'],
-  [/공원|정원|오호리|겐로쿠엔|슈케이엔|긴린코|호수/,'trees'],[/다리|운하|뱃놀이|야나가와/,'bridge'],[/하버랜드|유니버설|지브리|테마/,'ferris'],
-  [/시장|상점|아케이드|거리|도톤보리|캐널|스스키노|가도|국제거리|가와라마치|모토마치|지하상가|오스|고린보|센터가이|모자이크|창고|쇼핑/,'lanterns'],
-  [/야경|스크램블|역|난바|우메다|신주쿠|긴자|우에노|사카에|하라주쿠|아키하바라|산노미야|핫초보리|하코다테산|이나사야마|롯코산|모이와/,'skyline'],
-];
-const CAT_DEFAULT = {s:'mountain',t:'skyline',p:'lanterns',f:'plate',h:'skyline'};
-const HERO_MOTIF = {fukuoka:'tower',sapporo:'snow',nagasaki:'skyline',hakodate:'skyline',okinawa:'waves',beppu:'steam',kanazawa:'castle',kyoto:'pagoda',hiroshima:'torii',kobe:'ferris',osaka:'castle',tokyo:'tower',nagoya:'castle'};
-function motifFor(cat,title){ for(const [re,m] of MOTIF_RULES) if(re.test(title||'')) return m; return CAT_DEFAULT[cat]||'mountain'; }
 
-/* 포스터 SVG: motif 이름, 기준 색조, 시드 */
+/* 추가 모티프: 숙박·쇼핑·음식이 서로 다른 그림이 되도록 */
+Object.assign(MOTIF,{
+  train:(c,r)=>ridge(c.far,290,40,r)+`<path d="M60 400 L138 262 M240 400 L162 262" stroke="${c.near}" stroke-width="5"/>`+[0,1,2,3,4].map(k=>`<path d="M${86+k*8} ${340-k*14} H${214-k*8}" stroke="${c.near}" stroke-width="3"/>`).join('')+`<rect x="104" y="156" width="92" height="124" rx="16" fill="${c.near}"/><rect x="116" y="170" width="68" height="40" rx="8" fill="${c.hi}" opacity=".85"/><rect x="104" y="236" width="92" height="8" fill="${c.acc}"/><circle cx="122" cy="262" r="7" fill="${c.sun}"/><circle cx="178" cy="262" r="7" fill="${c.sun}"/><rect x="0" y="350" width="300" height="50" fill="${c.near}"/>`,
+  hotel:(c,r)=>ridge(c.far,310,30,r)+`<rect x="84" y="96" width="132" height="254" fill="${c.near}"/><rect x="92" y="78" width="116" height="18" fill="${c.acc}"/><rect x="40" y="200" width="44" height="150" fill="${c.mid}"/><rect x="216" y="170" width="44" height="180" fill="${c.mid}"/>`+windows(c,r,84,96,132,254)+`<rect y="348" width="300" height="52" fill="${c.near}"/>`,
+  ryokan:(c,r)=>ridge(c.far,300,36,r)+`<path d="M24 250 Q150 186 276 250 L264 264 Q150 214 36 264Z" fill="${c.near}"/><rect x="56" y="264" width="188" height="88" fill="${c.near}"/>`+[0,1,2,3,4].map(k=>`<rect x="${64+k*36}" y="274" width="28" height="64" fill="${c.hi}" opacity="${f1(.55+r()*.35)}"/>`).join('')+`<circle cx="44" cy="300" r="13" fill="${c.acc}"/><circle cx="262" cy="214" r="26" fill="${c.mid}"/><rect y="350" width="300" height="50" fill="${c.near}"/>`,
+  resort:(c,r)=>wave(c.far,262,8,0)+wave(c.mid,300,10,1)+`<ellipse cx="150" cy="372" rx="190" ry="48" fill="${c.hi}" opacity=".55"/><path d="M96 380 Q112 260 150 168" fill="none" stroke="${c.near}" stroke-width="9" stroke-linecap="round"/>`+[[-70,10],[-40,-34],[0,-46],[40,-30],[72,12]].map(([dx,dy])=>`<path d="M150 168 Q${150+dx*0.7} ${168+dy-26} ${150+dx} ${168+dy+22}" fill="none" stroke="${c.near}" stroke-width="8" stroke-linecap="round"/>`).join('')+`<path d="M196 300 Q238 244 280 300Z" fill="${c.acc}"/><path d="M238 300 V350" stroke="${c.near}" stroke-width="3"/>`,
+  arcade:(c,r)=>`<path d="M0 0 L112 140 L112 262 L0 400Z" fill="${c.near}"/><path d="M300 0 L188 140 L188 262 L300 400Z" fill="${c.near}"/><path d="M0 400 L112 262 L188 262 L300 400Z" fill="${c.mid}"/>`+[0,1,2,3,4].map(k=>`<rect x="${f1(138-k*0)}" y="${f1(150+k*20)}" width="${f1(24)}" height="6" rx="3" fill="${c.hi}" opacity="${f1(.9-k*.12)}"/>`).join('')+[0,1,2].map(k=>`<rect x="${14+k*28}" y="${190+k*18}" width="${f1(22-k*5)}" height="${f1(30-k*6)}" fill="${[c.acc,c.hi,c.sun][k]}" opacity=".85"/><rect x="${f1(264-k*20)}" y="${190+k*18}" width="${f1(22-k*5)}" height="${f1(30-k*6)}" fill="${[c.hi,c.acc,c.sun][k]}" opacity=".85"/>`).join('')+`<rect x="112" y="140" width="76" height="122" fill="${c.sky2||c.far}" opacity=".35"/>`,
+  mall:(c,r)=>ridge(c.far,320,28,r)+`<rect x="34" y="150" width="232" height="200" fill="${c.near}"/><rect x="34" y="124" width="232" height="26" fill="${c.acc}"/>`+Array.from({length:4},(_,k)=>`<path d="M${34+k*58} 150 V350" stroke="${c.far}" stroke-width="2"/>`).join('')+Array.from({length:3},(_,k)=>`<path d="M34 ${200+k*50} H266" stroke="${c.far}" stroke-width="2"/>`).join('')+[[50,160],[108,210],[166,160],[224,260],[50,260]].map(([x,y])=>`<rect x="${x}" y="${y}" width="42" height="40" fill="${c.hi}" opacity="${f1(.35+r()*.5)}"/>`).join('')+`<rect y="348" width="300" height="52" fill="${c.near}"/>`,
+  stall:(c,r)=>ridge(c.far,310,30,r)+[0,1,2].map(k=>{const x=18+k*92;return `<path d="M${x} 190 H${x+84} L${x+94} 226 H${x-10}Z" fill="${k%2?c.hi:c.acc}"/><path d="M${x} 190 L${x-10} 226 M${x+21} 190 L${x+17} 226 M${x+42} 190 L${x+42} 226 M${x+63} 190 L${x+67} 226 M${x+84} 190 L${x+94} 226" stroke="${c.near}" stroke-width="3" opacity=".35"/><rect x="${x-4}" y="226" width="92" height="104" fill="${c.near}"/>`+[0,1,2].map(j=>`<circle cx="${x+14+j*28}" cy="${250+(k+j)%2*10}" r="11" fill="${[c.acc,c.sun,c.hi][(j+k)%3]}"/>`).join('');}).join('')+`<rect y="330" width="300" height="70" fill="${c.near}"/>`,
+  neon:(c,r)=>`<rect y="300" width="300" height="100" fill="${c.near}"/>`+[[24,90,70,120,c.acc],[104,60,60,90,c.hi],[178,110,52,150,c.sun],[240,70,50,110,c.acc]].map(([x,y,w,h,col])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${c.near}" stroke="${col}" stroke-width="9" opacity=".25"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${c.near}" stroke="${col}" stroke-width="3"/>`+[0,1,2].map(k=>`<path d="M${x+10} ${y+22+k*Math.max(18,h/4)} H${x+w-10}" stroke="${col}" stroke-width="3" stroke-linecap="round" opacity=".9"/>`).join('')).join(''),
+  gift:(c,r)=>`<rect y="318" width="300" height="82" fill="${c.near}"/>`+Array.from({length:12},(_,k)=>{const x=40+(k%4)*52+(Math.floor(k/4)%2)*12,y=120+Math.floor(k/4)*60;return `<rect x="${x}" y="${y}" width="42" height="42" rx="4" fill="${k%3?c.sun:c.hi}" opacity="${f1(.55+r()*.4)}"/>`;}).join('')+`<rect x="116" y="270" width="68" height="50" fill="${c.acc}"/><path d="M150 270 V320 M116 292 H184" stroke="${c.hi}" stroke-width="5"/>`,
+  nightview:(c,r)=>`<path d="M0 214 Q70 336 150 336 Q230 336 300 214 V400H0Z" fill="${c.near}"/><path d="M0 250 Q70 350 150 350 Q230 350 300 250" fill="none" stroke="${c.far}" stroke-width="10" opacity=".6"/>`+Array.from({length:90},()=>{const t=r(),x=40+t*220,y=300+Math.sin(t*Math.PI)*34-r()*74*Math.sin(t*Math.PI)-10;return `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(1+r()*1.6)}" fill="${r()<.2?c.sun:c.hi}" opacity="${f1(.55+r()*.45)}"/>`;}).join(''),
+  skytree:(c,r)=>ridge(c.far,336,30,r)+`<g fill="${c.near}"><path d="M150 16 L155 300 L145 300Z"/><path d="M150 300 L196 352 L104 352Z"/><ellipse cx="150" cy="200" rx="22" ry="9"/><ellipse cx="150" cy="150" rx="15" ry="7"/></g><rect x="148" y="8" width="4" height="16" fill="${c.near}"/><rect y="350" width="300" height="50" fill="${c.near}"/>`,
+  seafood:(c,r)=>`<ellipse cx="150" cy="276" rx="128" ry="50" fill="${c.hi}"/><ellipse cx="150" cy="270" rx="104" ry="38" fill="${c.sun}" opacity=".7"/><g transform="translate(150 268)"><ellipse rx="64" ry="24" fill="${c.acc}"/><path d="M62 0 L102 -26 L94 0 L102 26Z" fill="${c.acc}"/><circle cx="-38" cy="-4" r="5" fill="${c.near}"/><path d="M-8 -22 Q10 -8 -8 22" fill="none" stroke="${c.hi}" stroke-width="3" opacity=".6"/></g><circle cx="58" cy="290" r="15" fill="${c.hi}"/><circle cx="58" cy="290" r="9" fill="${c.sun}"/>`,
+  dumpling:(c,r)=>`<ellipse cx="150" cy="312" rx="118" ry="24" fill="${c.near}" opacity=".5"/><ellipse cx="150" cy="288" rx="104" ry="30" fill="${c.mid}"/><rect x="46" y="234" width="208" height="56" fill="${c.far}"/><ellipse cx="150" cy="234" rx="104" ry="30" fill="${c.sun}"/><ellipse cx="150" cy="190" rx="92" ry="26" fill="${c.mid}"/><rect x="58" y="150" width="184" height="42" fill="${c.far}"/><ellipse cx="150" cy="150" rx="92" ry="26" fill="${c.hi}"/>`+[100,150,200].map(x=>steam(x,130,c,r)).join(''),
+  pot:(c,r)=>`<ellipse cx="150" cy="320" rx="130" ry="20" fill="${c.near}" opacity=".5"/><path d="M52 250 Q54 340 150 344 Q246 340 248 250Z" fill="${c.near}"/><ellipse cx="150" cy="250" rx="98" ry="20" fill="${c.acc}"/><ellipse cx="150" cy="248" rx="82" ry="13" fill="${c.sun}" opacity=".9"/><circle cx="46" cy="262" r="12" fill="none" stroke="${c.near}" stroke-width="6"/><circle cx="254" cy="262" r="12" fill="none" stroke="${c.near}" stroke-width="6"/>`+[108,150,192].map((x,i)=>`<circle cx="${x}" cy="${244+(i%2)*6}" r="${11+i%2*3}" fill="${[c.far,c.hi,c.far][i]}"/>`).join('')+[116,160,204].map(x=>steam(x,226,c,r)).join(''),
+});
+const MOTIF_ALIAS = {city:'skyline',station:'train',park:'trees',sea:'waves',onsen:'steam',market:'stall',shrine:'torii',noodle:'bowl',dish:'plate'};
+
+/* 항목 종류별 규칙 */
+const RULES = {
+  s:[[/신사|이나리|도리이|텐만구|이쓰쿠시마|메이지|아쓰타|센소지|궁/,'torii'],[/성$|성 |고료카쿠|슈리/,'castle'],[/기요미즈|킨카쿠|탑|아라시야마/,'pagoda'],[/스카이트리/,'skytree'],[/타워|공중정원/,'tower'],[/수족관/,'fish'],[/해변|바다|고우리|만좌모|모모치/,'waves'],[/온천|지옥|아리마/,'steam'],[/공원|정원|오호리|겐로쿠엔|슈케이엔|긴린코|호수/,'trees'],[/다리|운하|뱃놀이|야나가와/,'bridge'],[/하버랜드|유니버설|지브리|테마|스튜디오|하우스텐보스/,'ferris'],[/야경|스크램블|하코다테산|이나사야마|롯코산|모이와|로프웨이/,'nightview'],[/시장|도톤보리|차야가이|모토마치|이진칸|글로버|데지마|시계탑|미술관/,'lanterns']],
+  t:[[/역/,'train'],[/온천|간나와|유후인|유노카와|료칸/,'ryokan'],[/리조트|해변|온나손/,'resort'],[/신주쿠|긴자|우에노|난바|우메다|산노미야|사카에|텐진|하카타|나카스|스스키노|핫초보리|고린보|시조|하마노마치|국제거리|하버랜드/,'skyline']],
+  p:[[/아키하바라|신사이바시|시부야|하라주쿠|긴자/,'neon'],[/몰|플라자|팩토리|백화점|아울렛|캐널|모자이크|창고|아뮤/,'mall'],[/시장|니시키/,'stall'],[/금박|공예|기념품/,'gift'],[/아케이드|상점가|지하상가|센터가이|거리|혼도리|오모테산도|국제거리|가와라마치|오스|스지|고린보|유노쓰보|역/,'arcade']],
+  f:[[/나베|찜/,'pot'],[/라멘|면|소바|우동|짬뽕|카레|수프|국$|지루/,'bowl'],[/초밥|스시/,'sushi'],[/쿠시|꼬치|야타이|튀김|도리텐|데바사키/,'skewer'],[/아이스|소프트|블루실/,'icecream'],[/카스텔라|케이크|디저트|파르페|럭키/,'cake'],[/만주|타코|교자|야키|난킨/,'dumpling'],[/두부|유도후/,'tofu'],[/말차/,'cup'],[/해산물|덮밥|굴|구로|생선/,'seafood']],
+};
+const CAT_DEFAULT = {s:'mountain',t:'hotel',p:'lanterns',f:'plate',h:'skyline'};
+const POOLS = {
+  s:['mountain','trees','bridge','nightview','waves','pagoda','castle','torii','tower','steam','lanterns','ferris'],
+  t:['skyline','hotel','train','ryokan','resort','nightview','trees'],
+  p:['arcade','lanterns','mall','stall','neon','gift'],
+  f:['bowl','plate','seafood','skewer','dumpling','cake','sushi','cup','tofu','icecream','pot'],
+};
+const HERO_MOTIF = {fukuoka:'tower',sapporo:'snow',nagasaki:'lanterns',hakodate:'nightview',okinawa:'waves',beppu:'steam',kanazawa:'trees',kyoto:'pagoda',hiroshima:'torii',kobe:'ferris',osaka:'neon',tokyo:'skytree',nagoya:'castle'};
+function motifFor(cat,title){ for(const [re,m] of (RULES[cat]||[])) if(re.test(title||'')) return m; return CAT_DEFAULT[cat]||'mountain'; }
+/* 같은 목록 안에서는 모티프가 겹치지 않게 배정 */
+function motifsFor(cat,titles){
+  const used=new Set();
+  return titles.map(t=>{ let m=motifFor(cat,t); if(used.has(m)) m=(POOLS[cat]||[]).find(x=>!used.has(x))||m; used.add(m); return m; });
+}
+
+/* 포스터 SVG: 모티프, 기준 색조, 시드. 그림 스타일 4가지(석양·밤·플랫·낮), 좌우 반전과 크기 변화 */
 let POSTER_N = 0;
 function poster(motif,h,seed){
   const r=rng(seed), id='pg'+(POSTER_N++);
   motif = MOTIF[motif]?motif:(MOTIF_ALIAS[motif]||'mountain');
-  const dusk = r()<.5;
-  const c={sky1:`hsl(${h} 46% ${dusk?18:24}%)`,sky2:`hsl(${(h+26)%360} 78% ${dusk?56:64}%)`,sun:`hsl(${(h+44)%360} 96% 80%)`,far:`hsl(${(h+8)%360} 36% 34%)`,mid:`hsl(${(h+8)%360} 40% 24%)`,near:`hsl(${(h+8)%360} 44% 13%)`,hi:`hsl(${(h+48)%360} 100% 88%)`,acc:'#ee4a50'};
-  const sx=f1(50+r()*200), sy=f1(90+r()*90), sr=f1(30+r()*22);
-  const food=/^(bowl|plate|sushi|skewer|icecream|cake|tofu|cup)$/.test(motif);
-  const sun=food?'':`<circle cx="${sx}" cy="${sy}" r="${f1(sr*2.2)}" fill="${c.sun}" opacity=".16"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${c.sun}" opacity=".95"/>`;
-  return `<svg class="art" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky1}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient></defs><rect width="300" height="400" fill="url(#${id})"/>${sun}${MOTIF[motif](c,r)}</svg>`;
+  const food=/^(bowl|plate|sushi|skewer|icecream|cake|tofu|cup|seafood|dumpling|pot)$/.test(motif);
+  const v=['dusk','night','flat','day'][Math.floor(r()*4)];
+  const H=x=>(h+x+360)%360;
+  let c, bg, sun='';
+  const sx=f1(40+r()*220), sy=f1(80+r()*100), sr=f1(28+r()*24);
+  if(v==='night'){
+    c={far:`hsl(${H(8)} 34% 26%)`,mid:`hsl(${H(8)} 38% 18%)`,near:`hsl(${H(8)} 44% 9%)`,hi:`hsl(${H(48)} 100% 88%)`,sun:`hsl(${H(44)} 70% 90%)`,acc:'#ee4a50',sky2:`hsl(${H(20)} 55% 30%)`};
+    bg=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${H(0)} 52% 9%)"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient>`;
+    sun=`<circle cx="${sx}" cy="${sy}" r="${f1(sr*.6)}" fill="${c.sun}"/>`+Array.from({length:26},()=>`<circle cx="${f1(r()*300)}" cy="${f1(r()*240)}" r="${f1(.6+r()*1.4)}" fill="#fff" opacity="${f1(.4+r()*.6)}"/>`).join('');
+  }else if(v==='flat'){
+    c={far:`hsl(${H(10)} 36% 46%)`,mid:`hsl(${H(10)} 40% 32%)`,near:`hsl(${H(10)} 46% 16%)`,hi:`hsl(${H(46)} 100% 90%)`,sun:`hsl(${H(40)} 92% 62%)`,acc:'#ee4a50',sky2:`hsl(${H(14)} 62% 76%)`};
+    bg=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${H(6)} 58% 80%)"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient>`;
+    sun=food?'':`<circle cx="${sx}" cy="${sy}" r="${f1(sr*1.7)}" fill="${c.sun}"/>`;
+  }else if(v==='day'){
+    c={far:`hsl(${H(10)} 32% 40%)`,mid:`hsl(${H(10)} 38% 28%)`,near:`hsl(${H(10)} 44% 14%)`,hi:`hsl(${H(46)} 100% 92%)`,sun:`hsl(${H(40)} 100% 82%)`,acc:'#ee4a50',sky2:`hsl(${H(26)} 80% 86%)`};
+    bg=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${H(-6)} 64% 62%)"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient>`;
+    sun=food?'':`<circle cx="${sx}" cy="${sy}" r="${f1(sr*2)}" fill="#fff" opacity=".22"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${c.sun}"/>`;
+  }else{
+    c={far:`hsl(${H(8)} 36% 34%)`,mid:`hsl(${H(8)} 40% 24%)`,near:`hsl(${H(8)} 44% 13%)`,hi:`hsl(${H(48)} 100% 88%)`,sun:`hsl(${H(44)} 96% 80%)`,acc:'#ee4a50',sky2:`hsl(${H(26)} 78% 58%)`};
+    bg=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${H(0)} 46% 18%)"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient>`;
+    sun=food?'':`<circle cx="${sx}" cy="${sy}" r="${f1(sr*2.2)}" fill="${c.sun}" opacity=".16"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${c.sun}" opacity=".95"/>`;
+  }
+  const flip=r()<.5, sc=f1(.92+r()*.18), dx=f1((r()-.5)*28);
+  const tf=`translate(${flip?300+dx:dx} ${f1(400*(1-sc)/2)}) scale(${flip?-sc:sc} ${sc})`;
+  return `<svg class="art" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs>${bg}</defs><rect width="300" height="400" fill="url(#${id})"/>${sun}<g transform="${tf}">${MOTIF[motif](c,r)}</g></svg>`;
 }
 'use strict';
 const $ = s => document.querySelector(s);
@@ -710,7 +758,7 @@ function img(k,alt,eager){
   const f = imgFile(k); if(!f) return '';
   return `<img src="${f}" alt="${esc(alt)}" loading="${eager?'eager':'lazy'}" decoding="async">`;
 }
-const rh = (rid,i=0) => ((REGION_HUE[rid]||200) + ((i*17)%50) - 20 + 360) % 360;
+const rh = (rid,i=0) => ((REGION_HUE[rid]||200) + ((i*41)%100) - 40 + 360) % 360;
 const vis = (k,alt,motif,h,seed,eager) => poster(motif,h,seed) + img(k,alt,eager);
 document.addEventListener('error',e=>{ if(e.target && e.target.tagName==='IMG') e.target.remove(); },true);
 
@@ -972,9 +1020,10 @@ const credLine = k => { const c=IMGCRED[k]; return c?`<p class="credit">사진 $
 
 function openRegion(id){
   const r=REGION_BY_ID[id], p=PREF_BY_ID[r.pf], {score,a}=scoreOf(r), quiet=a&&a.recentStrong, h=hue(id), hk=`${id}-hero`;
-  const sights=r.sights.map(([t,d,q],i)=>`<div class="pc" style="--hue:${hue(id+'s'+i)}">${vis(itemKey(id,'s',i),t,motifFor('s',t),rh(id,i),id+'-s'+i)}${quiet?'':`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
-  const foods=r.food.map(([t,d],i)=>`<div class="pc sq" style="--hue:${hue(id+'f'+i)}">${vis(itemKey(id,'f',i),t,motifFor('f',t),rh(id,i+2),id+'-f'+i)}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
-  const row=(cat,arr,chip)=>arr.map(([t,d],i)=>`<div class="row"><div class="th" style="--hue:${hue(id+cat+i)}">${vis(itemKey(id,cat,i),t,motifFor(cat,t),rh(id,i+1),id+cat+i)}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${chip(t)}</div>`).join('');
+  const mS=motifsFor('s',r.sights.map(x=>x[0])), mF=motifsFor('f',r.food.map(x=>x[0]));
+  const sights=r.sights.map(([t,d,q],i)=>`<div class="pc" style="--hue:${hue(id+'s'+i)}">${vis(itemKey(id,'s',i),t,mS[i],rh(id,i),id+'-s'+i)}${quiet?'':`<a class="go" href="${tourUrl(r,q||t)}" target="_blank" rel="noopener sponsored">입장권</a>`}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const foods=r.food.map(([t,d],i)=>`<div class="pc sq" style="--hue:${hue(id+'f'+i)}">${vis(itemKey(id,'f',i),t,mF[i],rh(id,i+2),id+'-f'+i)}<div class="tx"><b>${esc(t)}</b><span>${esc(d)}</span></div></div>`).join('');
+  const row=(cat,arr,chip)=>{ const m=motifsFor(cat,arr.map(x=>x[0])); return arr.map(([t,d],i)=>`<div class="row"><div class="th" style="--hue:${hue(id+cat+i)}">${vis(itemKey(id,cat,i),t,m[i],rh(id,i+1),id+cat+i)}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${chip(t)}</div>`).join(''); };
   const stay=row('t',r.stay,t=>quiet?'':`<a class="chip" href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">숙소</a>`);
   const shop=row('p',r.shop,t=>`<a class="chip" href="${mapUrl(t+' '+r.name)}" target="_blank" rel="noopener">지도</a>`);
   openSheet(`
@@ -1029,6 +1078,7 @@ function closeModal(){ const m=$('#modal'); m.classList.remove('open'); m.setAtt
 $('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if($('#modal').classList.contains('open')) closeModal(); else if($('#sheet').classList.contains('open')) closeSheet(); });
 document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>{ const [t,body]=LEGAL[b.dataset.legal]; openModal(`<h2>${t}</h2><p>베타 버전 · 2026년 11월</p>${body}`); });
+if(!Object.keys(IMGCRED).length) $('#creditsBtn').hidden=true;
 $('#creditsBtn').onclick=()=>{
   const seen=new Set(), rows=[];
   for(const [k,c] of Object.entries(IMGCRED)){
