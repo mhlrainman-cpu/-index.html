@@ -495,12 +495,17 @@ footer p{margin:4px 0;max-width:80ch}
 <script>
 /* 운영 설정: 공개 후 아래 값을 채우면 수집·분석이 켜집니다. */
 const CONFIG = {
-  captureUrl: '',  // 이메일 신청을 받을 주소(구글 폼 응답 URL 또는 웹훅). 비어 있으면 '시범 운영' 안내가 표시되고 이 기기에만 저장됩니다.
+  // 신청 수집: 구글 폼. fields 는 폼 질문별 입력 ID 입니다.
+  capture: {
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSfvvOwTJU_tzy169dolgq3NY0sKGpmld9LRn7PYBKQQByyIIA/formResponse',
+    fields: { email: 'entry.2123631466', region: 'entry.1077490080', month: 'entry.83133083' },
+  },
   gaId: '',        // Google Analytics 4 측정 ID (예: G-XXXXXXXXXX)
   verify: {
     google: 'n1us022Y4cDGRvHnTiuCPVyWg1Fd8U0-1Nbl1ON6bjU',  // 구글 서치콘솔 소유권 확인
     naver: '',                                                // 네이버 서치어드바이저 소유권 확인
   },
+  indexNowKey: 'bae7065bcf637a924e307999ac85dcaa',  // 네이버·빙 색인 요청(IndexNow) 인증 키. 같은 이름의 .txt 파일이 japan/ 에 있어야 합니다
   siteUrl: 'https://mhlrainman-cpu.github.io/-index.html/japan',  // 공개 주소 (예: https://example.com)
 };
 /* 제휴 ID: 가입 후 아래 값만 채우면 모든 예약 링크에 자동으로 붙습니다. */
@@ -1183,10 +1188,20 @@ async function submitLead(d){
   const rec={...d,ts:new Date().toISOString()};
   try{ const a=JSON.parse(localStorage.getItem('anshin_leads')||'[]'); a.push(rec); localStorage.setItem('anshin_leads',JSON.stringify(a)); }catch(e){}
   track('lead',{source:d.source,region:d.region||''});
-  if(CONFIG.captureUrl){ try{ await fetch(CONFIG.captureUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)}); return true; }catch(e){ return false; } }
-  return false;
+  const C=CONFIG.capture;
+  if(!C||!C.url) return false;
+  /* 구글 폼은 교차 출처 응답을 돌려주지 않습니다. no-cors 로 보내면 성공 여부를 읽을 수 없으므로,
+     보낸 사실만 알리고 화면에는 "접수"로 안내합니다. 실제 기록은 폼 응답 시트에서 확인하세요. */
+  try{
+    const body=new URLSearchParams();
+    for(const [k,f] of Object.entries(C.fields||{})) if(d[k]!=null && d[k]!=='') body.append(f,d[k]);
+    if(C.fields && C.fields.source && d.source) body.set(C.fields.source,d.source);
+    await fetch(C.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:body.toString()});
+    return true;
+  }catch(e){ return false; }
 }
 const PILOT_NOTE = '<p class="note">시범 운영 중입니다. 신청 정보는 아직 서버에 저장되지 않고 이 기기에만 기록됩니다.</p>';
+const CAPTURE_ON = !!(CONFIG.capture && CONFIG.capture.url);
 function openPass(rid){
   track('pass_open',{region:rid||''});
   const now=new Date(), months=Array.from({length:12},(_,i)=>{ const d=new Date(now.getFullYear(),now.getMonth()+i,1); return `<option value="${d.getFullYear()}-${d.getMonth()+1}">${d.getFullYear()}년 ${d.getMonth()+1}월</option>`; }).join('');
@@ -1198,7 +1213,7 @@ function openPass(rid){
       <label>출발 시기<select id="leadMonth">${months}</select></label>
       <label class="chk"><input type="checkbox" id="leadOk" required><span>개인정보(이메일, 선택한 지역·시기) 수집·이용에 동의합니다. 알림 발송 목적으로 해지 시까지 보관합니다.</span></label>
       <button class="btn" type="submit">오픈 알림 신청</button>
-      ${CONFIG.captureUrl?'':PILOT_NOTE}
+      ${CAPTURE_ON?'':PILOT_NOTE}
     </form>`);
   $('#leadForm').addEventListener('submit',async e=>{
     e.preventDefault();
