@@ -70,7 +70,7 @@ function page(r) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-<meta name="keywords" content="${esc(`${r.name} 지진, ${r.name} 여행 지진, ${r.name} 지진 위험, ${p.ko} 지진, 일본 여행 지진, ${r.name} 안전`)}">
+${CONFIG.verify && CONFIG.verify.google ? `<meta name="google-site-verification" content="${esc(CONFIG.verify.google)}">\n` : ''}${CONFIG.verify && CONFIG.verify.naver ? `<meta name="naver-site-verification" content="${esc(CONFIG.verify.naver)}">\n` : ''}<meta name="keywords" content="${esc(`${r.name} 지진, ${r.name} 여행 지진, ${r.name} 지진 위험, ${p.ko} 지진, 일본 여행 지진, ${r.name} 안전`)}">
 ${SITE ? `<link rel="canonical" href="${esc(url)}">` : ''}
 <meta property="og:type" content="article">
 <meta property="og:title" content="${esc(`${r.name} 지진 위험, 여행 가도 될까`)}">
