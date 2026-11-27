@@ -7,6 +7,13 @@
 
    준비물: data/config.js 의 indexNowKey 와, 같은 이름의 .txt 파일이 japan/ 에 공개되어 있어야 합니다.
    키 파일이 japan/ 안에 있으므로 japan/ 아래 주소만 제출할 수 있습니다. */
+// 프록시 뒤에서도 동작하도록: 프록시 환경변수가 있으면 Node 에게 쓰라고 알린 뒤 재실행
+if (!process.env.NODE_USE_ENV_PROXY && (process.env.HTTPS_PROXY || process.env.https_proxy)) {
+  const { spawnSync } = require('child_process');
+  const r = spawnSync(process.execPath, [__filename, ...process.argv.slice(2)],
+    { stdio: 'inherit', env: { ...process.env, NODE_USE_ENV_PROXY: '1', NODE_NO_WARNINGS: '1' } });
+  process.exit(r.status ?? 1);
+}
 const fs = require('fs'), path = require('path');
 const ROOT = path.dirname(__dirname);
 const G = {};
