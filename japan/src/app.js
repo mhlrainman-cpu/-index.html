@@ -362,6 +362,7 @@ function closeModal(){ const m=$('#modal'); m.classList.remove('open'); m.setAtt
 $('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; if($('#modal').classList.contains('open')) closeModal(); else if($('#sheet').classList.contains('open')) closeSheet(); });
 document.querySelectorAll('[data-legal]').forEach(b=>b.onclick=()=>{ const [t,body]=LEGAL[b.dataset.legal]; openModal(`<h2>${t}</h2><p>베타 버전 · 2026년 11월</p>${body}`); });
+$('#opLine').innerHTML='운영 '+esc(CONFIG.operator.name)+' · 문의 <a href="mailto:'+esc(CONFIG.operator.email)+'">'+esc(CONFIG.operator.email)+'</a>';
 if(!Object.keys(IMGCRED).length) $('#creditsBtn').hidden=true;
 $('#creditsBtn').onclick=()=>{
   const seen=new Set(), rows=[];

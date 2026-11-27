@@ -11,5 +11,13 @@ const CONFIG = {
     naver: '',                                                // 네이버 서치어드바이저 소유권 확인
   },
   indexNowKey: 'bae7065bcf637a924e307999ac85dcaa',  // 네이버·빙 색인 요청(IndexNow) 인증 키. 같은 이름의 .txt 파일이 japan/ 에 있어야 합니다
+  // 운영자 정보: 개인정보처리방침과 하단에 표시됩니다.
+  // 통신판매업(유료 패스 판매)을 시작하면 대표자 성명, 사업장 주소, 전화번호, 사업자등록번호,
+  // 통신판매업 신고번호를 추가로 표시해야 합니다. 그때 이 객체에 채우세요.
+  operator: {
+    name: '딥플리 크리에이티브 (Deeeply Creative)',
+    officer: '운영책임자',
+    email: 'mhlrainman@gmail.com',
+  },
   siteUrl: 'https://mhlrainman-cpu.github.io/-index.html/japan',  // 공개 주소 (예: https://example.com)
 };
