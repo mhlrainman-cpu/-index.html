@@ -58,6 +58,7 @@
 | 경로 | 방법 | 속도 |
 |---|---|---|
 | 검색 | 지역별 페이지 + 네이버 서치어드바이저·구글 서치콘솔 등록 | 느림(수주~수개월), 누적됨 |
+| 색인 요청 | 새 페이지를 올릴 때마다 `node tools/indexnow.js` 로 네이버·빙에 즉시 통보 | 즉시 접수 |
 | 이슈 대응 | 큰 지진·예언 소동 시 검색 폭증 구간 공략 | 가장 빠름 |
 | SNS | `cards/`의 월간 랭킹 카드를 릴스·스레드·쇼츠에 배포 | 보통 |
 | 커뮤니티 | 네이버 일본여행 카페에 홍보가 아닌 정보 글로 | 보통 |
@@ -108,6 +109,8 @@ python3 build.py --no-fetch      # 네트워크 없이 조립만
 node tools/build_pages.js        # 지역별 검색 페이지 + sitemap/robots
 node tools/build_pages.js --og   # 공유 이미지(OG)까지
 node tools/build_cards.js        # SNS 카드 (랭킹·스토리·지역)
+
+node tools/indexnow.js           # 네이버·빙에 색인 즉시 요청 (구글은 미지원)
 
 python3 tools/jshis_fetch.py     # J-SHIS 공식 확률 재조회 (연 1회 또는 신판 발표 시)
 python3 tools/make_risk.py       # 조회 결과를 data/risk.js 로 변환
