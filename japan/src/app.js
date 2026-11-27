@@ -322,13 +322,13 @@ function openRegion(id){
       <div class="sx-sec"><h3>먹거리 <small>FOOD</small></h3><div class="rail">${foods}</div></div>
       <div class="sx-sec"><h3>숙박 추천 지역 <small>STAY</small></h3><div class="rows">${stay}</div></div>
       <div class="sx-sec"><h3>쇼핑 <small>SHOP</small></h3><div class="rows">${shop}</div></div>
-      ${quiet?'':`<div class="cta-bar">
+      ${quiet?'':`<p class="disclose"><b>광고</b> 아래 항공·숙소·투어·eSIM 링크는 제휴 링크입니다. 이 링크로 예약하시면 안심재팬이 수수료를 받으며, 이용자 부담은 늘지 않습니다.</p><div class="cta-bar">
         <a href="${flightUrl(r)}" target="_blank" rel="noopener sponsored">${IC.plane}항공</a>
         <a href="${hotelUrl(r)}" target="_blank" rel="noopener sponsored">${IC.bed}숙소</a>
         <a href="${tourUrl(r)}" target="_blank" rel="noopener sponsored">${IC.ticket}투어</a>
         <a href="${esimUrl()}" target="_blank" rel="noopener sponsored">${IC.sim}eSIM</a>
         <a href="${INSURANCE_URL}" target="_blank" rel="noopener">${IC.shield}보험</a></div>
-      <p class="adnote">일부 링크는 제휴 링크입니다. 이용자에게 추가 비용은 없습니다. 보험은 금융당국 공식 비교 사이트로 연결됩니다.</p>`}
+      <p class="adnote">보험은 금융당국 공식 비교 사이트(보험다모아)로 연결되며 수수료를 받지 않습니다.</p>`}
     </div>`);
 }
 function openPref(id){
