@@ -76,7 +76,7 @@ const POOLS = {
   p:['arcade','lanterns','mall','stall','neon','gift'],
   f:['bowl','plate','seafood','skewer','dumpling','cake','sushi','cup','tofu','icecream','pot'],
 };
-const HERO_MOTIF = {fukuoka:'tower',sapporo:'snow',nagasaki:'lanterns',hakodate:'nightview',okinawa:'waves',beppu:'steam',kanazawa:'trees',kyoto:'pagoda',hiroshima:'torii',kobe:'ferris',osaka:'neon',tokyo:'skytree',nagoya:'castle'};
+const HERO_MOTIF = {fukuoka:'tower',sapporo:'snow',nagasaki:'lanterns',hakodate:'nightview',okinawa:'waves',beppu:'steam',kanazawa:'trees',kyoto:'pagoda',hiroshima:'torii',kobe:'ferris',osaka:'castle',tokyo:'skytree',nagoya:'tower'};
 function motifFor(cat,title){ for(const [re,m] of (RULES[cat]||[])) if(re.test(title||'')) return m; return CAT_DEFAULT[cat]||'mountain'; }
 /* 같은 목록 안에서는 모티프가 겹치지 않게 배정 */
 function motifsFor(cat,titles){
