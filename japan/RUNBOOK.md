@@ -115,6 +115,8 @@ python3 tools/make_risk.py       # 조회 결과를 data/risk.js 로 변환
 
 **설정 파일**: `data/config.js`(수집 주소·GA4·공개 주소), `data/affiliate.js`(제휴 ID)
 
+이미지는 코드로 그리는 일러스트(`src/poster.js`)를 쓴다. 사진을 쓰려면 `img/<키>.webp`와 `data/images.js`(IMGMAP·IMGCRED)를 두면 일러스트 위에 자동으로 덮인다.
+
 ---
 
 ## 8. 지켜야 할 선
