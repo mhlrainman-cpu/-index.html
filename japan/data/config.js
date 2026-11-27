@@ -6,5 +6,6 @@ const CONFIG = {
     google: 'n1us022Y4cDGRvHnTiuCPVyWg1Fd8U0-1Nbl1ON6bjU',  // 구글 서치콘솔 소유권 확인
     naver: '',                                                // 네이버 서치어드바이저 소유권 확인
   },
+  indexNowKey: 'bae7065bcf637a924e307999ac85dcaa',  // 네이버·빙 색인 요청(IndexNow) 인증 키. 같은 이름의 .txt 파일이 japan/ 에 있어야 합니다
   siteUrl: 'https://mhlrainman-cpu.github.io/-index.html/japan',  // 공개 주소 (예: https://example.com)
 };
