@@ -386,10 +386,20 @@ async function submitLead(d){
   const rec={...d,ts:new Date().toISOString()};
   try{ const a=JSON.parse(localStorage.getItem('anshin_leads')||'[]'); a.push(rec); localStorage.setItem('anshin_leads',JSON.stringify(a)); }catch(e){}
   track('lead',{source:d.source,region:d.region||''});
-  if(CONFIG.captureUrl){ try{ await fetch(CONFIG.captureUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)}); return true; }catch(e){ return false; } }
-  return false;
+  const C=CONFIG.capture;
+  if(!C||!C.url) return false;
+  /* 구글 폼은 교차 출처 응답을 돌려주지 않습니다. no-cors 로 보내면 성공 여부를 읽을 수 없으므로,
+     보낸 사실만 알리고 화면에는 "접수"로 안내합니다. 실제 기록은 폼 응답 시트에서 확인하세요. */
+  try{
+    const body=new URLSearchParams();
+    for(const [k,f] of Object.entries(C.fields||{})) if(d[k]!=null && d[k]!=='') body.append(f,d[k]);
+    if(C.fields && C.fields.source && d.source) body.set(C.fields.source,d.source);
+    await fetch(C.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:body.toString()});
+    return true;
+  }catch(e){ return false; }
 }
 const PILOT_NOTE = '<p class="note">시범 운영 중입니다. 신청 정보는 아직 서버에 저장되지 않고 이 기기에만 기록됩니다.</p>';
+const CAPTURE_ON = !!(CONFIG.capture && CONFIG.capture.url);
 function openPass(rid){
   track('pass_open',{region:rid||''});
   const now=new Date(), months=Array.from({length:12},(_,i)=>{ const d=new Date(now.getFullYear(),now.getMonth()+i,1); return `<option value="${d.getFullYear()}-${d.getMonth()+1}">${d.getFullYear()}년 ${d.getMonth()+1}월</option>`; }).join('');
@@ -401,7 +411,7 @@ function openPass(rid){
       <label>출발 시기<select id="leadMonth">${months}</select></label>
       <label class="chk"><input type="checkbox" id="leadOk" required><span>개인정보(이메일, 선택한 지역·시기) 수집·이용에 동의합니다. 알림 발송 목적으로 해지 시까지 보관합니다.</span></label>
       <button class="btn" type="submit">오픈 알림 신청</button>
-      ${CONFIG.captureUrl?'':PILOT_NOTE}
+      ${CAPTURE_ON?'':PILOT_NOTE}
     </form>`);
   $('#leadForm').addEventListener('submit',async e=>{
     e.preventDefault();
